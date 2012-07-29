@@ -1,0 +1,12 @@
+package ikrs.typesystem;
+
+public class BasicTypeException 
+    extends RuntimeException {
+
+
+    public BasicTypeException( String msg ) {
+	super( msg );
+    }
+
+
+}

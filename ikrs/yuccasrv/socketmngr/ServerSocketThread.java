@@ -66,6 +66,40 @@ public class ServerSocketThread
 
 	this.uuid = UUID.randomUUID();
 
+
+	/** TO MAKE THE SERVER SECURE: http://java.sun.com/developer/technicalArticles/Security/secureinternet/
+	   import javax.net.ssl.*;
+	   import java.security.*;
+
+	   ..
+
+	   String keystore = "serverkeys";
+	   char keystorepass[] = "hellothere".toCharArray();
+	   char keypassword[] = "hiagain".toCharArray();
+
+	   // The port number which the server will be listening on
+	   public static final int HTTPS_PORT = 443;
+
+    
+	   public ServerSocket getServer() throws Exception {
+
+	   KeyStore ks = KeyStore.getInstance("JKS");
+	   ks.load(new FileInputStream(keystore), keystorepass);
+	   KeyManagerFactory kmf = 
+	   KeyManagerFactory.getInstance("SunX509");
+	   kmf.init(ks, keypassword);
+	   SSLContext sslcontext = 
+	   SSLContext.getInstance("SSLv3");
+	   sslcontext.init(kmf.getKeyManagers(), null, null);
+	   ServerSocketFactory ssf = 
+	   sslcontext.getServerSocketFactory();
+	   SSLServerSocket serversocket = (SSLServerSocket) 
+	   ssf.createServerSocket(HTTPS_PORT);
+	   return serversocket;
+
+
+	 **/
+
     }
 
     public UUID getUUID() {
@@ -83,7 +117,7 @@ public class ServerSocketThread
 	    while( !this.isInterrupted() && !this.serverSocket.isClosed() ) {
 
 		Socket sock = this.serverSocket.accept();
-
+		    
 		// Increase connection counter
 		BasicType count = this.bindSettings.get(Constants.KEY_CONNECTION_COUNT);
 		if( count == null )
@@ -91,8 +125,11 @@ public class ServerSocketThread
 		else
 		    count = new BasicNumberType( count.getInt() + 1 );
 		this.bindSettings.put( Constants.KEY_CONNECTION_COUNT, count );
-
+		    
+		//System.out.println( getClass().getName() + ".run() Telling observer about incoming TCP connection ..." );
 		this.observer.incomingTCPConnection( this, sock );
+		//System.out.println( getClass().getName() + ".run() Done." );
+		
 		
 	    }
 	    // END while: server was closed or thread was interrupted

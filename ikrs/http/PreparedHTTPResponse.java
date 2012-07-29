@@ -9,6 +9,8 @@ package ikrs.http;
  **/
 
 import java.io.IOException;
+import java.util.MissingResourceException;
+
 
 public interface PreparedHTTPResponse {
 
@@ -24,6 +26,8 @@ public interface PreparedHTTPResponse {
      * @throws UnsupportedVersionException If the headers' HTTP version is not supported (supported versions are
      *                                     1.0 and 1.1).
      * @throws UnknownMethodException If the headers' method (from the request line) is unknown.
+     * @throws ConfigurationException If the was a server configuration issue the server cannot work properly with.
+     * @throws MissingResourceException If the requested resource cannot be found.
      * @throws SecurityException If the request cannot be processed due to security reasons.
      * @throws IOException If any IO errors occur.
      **/
@@ -31,8 +35,12 @@ public interface PreparedHTTPResponse {
 	throws MalformedRequestException,
 	       UnsupportedVersionException,
 	       UnknownMethodException,
+	       ConfigurationException,
+	       MissingResourceException,
 	       SecurityException,
 	       IOException; 
+
+   
 
     /**
      * This method executes the prepared response; this means that all necessary resources will be accessed,
@@ -53,5 +61,24 @@ public interface PreparedHTTPResponse {
      * It has to clean up, release resources and all locks!
      **/
     public void dispose();
+
+
+    /**
+     * This method return true if (and only if) this response is already prepared.
+     * In the true-case the prepare()-method should not have any effects.
+     **/
+    public boolean isPrepared();
+
+
+    /**
+     * The method returns true if (and only if) this response was already executed.
+     **/
+    public boolean isExecuted();
+
+
+    /**
+     * The method returns true if (and only if) this response already disposed.
+     **/
+    public boolean isDisposed();
 
 }

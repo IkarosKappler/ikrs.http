@@ -21,4 +21,5 @@ public interface ResourceAccessor {
 	throws MissingResourceException;
 
 
+
 }

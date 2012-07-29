@@ -1,0 +1,59 @@
+package ikrs.util;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-05-07
+ * @version 1.0.0
+ **/
+
+
+import ikrs.typesystem.BasicType;
+
+public class DefaultCommand
+    extends AbstractCommand
+    implements Command {
+
+    public DefaultCommand( String name,
+			   BasicType[] params ) {
+
+	super( name, params );
+    }
+
+   
+    //---BEGIN------------------------ AbstractCommand implementation ---------------------
+    /**
+     * This is the final execution method - the default implementation has only one
+     * simple effect: if the command name equals "QUIT" or "EXIT" (not case sensitive)
+     * the method calls System.exit(0).
+     *
+     * Otherwise it returns always 1.
+     *
+     * Your subclasses should override this method.
+     *
+     * Note that this method does _not_ throw any exceptions!
+     * Its up to a stored internal command handler to handle exceptions.
+     *
+     * @return a return code that indicates the execution result. It depends
+     *         on the context what the exact meaning of the return code is,
+     *         but usually the value 0 (zero) implies success.
+     **/
+    public int execute() {
+
+	// No execution defined!!!
+	if( this.getName() != null &&
+	    ( this.getName().equalsIgnoreCase("QUIT") || this.getName().equalsIgnoreCase("EXIT")) ) {
+
+	    System.exit(0);
+
+	} else {
+
+	    System.out.println( "Command: "+this );
+
+	}
+
+	return 1;
+
+    }
+    //---END-------------------------- AbstractCommand implementation ---------------------
+
+}

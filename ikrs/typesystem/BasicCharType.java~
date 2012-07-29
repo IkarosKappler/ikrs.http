@@ -1,0 +1,29 @@
+package ikrs.typesystem;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-04-22
+ * @version 1.0.0
+ **/
+
+
+
+public class BasicCharType
+    extends AbstractTypeAdapter
+    implements BasicType {
+	
+    private String string;
+   
+    
+    public BasicStringType( String str ) {
+	super( BasicType.TYPE_STRING );
+
+	this.string = str;
+    }
+    
+    public String getString() 
+	throws BasicTypeException {
+	
+	return this.string;
+    }
+}

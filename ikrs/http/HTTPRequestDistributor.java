@@ -86,20 +86,34 @@ public class HTTPRequestDistributor
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
 
 	    
-	    // Create the response
+	    // Create the response. 
+	    // Note that the returned response is ALREADY PREPARED!
 	    PreparedHTTPResponse response = this.handler.getResponseBuilder().create( headers, 
 										      this.socketID,
-										      this.socket );
-	    
-	    // Then execute
-	    response.execute();
+										      this.socket,
+										      null   // No additionals
+										      );
+	    // There are some very unlikely cases the server cannot send an error reply (broken error messages, ...).
+	    // In these cases the builder returns null (this should not happen but one more check is more secure).
+	    if( response == null ) {
 
+		this.logger.log( Level.SEVERE,
+				 getClass().getName(),
+				 "Cannot handle client request. The ResponseBuilder returned a null-response. This usually indicates fatal runtime errors."
+			     );
 
-	    // Dont't forget to clean-up and release the locks!
-	    response.dispose();
+	    } else {
 	    
+		// Then execute
+		response.execute();
+		
+		
+		// Dont't forget to clean-up and release the locks!
+		response.dispose();
 	    
+	    }
 	    
+
 	    this.socket.close();
 
 	} catch( EOFException e ) {

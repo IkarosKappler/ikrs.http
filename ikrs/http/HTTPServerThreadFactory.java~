@@ -1,0 +1,12 @@
+package ikrs.http;
+
+
+public class HTTPServerThreadFactory
+    extends ThreadFactory {
+
+    
+    public HTTPServerThread newThread( Runnable r ) {
+	return new HTTPServerThreadFactory( r );
+    }
+
+}

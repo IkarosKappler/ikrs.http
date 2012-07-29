@@ -33,6 +33,7 @@ import ikrs.typesystem.BasicTypeException;
 import ikrs.typesystem.BasicUUIDType;
 import ikrs.util.Command;
 import ikrs.util.DefaultCommand;
+import ikrs.util.DefaultCustomLogger;
 import ikrs.util.Environment;
 import ikrs.yuccasrv.commandline.YuccaCommandFactory;
 import ikrs.yuccasrv.commandline.YuccaLine;
@@ -99,9 +100,10 @@ public class Yucca
 	
 
 	/* Create a child logger for the bind manager */
-	Logger bindLogger = Logger.getAnonymousLogger();
-	bindLogger.setParent( this.logger );
-	this.bindManager.setLogger( bindLogger );
+	//Logger bindLogger = Logger.getAnonymousLogger();
+	//bindLogger.setParent( this.logger );
+	//this.bindManager.setLogger( bindLogger );
+	this.bindManager.setLogger( new DefaultCustomLogger(this.bindManager.getClass().getName()) );
 
 	/* Finally listen for events to report them as FINEST */
 	this.bindManager.addBindListener( this );

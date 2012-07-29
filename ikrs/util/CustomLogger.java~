@@ -1,0 +1,10 @@
+package ikrs.util;
+
+
+public interface CustomLogger {
+
+
+    
+
+
+}

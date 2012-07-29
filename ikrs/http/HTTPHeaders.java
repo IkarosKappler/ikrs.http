@@ -44,7 +44,7 @@ public class HTTPHeaders {
     private String requestVersion;
     
     /**
-     *
+     * The URI field of the request line.
      **/
     private String requestURI;
 
@@ -279,12 +279,13 @@ public class HTTPHeaders {
 	// The first line should have this format (or like that):
 	// GET / HTTP/1.1
 	String[] split = key.split( "(\\s)++" );
-	if( split.length != 3 )
+	//print( split );
+	if( split.length < 3 )
 	    return false;
 	
 
 	this.requestMethod = split[0];
-	this.requestProtocol = split[1];
+	this.requestURI = split[1];
 
 	// Parse request HTTP-Version
 	String[] split2 = split[2].split("(/)");
@@ -316,5 +317,14 @@ public class HTTPHeaders {
 	
 	return headers;
     }
+
+    /*private static void print( String[] str ) {
+
+	for( int i = 0; i < str.length; i++ ) {
+	    System.out.print( str[i] );
+	    System.out.print( " | " );
+	}
+
+	}*/
 
 }

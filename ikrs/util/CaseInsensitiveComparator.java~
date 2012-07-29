@@ -1,0 +1,8 @@
+package ikrs.util;
+
+public class CaseInensitiveComparator 
+    extends Collator {
+
+    
+
+}

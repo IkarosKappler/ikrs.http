@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -56,11 +57,37 @@ public abstract class AbstractPreparedResponse
 
     
     private Resource responseDataResource;
-    
+
+
+    private boolean isPrepared;
+    private boolean isExecuted;
+    private boolean isDisposed;
+
+    private int statusCode;
+    private String reasonPhrase;
+
+
+    /**
+     * Create a new prepared response.
+     *
+     * @param handler    The top level HTTP handler.
+     * @param headers    The request (!) headers.
+     * @param socketID   The (server) socket ID.
+     * @param socket     The connection's socket.
+     * @param statusCode The response's status code.
+     * @param reasonPhrase The reason phrase (must not contain line breaks!).
+     *
+     * @throws IllegalArgumentException If the reaons phrase contains line breaks.
+     **/ 
     public AbstractPreparedResponse( HTTPHandler handler,
 				     HTTPHeaders requestHeaders,
 				     UUID socketID,
-				     Socket socket ) {
+				     Socket socket,
+
+				     int statusCode,
+				     String reasonPhrase ) 
+	throws IllegalArgumentException {
+	
 	super();
 
 	this.httpHandler = handler;
@@ -70,6 +97,9 @@ public abstract class AbstractPreparedResponse
 
 	this.responseHeaders = new HTTPHeaders();
 
+
+	setStatusCode( statusCode );
+	setReasonPhrase( reasonPhrase );
     }
 
     /**
@@ -124,16 +154,72 @@ public abstract class AbstractPreparedResponse
     }
 
 
+    protected void setPrepared() {
+	this.isPrepared = true;
+    }
+
+    /**
+     * Instance of this class execute themselves :)
+     * It's not necessary to make this method public/protected.
+     **/
+    private void setExecuted() {
+	this.isExecuted = true;
+    }
+
+    protected void setDisposed() {
+	this.isDisposed = true;
+    }
+
+
+    /**
+     * Get the status code of this prepared response.
+     **/
+    public int getStatusCode() {
+	return this.statusCode;
+    }
+
+    /**
+     * Set the status code to a new value.
+     **/
+    protected void setStatusCode( int statusCode ) {
+	this.statusCode = statusCode;
+    }
+
+    /**
+     * Get the currently set reason phrase.
+     **/
+    public String getReasonPhrase() {
+	return this.reasonPhrase;
+    }
+
+    /**
+     * Set the reason phrase to a new value.
+     **/
+    protected void setReasonPhrase( String phrase ) 
+	throws IllegalArgumentException {
+
+	if( phrase != null && phrase.indexOf("\n") != -1 )
+	    throw new IllegalArgumentException( "Reason phrase must not contain line breaks." );
+
+	this.reasonPhrase = phrase;
+    }
+
+
     //---BEGIN------------------------------ PreparedResponse implementation -----------------------------
     /**
      * This method must be implemented by all subclasses. It must prepare the HTTP response.
      * This means that all required ressources must be acquired (use locks), all headers prepared (by the use
      * of addResponseHeader(String,String) or getResponseHeaders()) and perform all necessary security checks.
      *
+     * Subclasses implementing this method should call the setPrepared() method when ready.
+     *
+     *
      * @throws MalformRequestException If the passed HTTP request headers are malformed and cannot be processed.
      * @throws UnsupportedVersionException If the headers' HTTP version is not supported (supported versions are
      *                                     1.0 and 1.1).
      * @throws UnknownMethodException If the headers' method (from the request line) is unknown.
+     * @throws ConfigurationException If the was a server configuration issue the server cannot work properly with.
+     * @throws MissingResourceException If the requested resource cannot be found.
      * @throws SecurityException If the request cannot be processed due to security reasons.
      * @throws IOException If any IO errors occur.
      **/
@@ -141,6 +227,8 @@ public abstract class AbstractPreparedResponse
 	throws MalformedRequestException,
 	       UnsupportedVersionException,
 	       UnknownMethodException,
+	       ConfigurationException,
+	       MissingResourceException,
 	       SecurityException,
 	       IOException;
       
@@ -148,10 +236,14 @@ public abstract class AbstractPreparedResponse
      * This method executes the prepared reply; this means that all necessary resources will be accessed,
      * the actual reply built and sent back to the client.
      *
+     *
+     *
      * @throws IOException If any IO errors occur.
      **/
     public final void execute()
 	throws IOException {
+
+	setExecuted();
 
 	// Check if the response headers exist
 	if( this.getResponseHeaders().size() == 0 ) {
@@ -167,6 +259,16 @@ public abstract class AbstractPreparedResponse
 	OutputStream out = this.getSocket().getOutputStream();
 
 	Charset charset = Charset.forName("UTF-8");
+
+
+	// Send status line
+	HTTPHeaderLine statusLine = new HTTPHeaderLine( "HTTP/1.1 "+this.getStatusCode()+" " + this.getReasonPhrase(), null );
+	System.out.println( "Sending: " + statusLine.toString() );
+	byte[] b = statusLine.getRawBytes( charset );	    
+	// Write bytes to output stream
+	out.write( b );
+
+
 	
 	// First: write headers
 	Iterator<HTTPHeaderLine> iter = this.getResponseHeaders().iterator();
@@ -174,11 +276,9 @@ public abstract class AbstractPreparedResponse
 	do {
 
 	    HTTPHeaderLine line = iter.next();
-
 	    System.out.println( "Sending: " + line.toString() );
 
-	    byte[] b = line.getRawBytes( charset );
-	    
+	    b = line.getRawBytes( charset );	    
 	    // Write header line bytes to output stream
 	    out.write( b );
 	    
@@ -240,9 +340,38 @@ public abstract class AbstractPreparedResponse
     /**
      * This method will be called in the final end - even if the execute() method failed.
      *
+     * Subclasses implementing this method should call the setDisposed() method when done.
+     *
+     *
      * It has to clean up, release resources and all locks!
      **/
     public abstract void dispose();
+
+
+
+    /**
+     * This method return true if (and only if) this response is already prepared.
+     * In the true-case the prepare()-method should not have any effects.
+     **/
+    public boolean isPrepared() {
+	return this.isPrepared;
+    }
+
+
+    /**
+     * The method returns true if (and only if) this response was already executed.
+     **/
+    public boolean isExecuted() {
+	return this.isExecuted;
+    }
+
+
+    /**
+     * The method returns true if (and only if) this response already disposed.
+     **/
+    public boolean isDisposed() {
+	return this.isDisposed;
+    }
     //---END-------------------------------- PreparedResponse implementation -----------------------------
 
 

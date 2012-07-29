@@ -18,8 +18,8 @@ import javax.swing.ComboBoxModel;
 
 
 public class InetAddressComboBoxModel 
-    extends AbstractListModel<InetAddress> 
-    implements ComboBoxModel<InetAddress> {
+    extends AbstractListModel 
+    implements ComboBoxModel {
 
 
     private ArrayList<InetAddress> list;

@@ -129,6 +129,11 @@ public class ServerSocketTableModel
 	fireTableRowsDeleted( row, row );
 
     }
+
+    public void finalize( long time,
+			  java.util.concurrent.TimeUnit unit ) {
+
+    }
     //---START-------------------------- BindManager ----------------------------
 
     /*public Class<?> getColumnClass( int columnIndex ) {

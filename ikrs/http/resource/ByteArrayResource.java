@@ -18,6 +18,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import ikrs.http.ReadOnlyException;
 import ikrs.http.Resource;
 
+import ikrs.util.MIMEType;
+
 
 public class ByteArrayResource
     extends AbstractResource
@@ -33,15 +35,33 @@ public class ByteArrayResource
      * Create a new ByteArrayResource.
      **/
     public ByteArrayResource( byte[] data,
+			      boolean useFairLocks ) 
+	throws NullPointerException {
+	
+	this( data, 0, data.length, useFairLocks );
+    }
+
+    /**
+     * Create a new ByteArrayResource.
+     **/
+    public ByteArrayResource( byte[] data,
 			      int offset,
 			      int length,
-			      boolean useFairLocks ) {
+			      boolean useFairLocks ) 
+    throws NullPointerException {
+
 	super( useFairLocks );
+
+	if( data == null )
+	    throw new NullPointerException( "Cannot create ByteArrayResource from null-array." );
 
 	this.data = data;
 	this.offset = offset;
 	this.length = length;
 	//this.inputStream = new ByteArrayInputStream( data, offset, length );
+
+	
+	this.getMetaData().setMIMEType( new MIMEType("application/octet-stream") );
     }
 
 
@@ -51,7 +71,7 @@ public class ByteArrayResource
      *
      * @throws IOException If any IO error occurs.
      **/
-    public boolean isOpen()
+    public boolean isOpen() 
 	throws IOException {
 
 	return (this.inputStream != null);
@@ -90,7 +110,7 @@ public class ByteArrayResource
      *
      * @throws IOException If any IO error occurs.
      **/
-    public boolean isReadOnly()
+    public boolean isReadOnly() 
 	throws IOException {
 	
 	// Byte-array resource might be writable in the future ...

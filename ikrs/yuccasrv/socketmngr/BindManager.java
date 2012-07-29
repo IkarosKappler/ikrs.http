@@ -35,6 +35,9 @@ import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicUUIDType;
 import ikrs.yuccasrv.Constants;
 
+import ikrs.util.CustomLogger;
+import ikrs.util.DefaultCustomLogger;
+
 
 public class BindManager 
     implements Runnable,
@@ -48,14 +51,16 @@ public class BindManager
 	bindListeners;
 
     /* This might be null */
-    private Logger
+    //private Logger
+    //	logger;
+    private CustomLogger
 	logger;
 
     public BindManager() {
 	this( null );
     }
 
-    public BindManager( Logger logger ) {
+    public BindManager( CustomLogger logger ) {
 	super();
 
 	this.serverSocketThreads = new HashMap<UUID,ServerSocketThread>();
@@ -65,11 +70,12 @@ public class BindManager
 	if( logger == null ) {
  
 	    // Create a new anonymous logger
-	    this.logger = Logger.getAnonymousLogger();
-	    this.logger.addHandler( new StreamHandler( System.out,
-						       new SimpleFormatter()
-						       ) 
-				    );
+	    //Logger tmpLogger= Logger.getAnonymousLogger();
+	    //tmpLogger.addHandler( new StreamHandler( System.out,
+	    //					     new SimpleFormatter()
+	    //					     ) 
+	    //			  );
+	    this.logger = new DefaultCustomLogger( getClass().getName() );
 
 	} else {
 
@@ -78,7 +84,7 @@ public class BindManager
 	}
     }
 
-    public void setLogger( Logger logger ) 
+    public void setLogger( CustomLogger logger ) 
 	throws NullPointerException {
 	
 	if( logger == null )
@@ -87,7 +93,7 @@ public class BindManager
 	this.logger = logger;
     }
 
-    protected Logger getLogger() {
+    protected CustomLogger getLogger() {
 	return this.logger;
     }
 
@@ -111,10 +117,16 @@ public class BindManager
 	}
     }
 
+    //boolean called = false;
     private void fireServerAcceptedTCPConnection( UUID socketID, Socket sock ) {
 
+	//if( called )
+	//   throw new RuntimeException( "urgs" );
+	
+	//called = true;
 	for( int i = 0; i < this.bindListeners.size(); i++ ) {
 
+	    //System.out.println( getClass().getName() + ".fireServerAcceptedTCPConnection(...) Telling lister #"+i+" of "+this.bindListeners.size()+" about TCP connection ..." );
 	    this.bindListeners.get(i).serverAcceptedTCPConnection( this, socketID, sock );
 
 	}
@@ -190,7 +202,9 @@ public class BindManager
     public void incomingTCPConnection( ServerSocketThread t,
 				       Socket s ) {
 
-	this.logger.info( "Incoming TCP connection from " + s.toString() );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".incomingTCPConnection(...)",
+			 "Incoming TCP connection from " + s.toString() );
 	fireServerAcceptedTCPConnection( t.getUUID(), s );
     }
 
@@ -204,7 +218,9 @@ public class BindManager
     public void incomingUDPConnection( ServerSocketThread t,
 				       DatagramSocket s ) {
 
-	this.logger.info( "Incoming UDP datagram from " + s.toString() );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".incomingUDPConnection(...)",
+			 "Incoming UDP datagram from " + s.toString() );
 	fireServerAcceptedUDPConnection( t.getUUID(), s );
     }
 
@@ -215,7 +231,9 @@ public class BindManager
      **/
     public void serverSocketClosed( ServerSocketThread t ) {
 
-	this.logger.info( "Server socket closed: " + t );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".serverSocketClosed(...)",
+			 "Server socket closed: " + t );
 
 	// Tell all listeners
 	this.fireServerClosed( t.getUUID() );
@@ -239,7 +257,9 @@ public class BindManager
     public void serverSocketException( ServerSocketThread t,
 				       IOException e ) {
 
-	this.logger.severe( "ServerSocket | IOException: " + e.getMessage() );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".serverSocketException(...)",
+			 "ServerSocket | IOException: " + e.getMessage() );
 	e.printStackTrace();
 
 	// Tell all listeners
@@ -256,7 +276,9 @@ public class BindManager
     public void serverSocketException( ServerSocketThread t,
 				       SecurityException e ) {
 
-	this.logger.severe( "ServerSocket | SecurityException: " + e.getMessage() );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".serverSocketException(...)",
+			 "ServerSocket | SecurityException: " + e.getMessage() );
 
 	// Tell all listeners
 	this.fireServerError( t.getUUID(), e, true );
@@ -271,8 +293,10 @@ public class BindManager
     public void serverSocketException( ServerSocketThread t,
 				       SocketTimeoutException e ) {
 
-	this.logger.severe( "ServerSocket | SocketTimeoutException: " + e.getMessage() );
-
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 "ServerSocket | SocketTimeoutException: " + e.getMessage() );
+	
 	// Tell all listeners
 	this.fireServerError( t.getUUID(), e, true );
     }
@@ -287,7 +311,9 @@ public class BindManager
     public void serverSocketException( ServerSocketThread t,
 				       IllegalBlockingModeException e ) {
 
-	this.logger.severe( "ServerSocket | IllegalBlockingModeException: " + e.getMessage() );
+	this.logger.log( Level.INFO,
+			 getClass().getName() + ".serverSocketException(...)",
+			 "ServerSocket | IllegalBlockingModeException: " + e.getMessage() );
 
 	// Tell all listeners
 	this.fireServerError( t.getUUID(), e, true );
@@ -411,8 +437,9 @@ public class BindManager
 
 	for( int i = 0; i < bindListeners.size(); i++ ) {
 
-	    this.logger.log( Level.INFO,
-			     getClass().getName() + ".finalze(...) Going to tell BindListener " + this.bindListeners.get(i) );
+	    this.logger.log( Level.INFO,			     
+			     getClass().getName() + ".finalze(...)",
+			     "Going to tell BindListener " + this.bindListeners.get(i) );
 
 	    bindListeners.get(i).finalize( time, 
 					   unit );

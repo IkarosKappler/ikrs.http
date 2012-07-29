@@ -17,6 +17,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 public interface Resource {
 
     /**
+     * Get the meta data for this resource.
+     **/
+    public ResourceMetaData getMetaData();
+
+    /**
      * This method returns the read lock for this resource.
      **/
     public ReentrantReadWriteLock.ReadLock getReadLock();

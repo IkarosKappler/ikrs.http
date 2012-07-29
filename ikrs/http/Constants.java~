@@ -1,0 +1,14 @@
+package ikrs.http;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
+
+public class Constants {
+
+
+    public static String NAME_DEFAULT_LOGGER = "DEFAULT_HTTP_LOGGER";
+
+}

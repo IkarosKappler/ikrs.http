@@ -21,11 +21,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 
+import ikrs.http.resource.FileSystemResourceAccessor;
 import ikrs.yuccasrv.TCPAdapter;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
+import ikrs.typesystem.*;
+
 import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
+import ikrs.util.DefaultEnvironment;
+import ikrs.util.Environment;
+import ikrs.util.TreeMapFactory;
+
 
 public class HTTPHandler 
     extends TCPAdapter 
@@ -51,12 +58,28 @@ public class HTTPHandler
      **/
     private ResponseBuilder responseBuilder;
 
+    /**
+     * The resource accessor.
+     **/ 
+    private ResourceAccessor resourceAccessor;
+
+
+    /**
+     * The global environment.
+     **/
+    private Environment<String,BasicType> environment;
+
 
     public HTTPHandler() {
 	super();
 	
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
 	this.logger.setLevel( Level.ALL );
+
+	this.environment = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
+								     true   // allowsMultipleChildNames
+								     );
+	this.environment.put( "SERVER_NAME", new BasicStringType("Yucca/0.9 (Unix) Java/7") );  // Apache/1.3.29 (Unix) PHP/4.3.4
 
 	this.requestQueue = new ArrayBlockingQueue<Runnable>( 20 );
 	this.threadFactory = new HTTPServerThreadFactory( this,  // HTTPHandler
@@ -72,17 +95,45 @@ public class HTTPHandler
 							  );
 
 	this.responseBuilder = new DefaultResponseBuilder( this );
+	this.resourceAccessor = new FileSystemResourceAccessor( this );
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
     }
 
+    public String getServerName() {
+	BasicType name = this.getEnvironment().get("SERVER_NAME");
+
+	if( name == null )
+	    return getClass().getName();
+	else
+	    return name.getString();
+    }
+
+
+    /**
+     * Get the global response builder.
+     **/
     public ResponseBuilder getResponseBuilder() {
 	return this.responseBuilder;
     }
 
+    /**
+     * Get the global resource accessor.
+     **/
+    public ResourceAccessor getResourceAccessor() {
+	return this.resourceAccessor;
+    }
+
+    /**
+     * Get the global logger.
+     **/
     public CustomLogger getLogger() {
 	return this.logger;
+    }
+
+    public Environment<String,BasicType> getEnvironment() {
+	return this.environment;
     }
 
     //---BEGIN-------------------- RejectedExcecutionHandler Implementation -------------------------

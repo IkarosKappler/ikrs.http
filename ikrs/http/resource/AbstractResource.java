@@ -16,10 +16,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import ikrs.http.ReadOnlyException;
 import ikrs.http.Resource;
+import ikrs.http.ResourceMetaData;
 
 
 public abstract class AbstractResource
     implements Resource {
+
+    private ResourceMetaData metaData;
+
 
     /**
      * The read-write-lock.
@@ -34,10 +38,18 @@ public abstract class AbstractResource
 	super();
 
 	this.rwLock = new ReentrantReadWriteLock( useFairLocks );
+	this.metaData = new ResourceMetaData();
     }
 
 
     //---BEGIN------------------- Resource implementation ----------------------------
+    /**
+     * Get the meta data for this resource.
+     **/
+    public ResourceMetaData getMetaData() {
+	return this.metaData;
+    }
+
     /**
      * This method returns the read lock for this resource.
      **/

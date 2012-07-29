@@ -1,0 +1,13 @@
+package ikrs.yuccasrv;
+
+import java.net.Socket;
+
+
+public class SocketWrapper {
+
+
+    private Socket socket;
+
+
+
+}

@@ -1,0 +1,18 @@
+package ikrs.util;
+
+/**
+ *
+ *
+ * @author Henning Diesenberg
+ * @date 2012-04-24
+ * @version 1.0.0
+ **/ 
+
+import java.util.Map;
+
+public interface MapFactory<K,V> {
+
+    public Map<K,V> createMap();
+    
+
+}

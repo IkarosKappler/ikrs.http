@@ -1,0 +1,16 @@
+ackage ikrs.http;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-06-14
+ **/
+
+public interface HTTPPakage {
+
+
+    public HTTPHeaders getHeaders();
+    
+    
+
+
+}

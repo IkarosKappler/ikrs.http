@@ -1,0 +1,15 @@
+package ikrs.yuccasrv.ui;
+
+public class InetAddressComboboxModel {
+
+    
+    public InetAddressComboboxModel() {
+
+	
+	
+
+    }
+    
+
+
+}

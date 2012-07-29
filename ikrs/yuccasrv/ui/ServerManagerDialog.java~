@@ -1,0 +1,189 @@
+package ikrs.yuccasrv.ui;
+
+/**
+ * 
+ *
+ * @author Henning Diesenberg
+ * @date 2012-04-23
+ * @version 1.0.0
+ **/
+
+import java.awt.Container;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.Collator;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
+import javax.swing.*;
+
+import ikrs.typesystem.*;
+import ikrs.yuccasrv.Constants;
+import ikrs.yuccasrv.socketmngr.BindManager;
+
+public class ServerManagerDialog
+    extends JDialog 
+    implements ActionListener {
+
+    private JTable serverSocketTable;
+    private ServerSocketTableModel serverSocketTableModel;
+
+    private JTextArea infoArea;
+
+
+    private JButton buttonStartServer;
+    private JButton buttonStopServer;
+
+    private JLabel labelStatus;
+
+
+    private NewServerDialog newServerDialog;
+
+    private BindManager bindManager;
+
+    public ServerManagerDialog( BindManager m ) {
+	super( (JFrame)null, "Server Manager" );
+
+	this.bindManager = m;
+
+	this.serverSocketTableModel = new ServerSocketTableModel();
+	this.bindManager.addBindListener( this.serverSocketTableModel );
+	this.serverSocketTable = new JTable( this.serverSocketTableModel );
+
+	JScrollPane sp = new JScrollPane( this.serverSocketTable,
+					  JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					  JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED );
+
+	
+	this.infoArea = new JTextArea();
+	JScrollPane sp2 = new JScrollPane( this.infoArea,
+					   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					   JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+	
+
+	Container main = new Container();
+	main.setLayout( new GridLayout(1,2) );
+	main.add( sp );
+	main.add( sp2 );
+	
+	Container buttons_A = new Container();
+	buttons_A.setLayout( new GridLayout(1,2) );
+	buttons_A.add( this.buttonStartServer = new JButton("Start test server") );
+	buttons_A.add( this.buttonStopServer = new JButton("Stop server") );
+	this.buttonStartServer.addActionListener( this );
+	this.buttonStopServer.addActionListener( this );
+
+	Container south = new Container();
+	south.setLayout( new BorderLayout() );
+	south.add( buttons_A, BorderLayout.NORTH );
+	south.add( this.labelStatus = new JLabel("Status"), BorderLayout.SOUTH );
+
+
+	this.getContentPane().setLayout( new BorderLayout() );
+	this.getContentPane().add( main, BorderLayout.CENTER );
+	this.getContentPane().add( south, BorderLayout.SOUTH );
+	
+      
+
+	this.newServerDialog = new NewServerDialog( this );
+
+
+	this.setBounds( 50, 50, 600, 400 );
+
+	addInfo( "Welcome" );
+    }
+
+
+    public void actionPerformed( ActionEvent e ) {
+
+	if( e.getSource() == this.buttonStartServer ) {
+	    
+	    this.newServerDialog.setVisible( true );
+	    /*
+	    try {
+		InetAddress addr = InetAddress.getLocalHost(); // 127.0.0.1
+		Collator caseInsensitive = Collator.getInstance();
+		caseInsensitive.setStrength( Collator.PRIMARY );
+		Map<String,BasicType> bindSettings = new TreeMap<String,BasicType>( caseInsensitive );
+		bindSettings.put( Constants.CONFIG_SERVER_PROTOCOL, new BasicStringType("TCP") );
+		bindSettings.put( Constants.CONFIG_SERVER_BACKLOG,  new BasicNumberType(5) );
+		bindSettings.put( Constants.CONFIG_SERVER_ADDRESS,  new BasicStringType(addr.toString()) );
+		bindSettings.put( Constants.CONFIG_SERVER_PORT,     new BasicNumberType(9339) );
+		this.bindManager.bind( addr, 9339, bindSettings );
+
+	    } catch( UnknownHostException exc ) {
+
+		exc.printStackTrace();
+
+	    } catch( IOException exc ) {
+
+		exc.printStackTrace();
+
+	    }
+	    */
+	    
+	} else if( e.getSource() == buttonStopServer ) {
+
+	    int row = this.serverSocketTable.getSelectedRow();
+	    if( row == -1 ) {
+		setStatus( "No row is selected." );
+		return;
+	    }
+	    
+	    this.addInfo( "Releasing server socket ..." );
+
+	    // else: row selected -> get UUID
+	    BasicType t = this.serverSocketTableModel.getRow( row ).get( Constants.ID );
+	    UUID id = t.getUUID(); // this should not cause no BasicTypeException here ...
+	    
+	    try {
+		
+		this.bindManager.release( id );
+		this.addInfo( "Sever socket "+id+" successfully released." );
+
+	    } catch( IOException exc ) {
+
+		this.addInfo( "[IOException] "+exc.getMessage() );
+
+	    }
+
+	}
+    }
+
+    public void setStatus( String msg ) {
+
+	this.labelStatus.setText( msg );
+	this.addInfo( msg );
+
+    }
+
+    public void addInfo( String msg ) {
+
+	Calendar cal = Calendar.getInstance();
+	String prefix = "[" + 
+	    cal.get( Calendar.HOUR_OF_DAY ) + ":" + 
+	    cal.get( Calendar.MINUTE ) +  ":" +
+	    cal.get( Calendar.SECOND ) + "] ";
+
+	this.infoArea.setText( this.infoArea.getText() + prefix + msg + "\n" );
+	this.infoArea.setCaretPosition( this.infoArea.getText().length() );
+
+    }
+
+    public static void main( String[] argv ) {
+	
+	BindManager m = new BindManager();
+
+	ServerManagerDialog d = new ServerManagerDialog( m );
+	d.setVisible( true );
+	
+    }
+
+
+}

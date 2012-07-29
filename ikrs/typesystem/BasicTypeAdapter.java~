@@ -1,0 +1,187 @@
+package ikrs.typesystem;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-04-22
+ * @version 1.0.0
+ **/
+
+
+import java.util.UUID;
+
+public abstract class BasicTypeAdapter
+    implements BasicType {
+
+    private int type;
+    
+
+    public BasicTypeAdapter( int type ) {
+	super();
+	
+	this.type = type;
+    }
+    
+
+    public int getType() {
+	return this.type;
+    }
+
+	
+    private void throwDefaultAdapterException() 
+	throws BasicTypeException {
+
+	throw new BasicTypeException( "This type is not compatible." );
+    }
+
+    public boolean getBoolean()
+	throws BasicTypeException {
+
+	throwDefaultAdapterException();
+	return false;
+    }
+
+    public boolean getBoolean( boolean defaultValue ) {
+	try {
+	    return getBoolean();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public byte getByte()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0;
+    }
+
+    public byte getByte( byte defaultValue ) {
+	try {
+	    return getByte();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public short getShort()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0;
+    }
+
+    public short getShort( short defaultValue ) {
+	try {
+	    return getShort();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public int getInt()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0;
+    }
+
+    public int getInt( int defaultValue ) {
+	try {
+	    return getInt();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}	
+    }
+
+    public long getLong()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0L;
+    }
+
+    public long getLong( long defaultValue ) {
+	try {
+	    return getLong();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+    
+    public float getFloat()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0.0f;
+    }
+
+    public float getFloat( float defaultValue ) {
+	try {
+	    return getFloat();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public double getDouble()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return 0.0;
+    }
+
+    public double getDouble( double defaultValue ) {
+	try {
+	    return getDouble();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public char getChar()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return '0';
+    }
+
+    public char getChar( char defaultValue ) {
+	try {
+	    return getChar();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public String getString() 
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return null;
+    }
+
+    public String getString( String defaultValue ) {
+	try {
+	    return getString();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+    public UUID getUUID()
+	throws BasicTypeException {
+	
+	throwDefaultAdapterException();
+	return null;
+    }
+
+    public UUID getUUID( UUID defaultValue ) {
+	try {
+	    return getUUID();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+
+
+}

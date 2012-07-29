@@ -1,0 +1,13 @@
+package ikrs.http.resource;
+
+
+public abstract class AbstractResourceAccessor 
+    implements ResourceAccessor {
+
+
+
+    
+
+
+}
+

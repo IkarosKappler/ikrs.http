@@ -1,0 +1,10 @@
+
+
+This contents comes from my cool new directory index file 
+specified in the .htaccess file using the 'DirectoryIndex'
+directive.
+
+Thank you!
+
+
+P.S.: is the response Content-Type correct?

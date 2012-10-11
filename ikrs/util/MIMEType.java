@@ -609,6 +609,7 @@ public class MIMEType {
 	extensionMap.put("xbm", "image/xbm");
 	extensionMap.put("xdr", "video/x-amt-demorun");
 	extensionMap.put("xgz", "xgl/drawing");
+	extensionMap.put("xhtml", "application/xhtml+xml" );
 	extensionMap.put("xif", "image/vnd.xiff");
 	extensionMap.put("xl", "application/excel");
 	extensionMap.put("xla", "application/excel");

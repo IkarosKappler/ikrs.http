@@ -63,6 +63,10 @@ public final class HTTPHeaderLine
 	return this.value;
     }
 
+    public boolean isResponseStatus() {
+	return this.key != null && this.key.startsWith("HTTP");
+    }
+
     
     /**
      * This method implements Comparable.compareTo(...).
@@ -223,7 +227,7 @@ public final class HTTPHeaderLine
     }
 
     public String toString() {
-	return getClass().getName() + "=[ key=" + this.key + ", value=" + this.value + " ]";
+	return this.key + ": " + this.value;
     }
 
 }

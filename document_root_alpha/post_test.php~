@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Post test</title>
+
+</head>
+
+
+<body>
+
+
+This form sends the data in 'multipart/form-data' format.
+<form method="post" action="post_test.php" enctype="multipart/form-data">
+  Text: <input type="text" name="my_text" value="This is my very nice test (A)." /><br/>
+  File: <input name="my_file" type="file" size="50" maxlength="100000" accept="text/*" /><br/>
+  <input type="submit" /><br/>
+</form>
+<br/>
+<br/>
+
+
+This form sends the data in the DEFAULT format.
+<form method="post" action="post_test.php" >
+  Text: <input type="text" name="my_text" value="This is my very nice test (B)." /><br/>
+  File: <input name="my_file" type="file" size="50" maxlength="100000" accept="text/*" /><br/>
+  <input type="submit" /><br/>
+</form>
+
+<?php
+
+	echo "_GET=";
+	print_r( $_GET );
+	echo "<br/>\n";
+
+
+	echo "_POST=";
+	print_r($_POST);
+	echo "<br/>\n";
+	
+
+?>
+
+
+</body>
+</html>

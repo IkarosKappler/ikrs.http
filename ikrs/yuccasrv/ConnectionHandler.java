@@ -63,7 +63,8 @@ public abstract class ConnectionHandler
      **/
     public abstract void serverAcceptedTCPConnection( BindManager source,
 						      UUID socketID,
-						      Socket sock );
+						      Socket sock,
+						      ConnectionUserID<ConnectionUserID> userID );
 
 
     /**
@@ -73,7 +74,8 @@ public abstract class ConnectionHandler
      **/
     public abstract void serverAcceptedUDPConnection( BindManager source,
 						      UUID socketID,
-						      DatagramSocket sock );
+						      DatagramSocket sock,
+						      ConnectionUserID<ConnectionUserID> userID );
 
     
     /**

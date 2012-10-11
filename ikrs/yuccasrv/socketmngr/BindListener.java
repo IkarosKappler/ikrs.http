@@ -14,6 +14,9 @@ import java.net.Socket;
 import java.net.DatagramSocket;
 import java.util.UUID;
 
+import ikrs.yuccasrv.ConnectionUserID;
+
+
 public interface BindListener {
 
     
@@ -49,7 +52,8 @@ public interface BindListener {
      **/
     public void serverAcceptedTCPConnection( BindManager source,
 					     UUID socketID,
-					     Socket sock );
+					     Socket sock,
+					     ConnectionUserID<ConnectionUserID> userID );
 
 
     /**
@@ -59,7 +63,8 @@ public interface BindListener {
      **/
     public void serverAcceptedUDPConnection( BindManager source,
 					     UUID socketID,
-					     DatagramSocket sock );
+					     DatagramSocket sock,
+					     ConnectionUserID<ConnectionUserID> userID );
 
     
     /**

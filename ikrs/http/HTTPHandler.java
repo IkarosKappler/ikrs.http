@@ -1,6 +1,8 @@
 package ikrs.http;
 
 /**
+ * This is the main handler class that will be bound as a listener to the yucca server.
+ *
  * @author Henning Diesenberg
  * @date 2012-05-15
  * @version 1.0.0
@@ -8,6 +10,7 @@ package ikrs.http;
 
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.DatagramSocket;
@@ -22,6 +25,7 @@ import java.util.logging.Level;
 
 
 import ikrs.http.resource.FileSystemResourceAccessor;
+import ikrs.yuccasrv.ConnectionUserID;
 import ikrs.yuccasrv.TCPAdapter;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
@@ -31,15 +35,32 @@ import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
 import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
+import ikrs.util.EnvironmentFactory;
+import ikrs.util.MapFactory;
 import ikrs.util.TreeMapFactory;
+
+import ikrs.util.session.*;
 
 
 public class HTTPHandler 
     extends TCPAdapter 
     implements RejectedExecutionHandler {
 
+    protected static final String[] SUPPORTED_METHODS = new String[] {
+	"GET",
+	"POST"
+    };
+
+    private File documentRoot;
+
+    /**
+     * The ThreadPoolExecutor that handles the thread pool.
+     **/
     private ThreadPoolExecutor threadPoolExecutor;
 
+    /**
+     * A thread factory for the ThreadPoolExecutor.
+     **/
     private HTTPServerThreadFactory threadFactory;
 
     /**
@@ -70,17 +91,77 @@ public class HTTPHandler
     private Environment<String,BasicType> environment;
 
 
+    /**
+     * The session manager.
+     **/
+    private SessionManager<String,BasicType,HTTPConnectionUserID> sessionManager;
+
+    /**
+     * The file filter for HTTP access.
+     **/
+    private HTTPFileFilter fileFilter;
+
+
     public HTTPHandler() {
 	super();
 	
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
 	this.logger.setLevel( Level.ALL );
 
-	this.environment = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
-								     true   // allowsMultipleChildNames
-								     );
-	this.environment.put( "SERVER_NAME", new BasicStringType("Yucca/0.9 (Unix) Java/7") );  // Apache/1.3.29 (Unix) PHP/4.3.4
+	this.documentRoot = new File( "document_root_alpha" );
+	if( !this.documentRoot.exists() && !this.documentRoot.mkdirs() ) {
 
+	    this.logger.log( Level.SEVERE,
+			     getClass().getName(),
+			     "[Init] Failed to create document root '" + this.documentRoot.getPath() + "'! This will probably make your server un-usable. (continue though)" );
+
+	}
+
+	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
+								      true   // allowsMultipleChildNames
+								      );
+	this.environment.put( Constants.KEY_SERVERNAME, new BasicStringType("Yucca/0.9.2 (Unix) Java/7") ); 
+
+	this.initGlobalConfiguration();
+
+
+	// Init the session manager.
+	int sessionMaxAge = 30; // seconds
+
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 "[Init SessionManager] Create a new map factory to use for the environment creation." );
+	ikrs.util.MapFactory<String,BasicType> 
+	    mapFactory                          = new TreeMapFactory<String,BasicType>(); // ModelBasedMapFactory<String,BasicType>( new TreeMap<String,BasicType>() );
+	
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 "[Init SessionManager] Create a new environment factory to use for the session creation." );
+	EnvironmentFactory<String,BasicType>      
+	    environmentFactory                  = new ikrs.util.DefaultEnvironmentFactory<String,BasicType>( mapFactory );
+
+	logger.log( Level.INFO,
+		    getClass().getName(),
+		    "[Init SessionManager] Create a new session factory to use for the session manager." );
+	SessionFactory<String,BasicType,HTTPConnectionUserID> 
+	    sessionFactory                      = new DefaultSessionFactory<String,BasicType,HTTPConnectionUserID>( environmentFactory );
+
+	logger.log( Level.INFO,
+		    getClass().getName(),
+		    "[Init SessionManager] Creating the session manager (sessionMaxAge=" + sessionMaxAge + ").");
+	this.sessionManager                     = new DefaultSessionManager<String,BasicType,HTTPConnectionUserID>( sessionFactory, 
+														    sessionMaxAge  // max-age for sessions in seconds
+														    );
+
+	logger.log( Level.INFO,
+		    getClass().getName(),
+		    "[Init FileFilter] Initializing the file filter.");
+	this.fileFilter = new DefaultFileFilter();
+
+
+	logger.log( Level.INFO,
+		    getClass().getName(),
+		    "[Init ThreadPoolExecutor]");
 	this.requestQueue = new ArrayBlockingQueue<Runnable>( 20 );
 	this.threadFactory = new HTTPServerThreadFactory( this,  // HTTPHandler
 							  this.logger
@@ -95,14 +176,65 @@ public class HTTPHandler
 							  );
 
 	this.responseBuilder = new DefaultResponseBuilder( this );
-	this.resourceAccessor = new FileSystemResourceAccessor( this );
+	this.resourceAccessor = new FileSystemResourceAccessor( this, this.logger );
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
+
+	logger.log( Level.INFO,
+		    getClass().getName(),
+		    "Initialization done. System ready.");
     }
 
+    /**
+     * This inits the global configuration.
+     * Currently the conf is hard coded. It should come from a configuration file soon ...
+     *
+     **/
+    private void initGlobalConfiguration() {
+	Environment<String,BasicType> gconfig = this.environment.createChild( Constants.EKEY_GLOBALCONFIGURATION );
+	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(10) ); // 300) );
+	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
+	// ...
+    }
+
+    public Environment<String,BasicType> getGlobalConfiguration() {
+	return this.environment.getChild( Constants.EKEY_GLOBALCONFIGURATION );
+    }
+
+
+    public File getDocumentRoot() {
+	return this.documentRoot;
+    }
+    
+    public boolean isDirectoryListingAllowed() {
+	return true;
+    }
+
+    public boolean isSupportedMethod( String method ) {
+	for( int i = 0; i <  HTTPHandler.SUPPORTED_METHODS.length; i++ ) {
+	    if( HTTPHandler.SUPPORTED_METHODS[i].equals(method) )
+		return true;
+	}
+	return false;
+    }
+
+    /**
+     * Get a list of allowed (implemented) methods. The returned array is a new copy.
+     **/
+    public String[] getSupportedMethods() {
+	return java.util.Arrays.copyOf( HTTPHandler.SUPPORTED_METHODS, HTTPHandler.SUPPORTED_METHODS.length );
+    }
+
+    /**
+     * Get the server's name, compatible with the 'Server' header field.
+     *
+     * 'Server' should have the format:
+     * Apache/1.3.29 (Unix) PHP/4.3.4
+     *
+     **/
     public String getServerName() {
-	BasicType name = this.getEnvironment().get("SERVER_NAME");
+	BasicType name = this.getEnvironment().get( Constants.KEY_SERVERNAME );
 
 	if( name == null )
 	    return getClass().getName();
@@ -134,6 +266,17 @@ public class HTTPHandler
 
     public Environment<String,BasicType> getEnvironment() {
 	return this.environment;
+    }
+
+    /**
+     * Get this handler's session manager.
+     **/
+    public SessionManager<String,BasicType,HTTPConnectionUserID> getSessionManager() {
+	return this.sessionManager;
+    }
+
+    public HTTPFileFilter getFileFilter() {
+	return this.fileFilter;
     }
 
     //---BEGIN-------------------- RejectedExcecutionHandler Implementation -------------------------
@@ -189,9 +332,10 @@ public class HTTPHandler
      **/
     public void serverAcceptedTCPConnection( BindManager source,
 					     UUID socketID,
-					     Socket sock ) {
+					     Socket sock,
+					     ConnectionUserID<ConnectionUserID> userID ) {
 	
-	enqueue( source, socketID, sock );
+	enqueue( source, socketID, sock, userID );
 	
 	
     }
@@ -227,7 +371,8 @@ public class HTTPHandler
      **/
     private void enqueue( BindManager source,
 			  UUID socketID,
-			  Socket sock ) {
+			  Socket sock,
+			  ConnectionUserID<ConnectionUserID> userID ) {
 
 	this.logger.log( Level.INFO,
 			 getClass().getName(),
@@ -237,11 +382,13 @@ public class HTTPHandler
 	    new HTTPRequestDistributor( this,
 					this.logger,
 					socketID,
-					sock
+					sock,
+					new HTTPConnectionUserID(userID)
 					);
 	this.threadPoolExecutor.execute( requestDistributor );
 
     }
+
     
 
 }

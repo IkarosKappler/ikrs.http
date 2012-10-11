@@ -33,7 +33,11 @@ import ikrs.typesystem.BasicNumberType;
 import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicUUIDType;
+
 import ikrs.yuccasrv.Constants;
+import ikrs.yuccasrv.ConnectionUserID;
+import ikrs.yuccasrv.TCPConnectionUserID;
+import ikrs.yuccasrv.UDPConnectionUserID;
 
 import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
@@ -118,7 +122,7 @@ public class BindManager
     }
 
     //boolean called = false;
-    private void fireServerAcceptedTCPConnection( UUID socketID, Socket sock ) {
+    private void fireServerAcceptedTCPConnection( UUID socketID, Socket sock, ConnectionUserID<ConnectionUserID> userID ) {
 
 	//if( called )
 	//   throw new RuntimeException( "urgs" );
@@ -127,16 +131,16 @@ public class BindManager
 	for( int i = 0; i < this.bindListeners.size(); i++ ) {
 
 	    //System.out.println( getClass().getName() + ".fireServerAcceptedTCPConnection(...) Telling lister #"+i+" of "+this.bindListeners.size()+" about TCP connection ..." );
-	    this.bindListeners.get(i).serverAcceptedTCPConnection( this, socketID, sock );
+	    this.bindListeners.get(i).serverAcceptedTCPConnection( this, socketID, sock, userID );
 
 	}
     }
 
-    private void fireServerAcceptedUDPConnection( UUID socketID, DatagramSocket sock ) {
+    private void fireServerAcceptedUDPConnection( UUID socketID, DatagramSocket sock, ConnectionUserID<ConnectionUserID> userID ) {
 
 	for( int i = 0; i < this.bindListeners.size(); i++ ) {
 
-	    this.bindListeners.get(i).serverAcceptedUDPConnection( this, socketID, sock );
+	    this.bindListeners.get(i).serverAcceptedUDPConnection( this, socketID, sock, userID );
 
 	}
     }
@@ -202,10 +206,16 @@ public class BindManager
     public void incomingTCPConnection( ServerSocketThread t,
 				       Socket s ) {
 
+	ConnectionUserID userID = new TCPConnectionUserID( t.getUUID(),
+									     t.getBindAddress(),
+									     t.getBindPort(),
+									     s.getInetAddress() );
+							   
+
 	this.logger.log( Level.INFO,
 			 getClass().getName() + ".incomingTCPConnection(...)",
 			 "Incoming TCP connection from " + s.toString() );
-	fireServerAcceptedTCPConnection( t.getUUID(), s );
+	fireServerAcceptedTCPConnection( t.getUUID(), s, userID );
     }
 
     /**
@@ -218,10 +228,15 @@ public class BindManager
     public void incomingUDPConnection( ServerSocketThread t,
 				       DatagramSocket s ) {
 
+	ConnectionUserID userID = new UDPConnectionUserID( t.getUUID(),
+									     t.getBindAddress(),
+									     t.getBindPort(),
+									     s.getInetAddress() );
+
 	this.logger.log( Level.INFO,
 			 getClass().getName() + ".incomingUDPConnection(...)",
 			 "Incoming UDP datagram from " + s.toString() );
-	fireServerAcceptedUDPConnection( t.getUUID(), s );
+	fireServerAcceptedUDPConnection( t.getUUID(), s, userID );
     }
 
     /**

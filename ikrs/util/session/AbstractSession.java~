@@ -1,0 +1,45 @@
+package ikrs.util.session;
+
+/**
+ * A simple session interface.
+ *
+ * Basically a session is nothing more than a named environment that is bound to a specific
+ * system user (remote or local). 
+ *
+ * Each session is identified by its unique session ID.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-09-06
+ * @version 1.0.0
+ **/
+
+
+import ikrs.Environment;
+
+
+public interface Session<S,U,K,V>
+    extends Environment<K,V> {
+
+    /**
+     * Get the session's unique ID.
+     *
+     * The returned ID must never be null and it must never change.
+     * 
+     * @return The session's ID.
+     **/
+    public S getSessionID();
+
+    
+    /**
+     * Get the session's user ID.
+     *
+     * The user ID should not be null and should not change, but it might under certain
+     * circumstances.
+     *
+     * @return The session's user ID.
+     **/
+    public U getUserID();
+	
+    
+}

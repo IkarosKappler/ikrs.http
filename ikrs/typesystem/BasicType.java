@@ -27,6 +27,7 @@ public interface BasicType {
     public static final int TYPE_CHAR     = 7;
     public static final int TYPE_STRING   = 8;
     public static final int TYPE_UUID     = 9;
+    public static final int TYPE_ARRAY    = 10;
        
 
     public int getType();
@@ -80,6 +81,39 @@ public interface BasicType {
 	throws BasicTypeException;
 
     public UUID getUUID( UUID defaultValue );
+    
+    /**
+     * The method is more or less for implicit type casting.
+     * It must return this object itself with the dynamic type 'BasicArrayType'.
+     *
+     * If this object is NOT a BasicArrayType, it MUST throw a BasicTypeException.
+     **/
+    public BasicArrayType getArray()
+	throws BasicTypeException;
+
+    /**
+     * The method is more or less for implicit type casting.
+     * It must return this object itself with the dynamic type 'BasicArrayType'.
+     *
+     * If this object is NOT a BasicArrayType, it MUST return the passed defaultValue.
+     **/
+    public BasicArrayType getArray( BasicArrayType defaultValue );
+
+
+    public int getArraySize()
+	throws BasicTypeException;
+
+    public BasicType getArrayElementAt( int index ) 
+	throws BasicTypeException,
+	       ArrayIndexOutOfBoundsException;
+
+    public BasicType setArrayElementAt( int index,
+					BasicType item )
+	throws BasicTypeException,
+	       ArrayIndexOutOfBoundsException;
+
+    public void addArrayElement( BasicType item )
+	throws BasicTypeException;
 
 
     public boolean equals( BasicType t );
@@ -103,5 +137,7 @@ public interface BasicType {
     public boolean equals( String s );
 
     public boolean equals( UUID id );
+
+    public boolean equals( BasicArrayType a );
 
 }

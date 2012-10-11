@@ -14,15 +14,25 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
 
 
+import ikrs.http.HTTPHandler;
 import ikrs.http.ReadOnlyException;
 import ikrs.http.Resource;
 import ikrs.http.ResourceMetaData;
+import ikrs.util.CustomLogger;
+
+import ikrs.io.fileio.htaccess.HypertextAccessFile;
 
 
 public abstract class AbstractResource
     implements Resource {
 
+    private HTTPHandler httpHandler;
+
     private ResourceMetaData metaData;
+
+    private HypertextAccessFile hypertextAccessFile;
+
+    private CustomLogger logger;
 
 
     /**
@@ -34,13 +44,31 @@ public abstract class AbstractResource
     /**
      * Create a new AbstractResource.
      **/
-    public AbstractResource( boolean useFairLocks ) {
+    public AbstractResource( HTTPHandler handler,
+			     CustomLogger logger,
+			     boolean useFairLocks ) {
 	super();
 
-	this.rwLock = new ReentrantReadWriteLock( useFairLocks );
-	this.metaData = new ResourceMetaData();
+	this.httpHandler  = handler;
+	this.rwLock       = new ReentrantReadWriteLock( useFairLocks );
+	this.metaData     = new ResourceMetaData();
+	this.logger       = logger;
     }
 
+    /**
+     * Get the global HTTP handler.
+     **/
+    public HTTPHandler getHTTPHandler() {
+	return this.httpHandler;
+    }
+
+    public CustomLogger getLogger() {
+	return this.logger;
+    }
+
+    protected void setHypertextAccessFile( HypertextAccessFile hypertextAccessFile ) {
+	this.hypertextAccessFile = hypertextAccessFile;
+    }
 
     //---BEGIN------------------- Resource implementation ----------------------------
     /**
@@ -48,6 +76,14 @@ public abstract class AbstractResource
      **/
     public ResourceMetaData getMetaData() {
 	return this.metaData;
+    }
+
+    /**
+     * Get the resource's hypertext access file settings. If the resource has not
+     * hypertext access settings available the method may return null.
+     **/
+    public HypertextAccessFile getHypertextAccessFile() {
+	return this.hypertextAccessFile;
     }
 
     /**

@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.net.DatagramSocket;
 import java.util.UUID;
 
+import ikrs.yuccasrv.ConnectionUserID;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
 
@@ -82,7 +83,8 @@ public abstract class TCPAdapter
      **/
     public abstract void serverAcceptedTCPConnection( BindManager source,
 						      UUID socketID,
-						      Socket sock );
+						      Socket sock,
+						      ConnectionUserID<ConnectionUserID> userID );
 
 
     /**
@@ -95,7 +97,8 @@ public abstract class TCPAdapter
      **/
     public final void serverAcceptedUDPConnection( BindManager source,
 						   UUID socketID,
-						   DatagramSocket sock ) {
+						   DatagramSocket sock,
+						   ConnectionUserID<ConnectionUserID> userID ) {
 	LogManager.getLogManager().getLogger( Constants.DEFAULT_LOGGER_NAME ).log( Level.SEVERE, "TCPAdapters are not capable to handle UDP requests!" );
     }
 

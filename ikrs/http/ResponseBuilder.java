@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import ikrs.typesystem.BasicType;
+//import ikrs.yuccasrv.ConnectionUserID;
 
 public interface ResponseBuilder {
 
@@ -25,6 +26,7 @@ public interface ResponseBuilder {
      * itself.
      *
      * @param headers     The previously processed headers.
+     * @param postData The actual sent non-header data (if available; may be null).
      * @param socketID    The unique socket ID.
      * @param socket      The acutual socket.
      * @param additionals A map containing non-essential builder params. The expected 
@@ -35,8 +37,10 @@ public interface ResponseBuilder {
      *
      **/
     public PreparedHTTPResponse create( HTTPHeaders headers,
+					PostDataWrapper postData,
 					UUID socketID,
 					Socket socket,
+					UUID sessionID,     // ConnectionUserID userID,
 					Map<String,BasicType> additionals
 				     );
 			 

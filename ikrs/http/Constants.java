@@ -8,11 +8,55 @@ package ikrs.http;
 
 public class Constants {
 
+    public static final String HTTP_METHOD_GET                                   = "GET";
+    public static final String HTTP_METHOD_POST                                  = "POST";
+    public static final String HTTP_METHOD_HEAD                                  = "HEAD";
+    public static final String HTTP_METHOD_PUT                                   = "PUT";
+    public static final String HTTP_METHOD_DELETE                                = "DELETE";
+    public static final String HTTP_METHOD_TRACE                                 = "TRACE";
+    public static final String HTTP_METHOD_OPTIONS                               = "OPTIONS";
+    public static final String HTTP_METHOD_CONNECT                               = "CONNECT";
 
+    // For the LogManager.
     public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
 
+    public static final String KEY_AUTHORIZATION_METHOD                          = "Authorization.Method";
+    public static final String KEY_AUTHORIZATION_USER                            = "Authorization.User";
+    public static final String KEY_AUTHORIZATION_PASS                            = "Authorization.Pass";
+    public static final String KEY_AUTHORIZATION_CHALLENGE                       = "Authorization.Challenge";
 
 
+    public static final String KEY_AUTHENTICATION_NONCE                          = "Authentication.Nonce";
+    public static final String KEY_AUTHENTICATION_DOMAIN                         = "Authentication.Domain";
+    public static final String KEY_AUTHENTICATION_ALGORITHM                      = "Authentication.Algorithm";
+
+
+    public static final String KEY_HTACCESS_AUTHTYPE                             = "htaccess.AuthType";
+    public static final String KEY_HTACCESS_AUTHNAME                             = "htaccess.AuthName";
+    public static final String KEY_HTACCESS_CHARSET                              = "htaccess.Charset";
+    public static final String KEY_HTACCESS_ADDEDTYPE                            = "htaccess.AddedType";
+
+    public static final String KEY_HTPASSWD_ENCRYPTEDLINE                        = "htpasswd.EncryptedLine";
+
+    public static final String KEY_SESSIONID                                     = "SESSION_ID";
+    public static final String KEY_SESSIONTIMEOUT                                = "SESSION_TIMEOUT";
+
+    // Configuration constants
+    public static final String KEY_DEFAULTCHARACTERSET                           = "DEFAULT_CHARSET";
+
+    public static final String KEY_SERVERNAME                                    = "SERVER_NAME";
+
+    // The session key constants
+    public static final String SKEY_ISALIVE                                      = "IS_ALIVE";
+    public static final String SKEY_LASTACCESSTIME                               = "LAST_ACCESSTIME";
+
+    // The environment name constants
+    public static final String EKEY_GLOBALCONFIGURATION                          = "GLOBAL_CONFIGURATION";
+    public static final String EKEY_FILESYSTEMPRIVILEGUES                        = "FILESYSTEM_PRIVILEGUES";
+
+    
+
+    // HTTP status codes
     public static final int HTTP_STATUS_INFORMATIONAL_CONTINUE                   = 100;
     public static final int HTTP_STATUS_INFORMATIONAL_SWITCHING_PROTOCOLS        = 101;
 

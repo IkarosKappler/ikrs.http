@@ -1,0 +1,25 @@
+package ikrs.typesystem;
+
+/**
+ *
+ * @author Henning Diesenberg
+ * @date 2012-09-21
+ * @version 1.0.0
+ **/
+
+import java.util.ArrayList;
+
+public class BasicArrayType
+    extends BasicTypeAdapter
+    implements BasicType {
+	
+    private ArrayList<BasicType> items;
+   
+    public BasicArrayType( byte b ) {
+	super( BasicType.TYPE_ARRAY );
+
+	this.number = new Byte( b );
+    }
+
+   
+}

@@ -1,0 +1,319 @@
+package ikrs.io;
+
+/**
+ * The StopMarkInputStream is an input stream wrapper class that reads bytes from the
+ * underlying inputstream until a given stop-mark (byte sequence) is detected or EOF
+ * is reached.
+ *
+ * Closing the StopMarkInputStream will have no effect to the underlying stream.
+ *
+ *
+ * @authior Ikaros Kappler
+ * @date 2012-10-08
+ * @version 1.0.0
+ **/
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
+import ikrs.io.CircularFIFO;
+
+
+public class StopMarkInputStream 
+    extends InputStream {
+
+    /**
+     * The underlying input stream.
+     **/
+    private InputStream in;
+
+    /**
+     * The stop mark sequence.
+     **/
+    private byte[] stopMark;
+    
+    /**
+     * A buffer to store temp. consumed bytes from the underlying input stream
+     * during the matching process (will store up to stopMark.length bytes, not more!).
+     **/
+    private CircularFIFO buffer;
+
+
+    /**
+     * This flag will be set as soon a the stopMark was fully read. This input stream has
+     * reached 'EOF' then.
+     **/
+    private boolean stopMarkReached = false;
+
+    /**
+     * This flag will be set when the close() method is called. The underlying input stream
+     * remains unaffected by that method.
+     **/
+    private boolean isClosed = false;
+
+
+    /**
+     * This flag will be set the first time the underlying input stream reads -1 (EOF).
+     **/
+    private boolean eoiReached = false;
+
+    /**
+     * Constructs a new StopMarkInputStream with the given underlying stream and stop mark.
+     * 
+     * @param in         The input stream to read from (must not be null).
+     * @param stopMark   The stop mark byte sequence (must not be null but may be empty).
+     **/
+    public StopMarkInputStream( InputStream in,
+				byte[] stopMark )
+	throws NullPointerException,
+	       IllegalArgumentException {
+
+	super();
+
+	if( in == null )
+	    throw new NullPointerException( "Cannot create a StopMarkInputStream with a null-stream." );
+	if( stopMark == null )
+	    throw new NullPointerException( "Cannot create a StopMarkInputStream with a null-mark." );
+
+
+	this.in        = in;
+	this.stopMark  = stopMark;
+
+	// Allocate 'stopMark.length' bytes to ensure the WHOLE stop mark can be read at ANY time.
+	this.buffer    = new CircularFIFO( stopMark.length );
+    }
+
+
+    /**
+     * This method just tells if this input stream was already closed..
+     **/
+    public boolean isClosed() {
+	return this.isClosed;
+    }
+
+    /**
+     * This method just tell if this input stream already reached the stop mark; reaching the stop mark
+     * implies reaching EOF.
+     **/
+    public boolean stopMarkReached() {
+	return this.stopMarkReached;
+    }
+
+    
+    /**
+     * This method just tells if the underlying input stream reached EOI.
+     **/
+    public boolean eoiReached() {
+	return this.eoiReached;
+    }
+
+
+
+    /**
+     * This method checks
+     **/
+    private boolean check_stopMarkReached() 
+	throws IOException {
+
+	if( this.stopMarkReached || this.isClosed )
+	    return stopMarkReached;
+
+
+	// First step: compare the bytes inside the buffer (if available)
+	//System.out.println( "    Try to read stop mark from buffer ... buffer=" + buffer );
+	int i = 0;
+	for( ; i < this.stopMark.length 
+		 && i < this.buffer.length(); 
+	     i++ ) {
+
+	    if( this.buffer.peek(i) != this.stopMark[i] )
+		return false;
+	    
+
+	}
+
+	// Stop mark fully read from the buffer?
+	if( i >= this.stopMark.length ) {
+	    
+	    this.stopMarkReached = true;
+	    return true;
+
+	}
+	    
+
+	
+	// Read byte-by-byte into the buffer while validating
+	//System.out.println( "    Try to read stop mark from input stream ... buffer=" + buffer );
+	int b = 0;
+	while( i < this.stopMark.length 
+	       && (b = this.in.read()) != -1 ) {
+
+	    buffer.write( (byte)b );
+
+	    //System.out.println( "Comparing stopMark["+i+"]="+this.stopMark[i] + " with buffer("+i+")=" + buffer.peek(i) + "; equal=" + (this.stopMark[i] == buffer.peek(i)) );
+	    if( this.stopMark[i] != buffer.peek(i) ) {
+
+		return false;
+
+	    }
+
+	    i++;
+
+	}
+
+	// Global EOF reached?
+	if( b == -1 ) {
+	    
+	    this.eoiReached = true;
+
+	}
+
+	//System.out.println( "    End of stopMark reached? ... buffer=" + buffer );
+
+	// Was ths stop mark fully read?
+	if( i >= this.stopMark.length ) {
+	    
+	    this.stopMarkReached = true;
+	    return true;
+
+	} else {
+	    
+	    return false;
+
+	}
+    }
+
+    //--- BEGIN -------------------- Override InputStream --------------------
+    public int available() 
+	throws IOException {
+	
+	if( this.in.available() == 0 ) {
+
+	    return 0;
+
+	} else {
+
+	    if( this.check_stopMarkReached() ) return 0;
+	    else                              return 1;
+
+	}
+    }
+
+    public void close() 
+	throws IOException {
+	
+	this.isClosed = true;
+	
+	// Do NOT forward call to the underlying input stream.
+	// Closing given (!) streams is not our concern.
+    }
+
+    public void mark( int readlimit ) {
+	// NOOP (mark not supported)
+    }
+
+    public boolean markSupported() {
+
+	return false;
+    }
+
+    public int read() 
+	throws IOException {
+
+	
+	if( this.isClosed() )
+	    throw new IOException( "The StopMarkInputStream was already closed." );
+
+
+
+	if( this.check_stopMarkReached() )
+	    return -1;
+	
+	if( this.buffer.length() == 0 )
+	    return -1; // EOF
+	else
+	    return this.buffer.read();
+    }
+
+    /*
+    public int read(byte[] b) 
+	throws IOException {
+
+	// Do not override
+	return super.read( b  );
+    }
+
+    
+    public int read(byte[] b, int off, int len) 
+	throws IOException {
+
+	// Do not override
+	return super.read( b, off, len );
+    }
+    */
+
+    public void reset() 
+	throws IOException {
+	
+	throw new IOException( "The StopMarkInputStream does not supported the reset() method." );
+
+    }
+
+    public long skip( long n ) 
+	throws IOException {
+
+	if( this.isClosed )
+	    throw new IOException( "This stream was already closed. Cannot skip input." );
+
+	long skipped = this.in.skip( n );
+
+	// Buffer data becomes invalid when skipping!
+	this.buffer.clear();
+
+	return skipped;
+    }
+    //--- END -------------------- Override InputStream --------------------
+
+
+    public String toString() {
+	return "StopMarkInputStream=[ stopMark=\"" + new String(this.stopMark) + "\", coreStream=" + this.in + "]";
+    }
+    
+
+
+    public static void main( String[] argv  ) {
+
+	try {
+
+	    String stopMark = "----WebKitFormBoundaryeANQMKoBwsmwQrYZ";
+	    System.out.println( "Using stopMark: " + stopMark  );
+	    System.out.println( "Reading file until stopMark will be found ... ");
+	    java.io.FileInputStream fin = new java.io.FileInputStream( new java.io.File( "document_root_alpha/example.POST_DATA.txt") );
+	    StopMarkInputStream in = new StopMarkInputStream( fin,
+							      stopMark.getBytes("UTF-8") );
+
+	    
+	    int b;
+	    System.out.println( "Reading bytes ..." );
+	    while( (b = in.read()) != -1 )
+		System.out.print( (char)b );
+
+	    System.out.println( "" );
+
+	    in.close();
+
+	    System.out.println( "\n\n\nDONE.\n" );
+	    System.out.println( "Cosuming trailing bytes (after the stopMark)... ");
+
+	    while( (b = fin.read()) != -1 )
+		System.out.print( (char)b );
+
+	} catch( IOException e ) {
+
+	    e.printStackTrace();
+
+	}
+
+    }
+}

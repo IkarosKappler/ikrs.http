@@ -1,0 +1,25 @@
+package ikrs.util.session;
+
+
+public class TestSessionManager {
+
+
+
+    /**
+     * For testing.
+     **/
+    public static void main( String[] argv ) {
+
+	// Create a new environment factory to use for the session creation.
+	MapFactory<String,Integer> mapFactory   = new ModelBasedMapFactory( new TreeMap<String,Integer>() );
+	EnvironmentFactory<String,BasicType> 
+	    environmentFactory                  = new DefaultEnvironmentFactory( mapFactory );
+	SessionFactory<String,Integer,UUID> 
+	    sessionFactory                      = new DefaultSessionFactory( environmentFactory );
+	
+
+    }
+
+
+
+}

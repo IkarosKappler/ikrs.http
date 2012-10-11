@@ -183,6 +183,65 @@ public abstract class BasicTypeAdapter
 	}
     }
 
+    /**
+     * The method is more or less for implicit type casting.
+     * It must return this object itself with the dynamic type 'BasicArrayType'.
+     *
+     * If this object is NOT a BasicArrayType, it MUST throw a BasicTypeException.
+     **/
+    public BasicArrayType getArray()
+	throws BasicTypeException {
+
+	throwDefaultAdapterException();
+	return null;
+    }
+
+    /**
+     * The method is more or less for implicit type casting.
+     * It must return this object itself with the dynamic type 'BasicArrayType'.
+     *
+     * If this object is NOT a BasicArrayType, it MUST return the passed defaultValue.
+     **/
+    public BasicArrayType getArray( BasicArrayType defaultValue ) {
+	try {
+	    return getArray();
+	} catch( BasicTypeException e ) {
+	    return defaultValue;
+	}
+    }
+    
+
+
+    public int getArraySize()
+	throws BasicTypeException {
+
+	throwDefaultAdapterException();
+	return -1;
+    }
+
+    public BasicType getArrayElementAt( int index ) 
+	throws BasicTypeException,
+	       ArrayIndexOutOfBoundsException {
+
+	throwDefaultAdapterException();
+	return null;
+    }
+
+    public BasicType setArrayElementAt( int index,
+					BasicType item )
+	throws BasicTypeException,
+	       ArrayIndexOutOfBoundsException {
+
+	throwDefaultAdapterException();
+	return null;
+    }
+
+    public void addArrayElement( BasicType item )
+	throws BasicTypeException {
+
+	throwDefaultAdapterException();
+    }
+
 
 
     public boolean equals( BasicType t ) {
@@ -235,6 +294,14 @@ public abstract class BasicTypeAdapter
 
 	    try { return this.equals(t.getUUID()); }
 	    catch( BasicTypeException e ) { return false; }
+
+	} else if( this.getType() == TYPE_ARRAY ) {
+
+	    try { return this.equals((BasicArrayType)t); }
+	    catch( BasicTypeException e ) { return false; } 
+	    catch( ClassCastException e ) { 
+		throw new RuntimeException( "Failed to compare two BasicArrayTypes: " + e.getMessage(), e );
+	    }
 
 	} else {
 	    // INVALID TYPE IDENTIFIER???
@@ -308,5 +375,22 @@ public abstract class BasicTypeAdapter
 	    else
 		return tmp.equals(id);
 	} catch( BasicTypeException e ) { return false; }	
+    }
+
+    public boolean equals( BasicArrayType a ) {
+	try { 
+	    BasicArrayType tmp = (BasicArrayType)this;
+	    if( tmp == null && a != null )
+		return false;
+	    else if( tmp != null && a == null )
+		return false;
+	    else if( tmp == null && a == null )
+		return true;
+	    else
+		return tmp.equals(a);
+	} 
+	catch( BasicTypeException e ) { return false; }
+	catch( ClassCastException e ) { return false; }
+	
     }
 }

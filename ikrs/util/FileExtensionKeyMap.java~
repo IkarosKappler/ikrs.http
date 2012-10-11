@@ -1,0 +1,17 @@
+package ikrs.util;
+
+/**
+ * As there is a small issue mapping file extensions in different styles; if you store
+ * a file extension ".txt" to this map (key) looking up ".TXT" or "txt" won't retrieve
+ * the mapped value if using a regular String orientated map.
+ *
+ * This map uses a case-insensitive key comparator (so ".txt" and ".TXT" are the same)
+ * and handles the preceding dot "." (so ".txt" and "txt" are the same).
+ *
+ **/
+
+public class FileExtensionKeyMap<K,V>
+    extends TreeMap<K,V> {
+
+
+}

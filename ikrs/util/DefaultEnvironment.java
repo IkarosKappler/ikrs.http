@@ -44,6 +44,20 @@ public class DefaultEnvironment<K,V>
 	children;
 
     /**
+     * Create a new Environment having allowsMultipleChildNames() set to true.
+     *
+     * The environment will use a TreeMapFactory.
+     *
+     * @param mapFactory The map factory that will be used to create
+     *                   new internal child maps.
+     **/
+    public DefaultEnvironment()  
+	throws NullPointerException {
+
+	this( new TreeMapFactory<K,V>() );
+    }
+
+    /**
      * Create a new Environment with the given MapFactory and having allowsMultipleChildNames() set to true.
      * @param mapFactory The map factory that will be used to create
      *                   new internal child maps.
@@ -292,6 +306,28 @@ public class DefaultEnvironment<K,V>
 	    return null;
 
 	}
+    }
+
+    /**
+     * This method simply removes all children from this environment.
+     * It is not a deep routine, so the inner data of child-environments themselves 
+     * will not be affected.
+     *
+     **/
+    public void removeAllChildren() {
+	Iterator<Map.Entry<String,List<Environment<K,V>>>> iter = this.children.entrySet().iterator();
+
+	while( iter.hasNext() ) {
+
+	    Map.Entry<String,List<Environment<K,V>>> entry = iter.next();
+	    
+	    // Simply remove
+	    iter.remove();
+
+	    // Warning: the child's parent reference is still set!!!
+
+	}
+	
     }
 
     /**

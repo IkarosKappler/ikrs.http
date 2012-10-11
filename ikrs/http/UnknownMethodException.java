@@ -7,7 +7,7 @@ package ikrs.http;
  **/
 
 public class UnknownMethodException 
-    extends HTTPException  {
+    extends MalformedRequestException  {
 
     /**
      * Creates a new UnknownMethodException witht the given error message.

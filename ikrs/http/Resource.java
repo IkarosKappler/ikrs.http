@@ -13,6 +13,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
 
+import ikrs.io.fileio.htaccess.HypertextAccessFile;
+
 
 public interface Resource {
 
@@ -20,6 +22,12 @@ public interface Resource {
      * Get the meta data for this resource.
      **/
     public ResourceMetaData getMetaData();
+
+    /**
+     * Get the resource's hypertext access file settings. If the resource has not
+     * hypertext access settings available the method may return null.
+     **/
+    public HypertextAccessFile getHypertextAccessFile();
 
     /**
      * This method returns the read lock for this resource.

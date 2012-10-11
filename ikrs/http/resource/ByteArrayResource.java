@@ -15,9 +15,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
 
 
+import ikrs.http.HTTPHandler;
 import ikrs.http.ReadOnlyException;
 import ikrs.http.Resource;
 
+import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
 
 
@@ -34,23 +36,27 @@ public class ByteArrayResource
     /**
      * Create a new ByteArrayResource.
      **/
-    public ByteArrayResource( byte[] data,
+    public ByteArrayResource( HTTPHandler handler,
+			      CustomLogger logger,
+			      byte[] data,
 			      boolean useFairLocks ) 
 	throws NullPointerException {
 	
-	this( data, 0, data.length, useFairLocks );
+	this( handler, logger, data, 0, data.length, useFairLocks );
     }
 
     /**
      * Create a new ByteArrayResource.
      **/
-    public ByteArrayResource( byte[] data,
+    public ByteArrayResource( HTTPHandler handler,
+			      CustomLogger logger,
+			      byte[] data,
 			      int offset,
 			      int length,
 			      boolean useFairLocks ) 
     throws NullPointerException {
 
-	super( useFairLocks );
+	super( handler, logger, useFairLocks );
 
 	if( data == null )
 	    throw new NullPointerException( "Cannot create ByteArrayResource from null-array." );

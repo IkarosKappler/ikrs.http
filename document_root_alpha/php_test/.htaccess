@@ -1,0 +1,15 @@
+# This is a configuration file that allows PHP execution
+
+# The value 'On' implies the default value 'iso-8859-1'
+# AddDefaultCharset On
+AddDefaultCharset utf-8
+AddCharset utf-8 php
+
+# By default PHP output should contain plain text
+AddType text/plain .php
+
+# This sets the handler for *all* files, regardless of extension
+# SetHandler php-script
+
+# But we only want to process PHP files
+AddHandler php-script .php

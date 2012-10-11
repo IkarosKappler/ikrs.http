@@ -14,5 +14,9 @@ public class ConfigurationException
     }
 
 
+    public ConfigurationException( String msg, Throwable cause ) {
+	super( msg, cause );
+    }
+
 
 }

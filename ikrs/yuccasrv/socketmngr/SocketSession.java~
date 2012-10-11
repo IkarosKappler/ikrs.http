@@ -1,0 +1,8 @@
+package ikrs.yucca;
+
+public interface SocketSession {
+
+
+
+
+}

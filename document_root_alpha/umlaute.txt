@@ -1,0 +1,10 @@
+Hier kommen die Umlaute:
+ae=ä
+oe=ö
+ue=ü
+
+Ae=Ä
+Oe=Ö
+Ue=Ü
+
+Sz=ß

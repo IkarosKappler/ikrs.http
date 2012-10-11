@@ -14,4 +14,9 @@ public class HTTPException
 	super( msg );
     }
 
+    public HTTPException( String msg,
+			  Throwable reason ) {
+	super( msg, reason );
+    }
+
 }

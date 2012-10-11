@@ -47,6 +47,7 @@ public abstract class AbstractResponseBuilder
      * itself.
      *
      * @param headers  The previously processed headers.
+     * @param postData The actual sent non-header data (if available; may be null).
      * @param socketID The unique socket ID.
      * @param socket   The acutual socket.
      * @param additionals A map containing non-essential builder params. The expected 
@@ -57,8 +58,10 @@ public abstract class AbstractResponseBuilder
      *
      **/
     public abstract PreparedHTTPResponse create( HTTPHeaders headers,
+						 PostDataWrapper postData,
 						 UUID socketID,
 						 Socket socket,
+						 UUID sessionID, 
 
 						 Map<String,BasicType> additionals
 						 );

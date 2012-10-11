@@ -1,0 +1,6 @@
+# This is a configuration file that allows PHP execution
+
+# The value 'On' implies the default value 'iso-8859-1'
+# AddDefaultCharset On
+AddDefaultCharset utf-8
+AddCharset utf-8 txt htm html

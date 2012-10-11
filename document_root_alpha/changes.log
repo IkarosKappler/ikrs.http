@@ -1,0 +1,15 @@
+
+
+
+
+
+[2012-10-11]
+  - htaccess 'DirectoryIndex' implemented.
+  - htaccess 'Options {+|-}Indexes' implemented.
+  - New class for directory listings: ikrs.http.resource.DefaultDirectoryResource-
+
+[2012-09-15]
+  - htaccess 'Digest' authorization implemented (not apache compatible: ikrs.http.MD5).
+
+[2012-09-03]
+  - htaccess 'Basic' authorizaion implemented (apache compatible).

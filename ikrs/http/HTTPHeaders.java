@@ -15,19 +15,29 @@ import java.io.IOException;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 
-//import ikrs.util.CaseInsensitiveComparator;
+import ikrs.util.CaseInsensitiveComparator;
 
 
 public class HTTPHeaders {
-    //extends ArrayList<HTTPHeaderLine> {
 
+    // Reqeuest/response headers.
+    public static final String NAME_ACCEPT_CHARSET     = "Accept-Charset";
+    public static final String NAME_CONTENT_LENGTH     = "Content-Length";
+    public static final String NAME_CONTENT_TYPE       = "Content-Type";
+
+    // Response headers.
+    public static final String NAME_ALLOW              = "Allow";
+    public static final String NAME_WWW_AUTHENTICATE   = "WWW-Authenticate";
+
+    //--- BEGIN --------------------------- Request header fields ---------------------------
     /**
      * The method field ot the request line.
      **/
@@ -47,24 +57,93 @@ public class HTTPHeaders {
      * The URI field of the request line.
      **/
     private String requestURI;
+    //--- END ----------------------------- Request header fields ---------------------------
 
+
+    //--- BEGIN --------------------------- Response header fields ---------------------------
+    /**
+     * This field is used to store the status code from the 'HTTP1/1 [STATUS] [REASON_PHRASE]' line (if exists).
+     * Note: this is affects the response (!) headers.
+     **/
+    private String responseStatus;
+
+    /**
+     * This field is used to store the status code from the 'HTTP1/1 [STATUS] [REASON_PHRASE]' line (if exists).
+     * Note: this is affects the response (!) headers.
+     **/
+    private String responseReasonPhrase;
+    //--- END ----------------------------- Response header fields ---------------------------
+
+
+    private Comparator<String> keyComparator;
     private Map<String,Set<HTTPHeaderLine>> map;
     private ArrayList<HTTPHeaderLine> list;
 
 
+    /**
+     * Creates a new and empty HTTPHeaders instance.
+     **/
     public HTTPHeaders() {
 	super();
 
 
-	this.list = new ArrayList<HTTPHeaderLine>(4);
-	this.map = new HashMap<String,Set<HTTPHeaderLine>>(); // CaseInsensitiveComparator.sharedInstance );
+	this.keyComparator  =  CaseInsensitiveComparator.sharedInstance;
+	this.list           = new ArrayList<HTTPHeaderLine>(4);
+	this.map            = new TreeMap<String,Set<HTTPHeaderLine>>( this.keyComparator );
+    }
+
+    public String getStringValue( String key ) {
+	if( key == null )
+	    return null;
+
+	HTTPHeaderLine hl = this.get( key );
+	if( hl == null )
+	    return null;
+
+	return hl.getValue();
+    }
+
+    public Long getLongValue( String key ) {
+	if( key == null )
+	    return null;
+
+	HTTPHeaderLine hl = this.get( key );
+	if( hl == null )
+	    return null;
+
+	if( hl.getValue() == null || hl.getValue().length() == 0 )
+	    return null;
+
+	try {
+	    return new Long( hl.getValue() );
+	} catch( NumberFormatException e ) {
+	    return null;
+	}
+    }
+
+    public boolean isGETRequest() {
+	return this.requestMethod != null 
+	    && this.requestMethod.equals("GET");
+    }
+
+    public boolean isPOSTRequest() {
+	return this.requestMethod != null 
+	    && this.requestMethod.equals("POST");
     }
 
     /**
      * This method registers the given HTTPHeader line into the search map.
+     * Note that this structure allows multiple elements with the same key.
+     *
+     * @param element The new header line to add (must not be null).
+     * @throws NullPointerException If element is null.
      **/
-    private void registerToMap( HTTPHeaderLine element ) {
+    private void registerToMap( HTTPHeaderLine element ) 
+	throws NullPointerException {
 	
+	if( element == null )
+	    throw new NullPointerException( "Cannot add null-HeaderLines." );
+
 	Set<HTTPHeaderLine> set = this.map.get( element.getKey() );
 	if( set == null ) {
 	    // Container not found -> create new
@@ -77,8 +156,15 @@ public class HTTPHeaders {
 
     /**
      * This method releases the given HTTPHeaderLine from the search map.
+     * If the element is null this method just does nothing but returning false.
+     *
+     * @param element The header line to be removed.
+     * @return True if and only if the passed element was found and removed.
      **/
     private boolean releaseFromMap( HTTPHeaderLine element ) {
+
+	if( element == null )
+	    return false;
 	
 	Set<HTTPHeaderLine> set = this.map.get( element.getKey() );
 	if( set == null ) {
@@ -102,7 +188,111 @@ public class HTTPHeaders {
 	return true;
     }
 
-    public Set<HTTPHeaderLine> getAll( String name ) {
+    private int locateStatusLine() {
+
+	// Search current header line beginning at the end (!) 
+	for( int i = this.list.size()-1; i >= 0; i-- ) {
+	    
+	    HTTPHeaderLine line = this.list.get(i);
+	    if( line.isResponseStatus() ) { 
+		
+		return i;
+	    }
+	}
+	
+	return -1;
+    }
+
+    private int locateLineByKey( String key ) {
+
+	if( key == null )
+	    return -1;
+
+
+	// Search current line.
+	for( int i = 0; i < this.list.size(); i++ ) {
+	    
+	    HTTPHeaderLine line = this.list.get(i);
+	    if( line.getKey() != null && line.getKey().equalsIgnoreCase(key) ) {
+		
+		return i;
+	    }
+	}
+	
+	return -1;
+    }
+
+    private void replaceLine( int index, 
+			      HTTPHeaderLine replacement ) {
+
+	HTTPHeaderLine oldStatusLine = this.list.get(index);
+	this.releaseFromMap( oldStatusLine );
+	this.list.set( index, replacement );
+	this.registerToMap( replacement ); 
+
+    }
+
+    public boolean replaceResponseLine( HTTPHeaderLine statusLine ) 
+	throws NullPointerException,
+	       HeaderFormatException {
+
+	if( statusLine == null )
+	    throw new NullPointerException( "Cannot replace the response status line with null line." );
+	
+	if( statusLine.getKey() == null )
+	    throw new HeaderFormatException( "Cannot replace the response status line with this header line. Key is null: " + statusLine, statusLine );
+	
+	if( !statusLine.getKey().startsWith("HTTP") )
+	    throw new HeaderFormatException( "Cannot replace the response status line with this header line. Key does not start with 'HTTP': " + statusLine, statusLine );
+	
+
+	// Response line seems OK (perform deep check?).
+	int index = this.locateStatusLine();
+
+
+
+	// Reset the respone fields for later re-evaluation!
+	this.responseStatus       = null;
+	this.responseReasonPhrase = null;
+
+
+
+	// Replace?
+	if( index != -1 ) {
+
+	    this.replaceLine( index, statusLine );
+
+	    // Indicates that the old one existed and was reaplaced.
+	    return true;
+
+	} else {
+
+	    // And add the new line to the beginning :)
+	    this.list.add( 0, statusLine );
+	    this.registerToMap( statusLine );
+
+	    // Indicates that is was added.
+	    return false;
+	}
+	
+    }
+
+    /**
+     * This method returns a set containing all header lines with the given key (name).
+     * The returned set is a full copy and is not backed up the the underlying
+     * structure, so modifications on the set have no effect to this HTTPHeaders 
+     * instance.
+     *
+     * @param name The desired headers' name (the key; must not be null).
+     * @return A newly created set containing all header lines with the given name.
+     * @throws NullPointerException If name is null.
+     **/
+    public Set<HTTPHeaderLine> getAll( String name ) 
+	throws NullPointerException {
+
+	if( name == null )
+	    throw new NullPointerException( "Cannot retrieve header lines if the passed key (name) is null." );
+	
 	// Get the set widht the elements
 	Set<HTTPHeaderLine> set = this.map.get( name );
        
@@ -126,9 +316,20 @@ public class HTTPHeaders {
     }
 
     /**
-     * This method returns a random header line with the given key.
+     * This method returns a random header line with the given key or null
+     * if no such element can be found.
+     *
+     * If there are multiple header lines with the same key one element is
+     * randomly picked.
+     *
+     *
+     * @param name The desired header line's name (key; must not be null).
+     * @return A header line with the given name.
+     * @throws NullPointerException If name is null.
      **/
-    public HTTPHeaderLine get( String name ) {
+    public HTTPHeaderLine get( String name ) 
+	throws NullPointerException {
+
 	// Get the set widht the elements
 	Set<HTTPHeaderLine> set = this.map.get( name );
        
@@ -149,7 +350,9 @@ public class HTTPHeaders {
      * @param value Thw new line's value.
      * @throws NullPointerException If the key is null.
      **/
-    public boolean add( String key, String value ) 
+    public boolean add( String key, 
+			String value 
+			) 
 	throws NullPointerException {
 
 	if( key == null )
@@ -161,6 +364,8 @@ public class HTTPHeaders {
     /**
      * This method adds a new header line to this headers object.
      *
+     * If the passed line is the HTTP response status line, the old line will
+     * be replaced.
      *
      * @param key The new line's key.
      * @throws NullPointerException If the line is null.
@@ -171,33 +376,153 @@ public class HTTPHeaders {
 	if( e == null )
 	    throw new NullPointerException( "Cannot add null line to HTTP headers." );
 
-	boolean b = this.list.add( e );
-	if( b )
-	    this.registerToMap( e );
 
-	return b;
+	if( e.isResponseStatus() ) {
+	    
+	    try {
+		this.replaceResponseLine( e );
+		return true;
+	    } catch( HeaderFormatException exc ) {
+		throw new RuntimeException( "Unexpected HeaderFormatException when replacing an (existing) response status line! replacement=" + e.toString() + ", this=" + this.toString() + ". Error message: "+ exc.getMessage(), 
+					    exc );
+	    }
+
+	} else {
+
+	    boolean b = this.list.add( e );
+	    if( b )
+		this.registerToMap( e );
+	    
+	    return b;
+
+	}
+    } 
+
+    public boolean add( HTTPHeaderLine e,
+			boolean replaceIfExists ) {
+
+	if( !replaceIfExists ) {
+
+	    // Just add to the end of the list.
+	    return add( e );
+
+	} else if( e.isResponseStatus() ) {
+	    
+	    try {
+		this.replaceResponseLine( e );
+	    } catch( HeaderFormatException exc ) {
+		throw new RuntimeException( "Unexpected HeaderFormatException when replacing an (existing) response status line! replacement=" + e.toString() + ", this=" + this.toString() + ". Error message: "+ exc.getMessage(), 
+					    exc );
+	    }
+	    
+	    return true;
+
+	} else {
+
+	    // Search a replacement.
+	    int index = locateLineByKey( e.getKey() );
+	    if( index == -1 ) {
+
+		// No such line exists so far.
+		// -> add to the end of the list.
+		this.add( e );
+		
+	    } else {
+
+		// Line with the same key found: replace.
+		this.replaceLine( index, e );
+
+	    }
+
+	    // Added or replaced.
+	    return true;
+	}
     }
-        
-    /*public void add ( int index, HTTPHeaderLine element ) 
-	throws IndexOutOfBoundsException {
 
-	this.list.add( index, element );
-	this.registerToMap( element );
-	}*/
+    /**
+     * This method removes max. one header line with the given key (name).
+     *
+     * If no such line can be found the internal list is left unchanged and the method
+     * return false (true otherwise).
+     *
+     * @param name The header line's name (key).
+     * @return True if (and only if) the passed header-line's name was found and removed, 
+     *         false otherwise.
+     * @throws NullPointerException If the passed name is null.
+     **/
+    public boolean remove( String name ) 
+	throws NullPointerException {
+
+	if( name == null )
+	    throw new NullPointerException( "Cannot remove header-lines using a null-key." );
+	
+	// Try to retrieve one random headerline
+	HTTPHeaderLine line = this.get( name );
+
+	// Exists?
+	if( line == null )
+	    return false;  // None exist -> none can be removed
+
+	// Remove (the 'releaseFromMap()' method will return true in this case).
+	return this.releaseFromMap( line );
+    }
+
     
-    /*
-    public void	clear() {
-	this.list.clear();
-	this.map.clear();
+    /**
+     * This method removes *all* header lines with the given key (name).
+     *
+     * The returned integer indicates the number of removed lines.
+     *
+     * @param name The header line's name (key).
+     * @return The number of removed header lines.
+     * @throws NullPointerException If the passed name is null.
+     **/
+    public int removeAll( String name ) 
+	throws NullPointerException {
+	
+	int count = 0;
+	while( this.remove(name) ) {
+
+	    count++;
+	}
+
+	return count;
     }
-    */
-      
-    /*
-    public Object clone() {
-	return null;
+
+    /**
+     * This method replaces all existing header lines matching the passed line's key
+     * by the passed line itself.
+     *
+     * After calling this method this HTTPHeaders-instance contains _exactly_ one element
+     * with the passed line's key.
+     * 
+     * The returned integer indicates the number of lines that have been removed (old element
+     * count).
+     *
+     * @param element The header line you want to use as replacement (replacing all existing
+     *                lines with the same key).
+     * @return The number of elements that were replaced (old element count).
+     * @throws NullPointerException If the passed element is null.
+     **/
+    public int replaceAll( HTTPHeaderLine element ) 
+	throws NullPointerException {
+
+	if( element == null ) 
+	    throw new NullPointerException( "Cannot replace header lines with null-element." );
+
+	int removed = removeAll( element.getKey() );
+	
+	// This call should always return true
+	if( !this.add(element) )
+	    throw new RuntimeException( "Failed to add a new header line element ('"+element.getKey()+"') to the underlying list (unknown reason)." );
+
+	return removed;	
     }
-    */
      
+
+    /**
+     *
+     **/
     public HTTPHeaderLine get( int index ) 
 	throws IndexOutOfBoundsException {
 	return this.list.get( index );
@@ -206,30 +531,6 @@ public class HTTPHeaders {
     public Iterator<HTTPHeaderLine> iterator() {
 	return this.list.iterator();
     }
-   
-    /*
-    public HTTPHeaderLine remove(int index)  
-	throws IndexOutOfBoundsException {
-
-	HTTPHeaderLine h = this.list.remove(index);
-	if( h != null )
-	    this.releaseFromMap( h );
-
-	return h;
-    }
-    */
-              
-    /*
-    public HTTPHeaderLine set( int index, HTTPHeaderLine element )  
-	throws IndexOutOfBoundsException {
-	
-	// Find current element
-	HTTPHeaderLine old = this.list.get( index );
-	this.registerToMap( element );
-	
-	return old;
-    } 
-    */
     //---END--------------------------- Override List's access methods ------------------
 
     public int size() {
@@ -265,6 +566,21 @@ public class HTTPHeaders {
     }
 
 
+    public String getResponseStatus() {
+	if( this.responseStatus == null )
+	    this.parseResponseStatusLine();
+	
+	return this.responseStatus;
+    }
+
+    public String getResponseReasonPhrase() {
+	if( this.responseReasonPhrase == null )
+	    this.parseResponseStatusLine();
+	
+	return this.responseStatus;
+    }
+
+
     private boolean parseRequestLine() {
 
 	if( this.list.size() == 0 )
@@ -297,6 +613,83 @@ public class HTTPHeaders {
 	return true;
     }
 
+
+    private boolean parseResponseStatusLine() {
+
+	// Are there header lines at all?
+	if( this.list.size() == 0 )
+	    return false;
+	
+	// Try to locate the header beginning AT THE END
+	// (usually the latest headers were added to the end of the list, and so
+	//  if there are duplicates the latest one override the predecessor(s)).
+	HTTPHeaderLine statusLine = null;
+	String key = null;
+	for( int i = this.list.size()-1; 
+	     i >= 0 && statusLine == null; 
+	     i-- ) {
+
+	    HTTPHeaderLine tmp = this.list.get(0);
+	    key = tmp.getKey();
+	    if( key == null )
+		continue;
+	    
+	    // Is this a response status header?
+	    if( key.startsWith("HTTP") ) {
+
+		// This will cause the loop to stop
+		statusLine = tmp;
+
+	    }
+	} // END for
+
+	if( statusLine == null )
+	    return false;  // Not found
+
+
+
+	// The first line should have this format (or like that):
+	// HTTP/1.1 501 Internal Server Error
+	// WHERE
+	//  - statusCode := "501"
+	//  - reasonPhrase := "Internal Server Error"
+
+	// Find first two spaces
+	key = key.trim();
+	int indexA = key.indexOf( " " );
+	//int indexB = key.indexOf( " ", indexA+1 );
+
+	if( indexA == -1 ) {
+
+	    // No spaces at all (only "HTTP/1.x")
+	    return false;
+
+	} else {
+
+	    // Remove "HTTP/1.x" from the beginning, then trim.
+	    key = key.substring(indexA+1, key.length()).trim();
+	    int indexB = key.indexOf( " " );
+
+	    if( indexB == -1 ) {
+
+		// Has the format "[HTTP/1.x ] <status_code>"
+		this.responseStatus = key;
+		this.responseReasonPhrase = null;
+
+	    } else {
+
+		// Has the format "[HTTP/1.x ] <status_code> <reason_phrase>"
+		this.responseStatus       = key.substring( 0, indexB ).trim();
+		this.responseReasonPhrase = key.substring( indexB+1, key.length() ).trim();
+
+	    } 
+
+	    return true;
+	}
+	
+    }
+
+
     public static HTTPHeaders read( InputStream in )
 	throws EOFException,
 	IOException {
@@ -309,7 +702,7 @@ public class HTTPHeaders {
 	// Read line by line; the first occurence of an empty line indicates the end-of-headers, which means
 	// the HTTPHeaderLine.read(...) returns null.
 	while( (header = HTTPHeaderLine.read(in)) != null ) {
-	    System.out.println( "HTTPHeaders.read(...) HTTPHeaders.read(..) header line: " + header );
+	    System.out.println( "   HTTPHeaders.read(..) header line: " + header );
 	    
 	    headers.add( header );
 	}
@@ -318,6 +711,24 @@ public class HTTPHeaders {
 	return headers;
     }
 
+
+    public String toString() {
+	return toString( new StringBuffer() ).toString();
+    }
+
+    protected StringBuffer toString( StringBuffer b ) {
+
+	b.append( "Headers={ " );
+	for( int i = 0; i < this.list.size(); i++ ) {
+	    if( i > 0 )
+		b.append( ", " );
+	    
+	    HTTPHeaderLine line = this.list.get(i);
+	    b.append( line.getKey() ).append( ": " ).append( line.getValue() );
+	}
+	b.append( " }" );
+	return b;
+    }
     /*private static void print( String[] str ) {
 
 	for( int i = 0; i < str.length; i++ ) {

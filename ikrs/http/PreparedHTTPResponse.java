@@ -9,8 +9,13 @@ package ikrs.http;
  **/
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.MissingResourceException;
 
+import ikrs.http.AuthorizationException;
+import ikrs.http.DataFormatException;
+import ikrs.http.HeaderFormatException;
+import ikrs.typesystem.BasicType;
 
 public interface PreparedHTTPResponse {
 
@@ -22,21 +27,33 @@ public interface PreparedHTTPResponse {
      * This means that all required ressources must be acquired (use locks), all headers prepared (by the use
      * of addResponseHeader(String,String) or getResponseHeaders()) and perform all necessary security checks.
      *
+     * @param optionalReturnSettings This (optional, means may be null) map can be used to retrieve internal values
+     *                               for error recovery.
+     *
      * @throws MalformRequestException If the passed HTTP request headers are malformed and cannot be processed.
      * @throws UnsupportedVersionException If the headers' HTTP version is not supported (supported versions are
      *                                     1.0 and 1.1).
+     * @throws UnsupportedMethodException If the request method is valid but not supported (status code 405).
      * @throws UnknownMethodException If the headers' method (from the request line) is unknown.
      * @throws ConfigurationException If the was a server configuration issue the server cannot work properly with.
      * @throws MissingResourceException If the requested resource cannot be found.
+     * @throws AuthorizationException If the requested resource requires authorization.
+     * @throws HeaderFormatException If the passed headers are malformed.
+     * @throws DataFormatException If the passed data is malformed.
      * @throws SecurityException If the request cannot be processed due to security reasons.
      * @throws IOException If any IO errors occur.
      **/
-    public void prepare() 
+    public void prepare( Map<String,BasicType> optionalReturnSettings ) 
 	throws MalformedRequestException,
 	       UnsupportedVersionException,
+	       UnsupportedMethodException,
 	       UnknownMethodException,
 	       ConfigurationException,
 	       MissingResourceException,
+	       AuthorizationException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException,
 	       SecurityException,
 	       IOException; 
 

@@ -106,6 +106,14 @@ public class ServerSocketThread
 	return this.uuid;
     }
 
+    public InetAddress getBindAddress() {
+	return this.bindAddress;
+    }
+
+    public int getBindPort() {
+	return this.bindPort;
+    }
+
     public Map<String,BasicType> getServerSettings() {
 	return this.bindSettings;
     }

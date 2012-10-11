@@ -345,7 +345,8 @@ public class Yucca
      **/
     public void serverAcceptedTCPConnection( BindManager source,
 					     UUID socketID,
-					     Socket sock ) {
+					     Socket sock,
+					     ConnectionUserID userID ) {
 
 	/* Events coming from different managers than ours have to be ignored */
 	if( source != this.bindManager ) {
@@ -384,7 +385,8 @@ public class Yucca
 	    /* Else: handler exists -> forward event */
 	    handler.serverAcceptedTCPConnection( source, 
 						 socketID,
-						 sock );
+						 sock,
+						 userID );
 	    
 	} catch( BasicTypeException e ) {
 	    this.getLogger().log( Level.SEVERE,
@@ -403,7 +405,8 @@ public class Yucca
      **/
     public void serverAcceptedUDPConnection( BindManager source,
 					     UUID socketID,
-					     DatagramSocket sock ) {
+					     DatagramSocket sock,
+					     ConnectionUserID userID ) {
 	/* Events coming from different managers than ours have to be ignored */
 	if( source != this.bindManager ) {
 	    this.getLogger().log( Level.FINE,
@@ -440,7 +443,8 @@ public class Yucca
 	    /* Else: handler exists -> forward event */
 	    handler.serverAcceptedUDPConnection( source, 
 						 socketID,
-						 sock );
+						 sock,
+						 userID );
 		
 	} catch( BasicTypeException e ) {
 	    this.getLogger().log( Level.SEVERE,

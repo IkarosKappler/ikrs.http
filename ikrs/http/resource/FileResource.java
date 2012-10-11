@@ -16,8 +16,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
 
 
+import ikrs.http.HTTPHandler;
 import ikrs.http.ReadOnlyException;
 import ikrs.http.Resource;
+import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
 
 
@@ -32,9 +34,11 @@ public class FileResource
     /**
      * Create a new FileResource.
      **/
-    public FileResource( File file,
+    public FileResource( HTTPHandler handler,
+			 CustomLogger logger,
+			 File file,
 			 boolean useFairLocks ) {
-	super( useFairLocks );
+	super( handler, logger, useFairLocks );
 
 	this.file = file;
     }

@@ -16,6 +16,7 @@ import java.util.List;
 public interface Environment<K,V>
     extends Map<K,V> {
 
+
     /**
      * This method indicates if the environment allows multiple names
      * for child environments.
@@ -68,7 +69,7 @@ public interface Environment<K,V>
      * Note B: if allowsMultipleChildNames() returns false, and if a child 
      *         with the given name already exists there will be
      *         no modifications to the environment. In this case the method
-     *         return the old child.
+     *         returns the old child.
      *
      * @param name The child's name.
      **/
@@ -83,6 +84,14 @@ public interface Environment<K,V>
      * @param name The child's name.
      **/
     public Environment<K,V> removeChild( String name );
+
+    /**
+     * This method simply removes all children from this environment.
+     * It is not a deep routine, so the inner data of child-environments themselves 
+     * will not be affected.
+     *
+     **/
+    public void removeAllChildren();
 
     /**
      * This method returns the number of all children.

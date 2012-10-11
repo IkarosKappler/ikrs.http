@@ -1,0 +1,12 @@
+package ikrs.util.session;
+
+/**
+ * This interface can be used to implement simple Session factory classes.
+ **/
+
+public interface SessionFactory<S extends Session,K,V,U> {
+
+    public Session<K,V,U> create();
+
+
+}

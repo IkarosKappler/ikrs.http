@@ -10,12 +10,20 @@ package ikrs.http;
  **/
 
 import java.io.EOFException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import ikrs.io.BytePositionInputStream;
+import ikrs.io.ReadLimitInputStream;
 import ikrs.util.CustomLogger;
+import ikrs.util.session.Session;
+import ikrs.typesystem.BasicBooleanType;
+import ikrs.typesystem.BasicNumberType;
+import ikrs.typesystem.BasicType;
+import ikrs.yuccasrv.ConnectionUserID;
 
 
 public class HTTPRequestDistributor 
@@ -38,6 +46,11 @@ public class HTTPRequestDistributor
     private Socket socket;
 
     /**
+     * The connection's user ID.
+     **/
+    private HTTPConnectionUserID userID;
+
+    /**
      * A logger to write log messages to.
      **/
     private CustomLogger logger;
@@ -54,44 +67,85 @@ public class HTTPRequestDistributor
     public HTTPRequestDistributor( HTTPHandler handler,
 				   CustomLogger logger,
 				   UUID socketID,
-				   Socket socket 
-				   ) 
+				   Socket socket,
+				   HTTPConnectionUserID userID 
+				   )  
 	throws NullPointerException {
 	super();
 
 	this.handler = handler;
-	this.logger = logger;
+	this.logger  = logger;
 	this.logger.log( Level.INFO,
 			 getClass().getName(),
-			 "New request handler created."
+			 "New request handler created (userID="+userID+")."
 			 );
 
 	this.socketID = socketID;
-	this.socket = socket;
+	this.socket   = socket;
+	this.userID   = userID;
     }
     
 
     public void run() {
 	
-	this.logger.log( Level.INFO,
-			 getClass().getName(),
-			 "Request handler started."
-			 );
+	
+	UUID sessionID = this.handleSession_connectionStart( this.userID );
 
+	
+
+	// Do not use the connectionUserID after this point any more! 
+	// It's too strong bound to the socketmanager, from which the HTTP handler should not be bound too strong.
+	// Use the session ID instead to keep the underlying implementations disconnected from the yucca.* package.
+
+	//UUID sessionID = session.getSessionID();
+	
 
 	try {
 
-	    /* Init HTTP connection ... */
+	    // Init HTTP connection ... 
 	    //HTTPHeaderLine.read( sock.getInputStream() );
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
+
+
+
+	    Long contentLength = headers.getLongValue( HTTPHeaders.NAME_CONTENT_LENGTH );  // This search is case-insensitive
+	    this.logger.log( Level.INFO,
+			     getClass().getName() + ".run()",
+			     "Handling POST data using 'Content-Length': '" + contentLength + "'." );
+	    
+	    
+	    // Is there a default value if not passed?
+	    InputStream postDataInputStream = null;
+	    if( contentLength == null ) {
+		
+		postDataInputStream = new BytePositionInputStream( this.socket.getInputStream() );
+
+	    } else {
+		
+		postDataInputStream = new ReadLimitInputStream( this.socket.getInputStream(),
+								contentLength.longValue() );
+
+
+	    }
+
+
+
+
+	    // Wrap the trailing data into a PostDataWrapper
+	    PostDataWrapper postData = new DefaultPostDataWrapper( this.logger,
+								   headers,
+								   postDataInputStream // this.socket.getInputStream() 
+								   );
 
 	    
 	    // Create the response. 
 	    // Note that the returned response is ALREADY PREPARED!
 	    PreparedHTTPResponse response = this.handler.getResponseBuilder().create( headers, 
+										      postData,
 										      this.socketID,
 										      this.socket,
-										      null   // No additionals
+										      sessionID,    // this.userID,
+										      null          // No additionals
 										      );
 	    // There are some very unlikely cases the server cannot send an error reply (broken error messages, ...).
 	    // In these cases the builder returns null (this should not happen but one more check is more secure).
@@ -103,12 +157,20 @@ public class HTTPRequestDistributor
 			     );
 
 	    } else {
-	    
-		// Then execute
-		response.execute();
 		
+		// System.out.println( "Built response: " + response.toString() );
+	    
+		// Then execute (this MUST NOT throw any exceptions!)
+		this.logger.log( Level.INFO,
+				 getClass().getName(),
+				 "Going to execute prepared response " + response.toString() );			     
+		response.execute();
+				
 		
 		// Dont't forget to clean-up and release the locks!
+		this.logger.log( Level.INFO,
+				 getClass().getName(),
+				 "Going to dispose prepared response " + response.toString() );
 		response.dispose();
 	    
 	    }
@@ -135,7 +197,88 @@ public class HTTPRequestDistributor
 	    
 	}
 
+
+	handleSession_connectionEnd( sessionID );
+
+	
+
     }
 
+
+    /**
+     * This method is called when the distributor starts processing an incoming connection.
+     * It initializes some essential session vars (if required).
+     *
+     * @param userID The connection's user ID.
+     * @return The (possibly new) session.
+     **/
+    private UUID handleSession_connectionStart( HTTPConnectionUserID userID ) {
+
+	// Bind the session.
+	// If the sessions already exists, the session manager just returns it without modifying the session map.
+	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().bind( userID );
+
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 "Request handler started (session="+session+")."
+			 );
+
+
+	// Init the session ALIVE value.
+	// This flag will be automatically 'deleted' by the session manager on session timeout (better: the while session becomes invalid).
+
+
+	// Is this the first call (no valid session available)?
+	if( session.get(Constants.SKEY_ISALIVE) == null ) {
+
+	    // Yes. Init session flag?
+	    session.put( Constants.SKEY_ISALIVE,        new BasicBooleanType(true) );
+	    session.put( Constants.SKEY_LASTACCESSTIME, new BasicNumberType(-1L) );
+
+	    // NOOP!?
+
+	} else {
+
+	    // Session timed out?
+	    BasicType wrp_lastAccessTime = session.get( Constants.SKEY_LASTACCESSTIME );
+	    BasicType wrp_sessionTimeout = this.handler.getEnvironment().getChild( Constants.EKEY_GLOBALCONFIGURATION ).get( Constants.KEY_SESSIONTIMEOUT );
+
+	    int sessionTimeout = 300;        // Default (hard coded) session timeout value (if not set)
+	    if( wrp_sessionTimeout != null )
+		sessionTimeout = wrp_sessionTimeout.getInt();
+
+
+	    
+	    if( wrp_lastAccessTime == null || wrp_lastAccessTime.getLong() <= (System.currentTimeMillis() - sessionTimeout) ) {
+
+		// The session died!
+		// All session vars must be invalidated!
+		session.clear();   
+
+		// Also remove (clear?) all children!
+		session.removeAllChildren();
+		
+
+	    }
+	    
+	}
+
+	return session.getSessionID();
+    }
+
+
+    /**
+     * This method is called when the distributor finishes processing a connection.
+     * It updates som important fields on the existing (!) session.
+     *
+     * @param sessionID The session's unique ID.
+     **/
+    private void handleSession_connectionEnd( UUID sessionID ) {
+	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().get( sessionID );
+
+	// Trace the session access time
+	session.put( Constants.SKEY_LASTACCESSTIME, new BasicNumberType(System.currentTimeMillis()) );
+	session.put( Constants.SKEY_ISALIVE, new BasicBooleanType(true) );
+    }
 
 }

@@ -14,16 +14,17 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.logging.Level;
 
 
-/*import ikrs.http.MalformedRequestException;
-import ikrs.http.Resource;
-import ikrs.http.UnsupportedVersionException;
-import ikrs.http.UnknownMethodException;
-*/
+import ikrs.http.AuthorizationException;
+import ikrs.http.HeaderFormatException;
+import ikrs.http.DataFormatException;
+import ikrs.typesystem.BasicType;
+
 
 public abstract class AbstractPreparedResponse
     implements PreparedHTTPResponse {
@@ -49,6 +50,10 @@ public abstract class AbstractPreparedResponse
      **/
     private Socket socket;
 
+    /**
+     * The connection's/user's sessionID.
+     **/
+    private UUID sessionID;
 
     /**
      * This is an _internal_ field to buffer the actual response headers.
@@ -63,7 +68,8 @@ public abstract class AbstractPreparedResponse
     private boolean isExecuted;
     private boolean isDisposed;
 
-    private int statusCode;
+    //private int statusCode;
+    private String statusCode;
     private String reasonPhrase;
 
 
@@ -83,6 +89,7 @@ public abstract class AbstractPreparedResponse
 				     HTTPHeaders requestHeaders,
 				     UUID socketID,
 				     Socket socket,
+				     UUID sessionID,
 
 				     int statusCode,
 				     String reasonPhrase ) 
@@ -94,11 +101,12 @@ public abstract class AbstractPreparedResponse
 	this.requestHeaders = requestHeaders;
 	this.socketID = socketID;
 	this.socket = socket;
+	this.sessionID = sessionID;
 
 	this.responseHeaders = new HTTPHeaders();
 
 
-	setStatusCode( statusCode );
+	setStatusCode( Integer.toString(statusCode) );
 	setReasonPhrase( reasonPhrase );
     }
 
@@ -128,6 +136,13 @@ public abstract class AbstractPreparedResponse
      **/
     protected Socket getSocket() {
 	return this.socket;
+    }
+
+    /**
+     * Get the connection's session ID
+     **/
+    protected UUID getSessionID() {
+	return this.sessionID;
     }
 
     /**
@@ -174,14 +189,14 @@ public abstract class AbstractPreparedResponse
     /**
      * Get the status code of this prepared response.
      **/
-    public int getStatusCode() {
+    public String getStatusCode() {
 	return this.statusCode;
     }
 
     /**
      * Set the status code to a new value.
      **/
-    protected void setStatusCode( int statusCode ) {
+    protected void setStatusCode( String statusCode ) {
 	this.statusCode = statusCode;
     }
 
@@ -213,22 +228,33 @@ public abstract class AbstractPreparedResponse
      *
      * Subclasses implementing this method should call the setPrepared() method when ready.
      *
+     * @param optionalReturnSettings This (optional, means may be null) map can be used to retrieve internal values
+     *                               for error recovery.
      *
      * @throws MalformRequestException If the passed HTTP request headers are malformed and cannot be processed.
      * @throws UnsupportedVersionException If the headers' HTTP version is not supported (supported versions are
      *                                     1.0 and 1.1).
+     * @throws UnsupportedMethodException If the request method is valid but not supported (status code 405).
      * @throws UnknownMethodException If the headers' method (from the request line) is unknown.
      * @throws ConfigurationException If the was a server configuration issue the server cannot work properly with.
      * @throws MissingResourceException If the requested resource cannot be found.
+     * @throws AuthorizationException If the requested resource requires authorization.
+     * @throws HeaderFormatException If the passed headers are malformed.
+     * @throws DataFormatException If the passed data is malformed.
      * @throws SecurityException If the request cannot be processed due to security reasons.
      * @throws IOException If any IO errors occur.
      **/
-    public abstract void prepare() 
+    public abstract void prepare( Map<String,BasicType> optionalReturnSettings ) 
 	throws MalformedRequestException,
 	       UnsupportedVersionException,
+	       UnsupportedMethodException,
 	       UnknownMethodException,
 	       ConfigurationException,
 	       MissingResourceException,
+	       AuthorizationException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException,
 	       SecurityException,
 	       IOException;
       
@@ -261,22 +287,35 @@ public abstract class AbstractPreparedResponse
 	Charset charset = Charset.forName("UTF-8");
 
 
-	// Send status line
-	HTTPHeaderLine statusLine = new HTTPHeaderLine( "HTTP/1.1 "+this.getStatusCode()+" " + this.getReasonPhrase(), null );
-	System.out.println( "Sending: " + statusLine.toString() );
-	byte[] b = statusLine.getRawBytes( charset );	    
-	// Write bytes to output stream
-	out.write( b );
+	// Do the generated headers have a status line set?
+	if( this.getResponseHeaders().size() == 0 
+	    || !this.getResponseHeaders().get(0).isResponseStatus() ) {
+
+	    // Send auto-generated status line
+	    // (The STATUS CODE and REASON PHRASE must be set here!)
+	    
+	    HTTPHeaderLine statusLine = new HTTPHeaderLine( "HTTP/1.1 "+this.getStatusCode()+" " + this.getReasonPhrase(), null );
+	    this.getHTTPHandler().getLogger().log( Level.INFO,
+						   getClass().getName() + ".execute()",
+						   "Sending hard coded status line (none in the headers present): " + statusLine.toString() );
+	    byte[] b = statusLine.getRawBytes( charset );	    
+	    // Write bytes to output stream
+	    out.write( b );
+
+	} 
 
 
 	
 	// First: write headers
 	Iterator<HTTPHeaderLine> iter = this.getResponseHeaders().iterator();
 	// There is at least one line
+	byte[] b;
 	do {
 
 	    HTTPHeaderLine line = iter.next();
-	    System.out.println( "Sending: " + line.toString() );
+	    this.getHTTPHandler().getLogger().log( Level.INFO,
+						   getClass().getName() + ".execute()",
+						   "Sending: " + line.toString() );
 
 	    b = line.getRawBytes( charset );	    
 	    // Write header line bytes to output stream
@@ -302,20 +341,52 @@ public abstract class AbstractPreparedResponse
 		//this.responseDataResource.open( true ); // Open in read-only mode
 
 		InputStream resourceIn = this.responseDataResource.getInputStream();
-
+		
+		this.getHTTPHandler().getLogger().log( Level.INFO,
+						       getClass().getName() + ".execute()",
+						       "Sending data ..." );
+		
 		byte[] buffer = new byte[ 1024 ];
 		int len = -1;
 		// Read the resource's data chunk by chunk
 		while( (len = resourceIn.read(buffer)) > 0 ) {
+
+		    // Print the data on stdout?
+		    //for( int i = 0; i < len; i++ )
+		    //	System.out.print( (char)buffer[i] );
 		    
 		    // And write each chunck into the socket's output stream
 		    out.write( buffer, 0, len );
-
+		    
 		}
 		
 		// And flush data
 		out.flush();
 		
+	    }
+
+
+	    // It cannot be said if the underlying implementations correctly read all incoming
+	    // data (POST and PUT method). Be sure everything was consumed.
+	    if( this.getRequestHeaders().getRequestMethod() != null 
+		&& ( this.getRequestHeaders().getRequestMethod().equals("POST") 
+		     || this.getRequestHeaders().getRequestMethod().equals("PUT") ) ) {
+		
+		this.httpHandler.getLogger().log( Level.INFO,
+						  getClass().getName()+".execute()",
+						  "The incoming request used HTTP method '" + this.getRequestHeaders().getRequestMethod() + "'; trying to comsume excessing data ..." );
+		long length = this.consumeIncomingData();
+		if( length > 0 ) {
+		    this.httpHandler.getLogger().log( Level.SEVERE,
+						  getClass().getName()+".execute()",
+						  "I consumed " + length + " additional bytes that were not read by the underlying handler!" );
+		} else {
+		    this.httpHandler.getLogger().log( Level.FINE,
+						  getClass().getName()+".execute()",
+						  "No additional bytes were read." );
+		}
+		// Done.
+
 	    }
 
 	} catch( IOException e ) {
@@ -327,13 +398,15 @@ public abstract class AbstractPreparedResponse
 
 	} finally {
 
-	    out.close();
+	    // Is this correct here?
+	    // The socket itself was passed though the constructor, so the calling instance should also
+	    // close the socket (and all its streams).
+	    // out.close();
 
 	}
 
 
-	// Now send the binary data
-
+	// Data sent.
     }
 
 
@@ -374,5 +447,29 @@ public abstract class AbstractPreparedResponse
     }
     //---END-------------------------------- PreparedResponse implementation -----------------------------
 
+
+
+    private long consumeIncomingData() 
+	throws IOException {
+
+	InputStream in = this.getSocket().getInputStream();
+	int length;
+	long total_length = 0;
+	byte[] buffer = new byte[256];  // Not too large here
+	while( in.available() > 0 
+	       && (length = in.read(buffer)) > 0 ) {
+
+	    // Print to stdout?
+	    for( int i = 0; i < length; i++ )
+		System.out.print( (char)buffer[i] );
+  
+	    total_length += length; // NOOP (just read)
+	}
+
+	if( total_length > 0L )
+	    System.out.println( "" );
+	    
+	return total_length;
+    }
 
 }

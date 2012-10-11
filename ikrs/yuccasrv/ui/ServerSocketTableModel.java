@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import ikrs.typesystem.*;
 import ikrs.yuccasrv.Constants;
+import ikrs.yuccasrv.ConnectionUserID;
 import ikrs.yuccasrv.socketmngr.*;
 
 public class ServerSocketTableModel 
@@ -92,7 +93,8 @@ public class ServerSocketTableModel
      **/
     public void serverAcceptedTCPConnection( BindManager source,
 					     UUID socketID,
-					     Socket sock ) {
+					     Socket sock,
+					     ConnectionUserID userID ) {
 	int row = this.resolveTableRowBySocketID( socketID );
 	if( row != -1 )
 	    fireTableCellUpdated( row, 4 ); // Update connectionCount cell
@@ -107,7 +109,8 @@ public class ServerSocketTableModel
      **/
     public void serverAcceptedUDPConnection( BindManager source,
 					     UUID socketID,
-					     DatagramSocket sock ) {
+					     DatagramSocket sock,
+					     ConnectionUserID userID ) {
 	int row = this.resolveTableRowBySocketID( socketID );
 	if( row != -1 )
 	    fireTableCellUpdated( row, 4 ); // Update connectionCount cell

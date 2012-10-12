@@ -23,6 +23,17 @@ public interface PostDataWrapper {
      **/
     public HTTPHeaders getRequestHeaders();
 
+
+    /**
+     * Get the post data's designated content length. 
+     * If the content length is unknown or not available the method
+     * should return -1;
+     *
+     * @return The content length (in bytes) or -1 if the lenght is
+     *         unknown.
+     **/
+    public long getContentLength();
+
     /**
      * Get the input stream associated with this post data.
      * Use it to read the data you are interested in; the returned stream

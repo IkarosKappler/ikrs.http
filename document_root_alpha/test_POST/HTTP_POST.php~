@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Post test</title>
+
+</head>
+
+
+<body>
+
+
+
+This form sends a GET request.
+<form method="get" action="HTTP_GET.php" >
+  Text A: <input type="text" name="my_text_A" value="This is my very nice test (B)." /><br/>
+  Text_B: 
+  <textarea name="my_text_B">
+             A real nice Test with special &Auml; chars other &szlig; international stuff.
+	     There are even line breaks!
+	     And &-chars.
+  </textarea><br/>
+  File: <input name="my_file" type="file" size="50" maxlength="100000" accept="text/*" /><br/>
+  <input type="submit" /><br/>
+</form>
+
+<?php
+
+	echo "_GET=";
+	print_r( $_GET );
+	echo "<br/>\n";
+
+	echo "getenv('QUERY_STRING')=" . getenv("QUERY_STRING") . "<br/>\n";
+
+?>
+
+
+</body>
+</html>

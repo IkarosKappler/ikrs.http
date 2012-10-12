@@ -12,9 +12,10 @@ package ikrs.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
 
-// import ikrs.http.DataFormatException;
-// import ikrs.http.HeaderFormatException;
+
 import ikrs.util.CustomLogger;
 
 public abstract class AbstractFileHandler
@@ -59,9 +60,11 @@ public abstract class AbstractFileHandler
     /**
      * Is that a good idea?
      **/
-    public abstract Resource process( HTTPHeaders headers,
+    public abstract Resource process( UUID sessionID,
+				      HTTPHeaders headers,
 				      PostDataWrapper postData,
-				      File file )
+				      File file,
+				      URI requestURI )
 	throws IOException,
 	       HeaderFormatException,
 	       DataFormatException,

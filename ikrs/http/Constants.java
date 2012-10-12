@@ -19,7 +19,7 @@ public class Constants {
     public static final String HTTP_METHOD_OPTIONS                               = "OPTIONS";
     public static final String HTTP_METHOD_CONNECT                               = "CONNECT";
 
-    // For the LogManager.
+    /* For the LogManager. */
     public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
 
     public static final String KEY_AUTHORIZATION_METHOD                          = "Authorization.Method";
@@ -43,10 +43,19 @@ public class Constants {
     public static final String KEY_SESSIONID                                     = "SESSION_ID";
     public static final String KEY_SESSIONTIMEOUT                                = "SESSION_TIMEOUT";
 
-    // Configuration constants
+    /* Configuration constants */
     public static final String KEY_DEFAULTCHARACTERSET                           = "DEFAULT_CHARSET";
 
-    public static final String KEY_SERVERNAME                                    = "SERVER_NAME";
+    //public static final String KEY_SERVERNAME                                    = "SERVER_NAME";
+    //public static final String KEY_SERVERPORT                                    = "SERVER_PORT";
+    public static final String KEY_SOFTWARENAME                                  = "SOFTWARE_NAME";
+
+    public static final String SKEY_REMOTE_ADDRESS                               = "REMOTE_ADDRESS";
+    public static final String SKEY_REMOTE_HOST                                  = "REMOTE_HOST";
+    /* The REMOTE_IDENT field is optional. See http://graphcomp.com/info/specs/cgi11.html */
+    public static final String SKEY_REMOTE_IDENT                                 = "REMOTE_IDENT";  
+    public static final String SKEY_REMOTE_USER                                  = "REMOTE_USER";
+
 
     // The session key constants
     public static final String SKEY_ISALIVE                                      = "IS_ALIVE";

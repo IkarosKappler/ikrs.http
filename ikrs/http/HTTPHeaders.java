@@ -30,6 +30,7 @@ public class HTTPHeaders {
 
     // Reqeuest/response headers.
     public static final String NAME_ACCEPT_CHARSET     = "Accept-Charset";
+    public static final String NAME_HOST               = "Host";
     public static final String NAME_CONTENT_LENGTH     = "Content-Length";
     public static final String NAME_CONTENT_TYPE       = "Content-Type";
 
@@ -124,13 +125,13 @@ public class HTTPHeaders {
     public boolean isGETRequest() {
 	// Call at least once the getRequestMethod() method to determine the method internally!
 	return this.getRequestMethod() != null 
-	    && this.requestMethod.equals("GET");
+	    && this.requestMethod.equals( Constants.HTTP_METHOD_GET );
     }
 
     public boolean isPOSTRequest() {
 	// Call at least once the getRequestMethod() method to determine the method internally!
-	return this.getRequestMethod()!= null 
-	    && this.requestMethod.equals("POST");
+	return this.getRequestMethod() != null 
+	    && this.requestMethod.equals( Constants.HTTP_METHOD_POST );
     }
 
     /**
@@ -706,7 +707,8 @@ public class HTTPHeaders {
 	while( (header = HTTPHeaderLine.read(in)) != null ) {
 	    System.out.println( "   HTTPHeaders.read(..) header line: " + header );
 	    
-	    headers.add( header );
+	    if( header.getKey() != null )
+		headers.add( header );
 	}
 
 	

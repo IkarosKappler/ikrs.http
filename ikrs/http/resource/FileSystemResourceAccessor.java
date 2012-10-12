@@ -238,9 +238,11 @@ public class FileSystemResourceAccessor
 	    ikrs.http.FileHandler fileHandler = new ikrs.http.filehandler.PHPHandler( this.getHTTPHandler(),
 										      this.getLogger() );
 										      
-	    Resource resource = fileHandler.process( headers,
+	    Resource resource = fileHandler.process( sessionID,
+						     headers,
 						     postData,
-						     requestedFile );
+						     requestedFile,
+						     uri );
 
 	    // Determine the MIME type from the generated PHP headers
 	    // ... !!! ???
@@ -302,13 +304,9 @@ public class FileSystemResourceAccessor
     public boolean isAccessible( File file,
 				 URI requestURI ) {
 
-	// Hide files like .htaccess and .htpasswd
-	//if( file.getName().startsWith(".") )
-	//    return false;
-
+	// If a file is accessible depends on the file filter.
 	return this.getHTTPHandler().getFileFilter().acceptAccess( file );
 
-	//return true;
     }
 				 
 

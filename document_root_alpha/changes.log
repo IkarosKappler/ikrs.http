@@ -1,12 +1,16 @@
 
 
-
+[2012-10-12]	
+  - Replaced HTTPHandler.getServerName() by HTTPHandler.getSoftwareName() to avoid CGI name clash.
+  - Built new HTTPHandler.getServerName() method.
+  - Build basic CGI/1.1 handler.
+  - Finished PHP POST handling.
 
 
 [2012-10-11]
   - htaccess 'DirectoryIndex' implemented.
   - htaccess 'Options {+|-}Indexes' implemented.
-  - New class for directory listings: ikrs.http.resource.DefaultDirectoryResource-
+  - New class for directory listings: ikrs.http.resource.DefaultDirectoryResource.
 
 [2012-09-15]
   - htaccess 'Digest' authorization implemented (not apache compatible: ikrs.http.MD5).

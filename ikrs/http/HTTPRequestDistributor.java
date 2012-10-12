@@ -23,6 +23,7 @@ import ikrs.util.session.Session;
 import ikrs.typesystem.BasicBooleanType;
 import ikrs.typesystem.BasicNumberType;
 import ikrs.typesystem.BasicType;
+import ikrs.typesystem.BasicStringType;
 import ikrs.yuccasrv.ConnectionUserID;
 
 
@@ -219,6 +220,17 @@ public class HTTPRequestDistributor
 	// Bind the session.
 	// If the sessions already exists, the session manager just returns it without modifying the session map.
 	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().bind( userID );
+	
+
+	// Store basic connection information in the session. 
+	// Some modules (such as the CGIHandler) require those fields.
+	
+	session.put( Constants.SKEY_REMOTE_ADDRESS, new BasicStringType(this.socket.getInetAddress().getHostAddress()) );
+	session.put( Constants.SKEY_REMOTE_HOST,    new BasicStringType(this.socket.getInetAddress().getHostName()) );
+	// session.put( Constants.SKEY_REMOTE_IDENT,   null ); ??? 
+	// session.put( Constants.SKEY_REMOTE_USER, null );    ???
+
+
 
 	this.logger.log( Level.INFO,
 			 getClass().getName(),

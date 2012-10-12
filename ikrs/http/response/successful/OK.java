@@ -213,7 +213,7 @@ public class OK
 
 	
 	    // Add default headers (might be overwritter later, see below).
-	    super.addResponseHeader( "Server",            this.getHTTPHandler().getServerName() ); 
+	    super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() ); 
 	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) );
 	    super.addResponseHeader( "Content-Language",  "en" );
 	    super.addResponseHeader( "Connection",        "close" );

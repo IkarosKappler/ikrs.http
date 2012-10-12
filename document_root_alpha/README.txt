@@ -2,6 +2,12 @@
 
 
 TO DO:
+[2012-10-12]
+ - Include the 'AUTH_TYPE' field into the CGI environment vars (ikrs.http.filehandler.CGIHandler).
+ - The CGI environment's 'PATH_TRANSLATED' must be a fully qualified global URL.
+ - The HTTPRequestDistributor must - when initializing the session - put REMOTE_IDENT and REMOTE_USER (where get
+   that from?).
+
 [2012-10-11]
  - The DefaultDirectoryResource should be splitted into two subclasses: one for TEXT listing and one for XHTML.
  - Specify a general DirectoryResource interface and make it configurable through the handler class.
@@ -64,11 +70,79 @@ TO DO:
 Important Notes
 ===============
 
+Use PHP-CGI instead of PHP-CLI
+------------------------------
  - To enable PHP install the 'php-cgi' package (not the commandline interface 'php-cli' or just 'php').
    Example:
    sudo apt-get install php5-cgi
 
 
+
+The "File not found" issue
+--------------------------
+ - If the PHP interpreter is prompting on each PHP file you want to run (using your browser):
+
+   "<b>Security Alert!</b> The PHP CGI cannot be accessed directly"
+
+   The CGI handler requires to set some environment vars for php-cgi. By default this is not allowed
+   by the 'cgi.force_redirect' directive in your php.ini (php-cgi, NOT php-cli!).
+   
+   Locate you php-cgi configuration file, something like
+   /etc/php5/cgi/php.init,  
+   near line ~834
+   ; cgi.force_redirect is necessary to provide security running PHP as a CGI under
+   ; most web servers.  Left undefined, PHP turns this on by default.  You can
+   ; turn it off here AT YOUR OWN RISK
+   ; **You CAN safely turn this off for IIS, in fact, you MUST.**
+   ; http://php.net/cgi.force-redirect
+   ;cgi.force_redirect = 1
+
+   Now set 'cgi.force_redirect' to 0 to allow modifications to php-cgi's environment:
+   cgi.force_redirect = 0
+
+
+
+ - If the PHP interpreter is not prompting 
+
+   "No input file specified." (Status: 404 Not Found)
+
+   you have to set the document-root in your php-cgi config file,
+   near line ~804:
+   ; The root of the PHP pages, used only if nonempty.
+   ; if PHP was not compiled with FORCE_REDIRECT, you SHOULD set doc_root
+   ; if you are running php as a CGI under any web server (other than IIS)
+   ; see documentation for security issues.  The alternate is to use the
+   ; cgi.force_redirect configuration below
+   ; http://php.net/doc-root
+   doc_root = 
+
+   Now set 'doc_root' to your document root.
+   Example:
+   doc_root = "/home/your_user_name/java/document_root_alpha"
+
+   If this does not fix the problem add an additional document-root directive:
+   server.document_root = "/home/your_user_name/java/document_root_alpha"
+   
+
+   Now near line ~850:
+   ; cgi.fix_pathinfo provides *real* PATH_INFO/PATH_TRANSLATED support for CGI.  PHP's
+   ; previous behaviour was to set PATH_TRANSLATED to SCRIPT_FILENAME, and to not grok
+   ; what PATH_INFO is.  For more information on PATH_INFO, see the cgi specs.  Setting
+   ; this to 1 will cause PHP CGI to fix its paths to conform to the spec.  A setting
+   ; of zero causes PHP to behave as before.  Default is 1.  You should fix your scripts
+   ; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.
+   ; http://php.net/cgi.fix-pathinfo
+   ;cgi.fix_pathinfo=1
+
+   Set cgi.fix_pathinfo to 1:
+   cgi.fix_pathinfo = 1
+
+   
+   NOTE 1: The ikrs.http.filehandler.CGIHandler class will add an additional security check field
+	   REDIRECT_STATUS = 1
+   	   to the environment vars which will finally fix the "File not found" issue.
+
+   NOTE 2: I only changed my config in /etc/php5/cgi/, I left /etc/php5/cli unchanged.
 
 
 Files

@@ -154,7 +154,7 @@ public class DefaultDirectoryResource
 	    footLine += CustomUtil.repeat( "=", totalTextWidth ) + getFormattedLineBreak();
 
 
-	footLine += this.getHTTPHandler().getServerName() + getFormattedLineBreak();
+	footLine += this.getHTTPHandler().getSoftwareName() + getFormattedLineBreak();
 
 	
 	if( this.isHTMLFormat() ) {

@@ -80,6 +80,20 @@ public abstract class AbstractPostDataWrapper
     }
 
     /**
+     * Get the post data's designated content length. 
+     * If the content length is unknown or not available the method
+     * should return -1;
+     *
+     * @return The content length (in bytes) or -1 if the lenght is
+     *         unknown.
+     **/
+    public long getContentLength() {
+	
+	// Just fetch the Content-Length from the header fields.
+	return this.headers.getLongValue( HTTPHeaders.NAME_CONTENT_LENGTH );
+    }
+
+    /**
      * Get the input stream associated with this post data.
      * Use it to read the data you are interested in; the returned stream
      * is never null.

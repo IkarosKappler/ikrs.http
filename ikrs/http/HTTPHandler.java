@@ -120,7 +120,7 @@ public class HTTPHandler
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
 								      true   // allowsMultipleChildNames
 								      );
-	this.environment.put( Constants.KEY_SERVERNAME, 
+	this.environment.put( Constants.KEY_SOFTWARENAME, 
 			      new BasicStringType("Yucca/" + Constants.VERSION + " " + 
 						  "(" + System.getProperty("os.name") + ") " +
 						  "Java/" + System.getProperty("java.version")) 
@@ -199,6 +199,7 @@ public class HTTPHandler
 	Environment<String,BasicType> gconfig = this.environment.createChild( Constants.EKEY_GLOBALCONFIGURATION );
 	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(10) ); // 300) );
 	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
+	//gconfig.put( Constants.KEY_SERVERNAME, new BasicStringType("booze.dyndns.org") ); // iso-8859-1") );
 	// ...
     }
 
@@ -231,14 +232,15 @@ public class HTTPHandler
     }
 
     /**
-     * Get the server's name, compatible with the 'Server' header field.
+     * Get the server's software name, compatible with the 'Server' header field.
      *
-     * 'Server' should have the format:
+     * 'Server' should have the format: 
      * Apache/1.3.29 (Unix) PHP/4.3.4
      *
      **/
-    public String getServerName() {
-	BasicType name = this.getEnvironment().get( Constants.KEY_SERVERNAME );
+    //public String getServerName() {
+    public String getSoftwareName() {
+	BasicType name = this.getEnvironment().get( Constants.KEY_SOFTWARENAME );
 
 	if( name == null )
 	    return getClass().getName();

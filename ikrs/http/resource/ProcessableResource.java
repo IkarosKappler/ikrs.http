@@ -31,7 +31,9 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
 
+import ikrs.http.CustomUtil;
 import ikrs.http.HTTPHandler;
+import ikrs.http.PostDataWrapper;
 import ikrs.http.ReadOnlyException;
 import ikrs.util.CustomLogger;
 
@@ -43,6 +45,8 @@ public class ProcessableResource
      * The process builder passed by the calling instance (must not be null).
      **/
     private ProcessBuilder processBuilder;
+
+    private PostDataWrapper postData;
 
     /**
      * This field stored the underlying buffered resource (contains the process's output data).
@@ -59,56 +63,6 @@ public class ProcessableResource
      * Create a new ProcessableResource.
      *
      * @param logger       A custom logger to write log messages to (must not be null).
-     * @param command      The system command you want to execute (some platforms have problems with command arguments
-     *                     inside the command-string)! Try the constructor using a List as command in 
-     *                     this case.
-     * @param useFairLocks If set to true the class will use fair read locks (writing isn't
-     *                     possible at all with this class).
-     * @throws NullPointerException If logger or pb is null.
-     **/
-    public ProcessableResource( HTTPHandler handler,
-				CustomLogger logger,
-				String command,
-				boolean useFairLocks ) 
-	throws NullPointerException {
-
-	super( handler, logger, useFairLocks );
-
-
-	if( command == null )
-	    throw new NullPointerException( "Cannot create ProcessableResources with null-commands." );
-
-	this.processBuilder = new ProcessBuilder( command );	
-    }
-
-    /**
-     * Create a new ProcessableResource.
-     *
-     * @param logger       A custom logger to write log messages to (must not be null).
-     * @param command      The system command you want to execute.
-     * @param useFairLocks If set to true the class will use fair read locks (writing isn't
-     *                     possible at all with this class).
-     * @throws NullPointerException If logger or pb is null.
-     **/
-    public ProcessableResource( HTTPHandler handler,
-				CustomLogger logger,
-				List<String> command,
-				boolean useFairLocks ) 
-	throws NullPointerException {
-
-	super( handler, logger, useFairLocks );
-
-
-	if( command == null )
-	    throw new NullPointerException( "Cannot create ProcessableResources with null-commands." );
-
-	this.processBuilder = new ProcessBuilder( command );	
-    }
-
-    /**
-     * Create a new ProcessableResource.
-     *
-     * @param logger       A custom logger to write log messages to (must not be null).
      * @param pb           The process builder to use (must not be null).
      * @param useFairLocks If set to true the class will use fair read locks (writing isn't
      *                     possible at all with this class).
@@ -117,6 +71,7 @@ public class ProcessableResource
     public ProcessableResource( HTTPHandler handler,
 				CustomLogger logger,
 				ProcessBuilder pb,
+				PostDataWrapper postData,
 				boolean useFairLocks ) 
 	throws NullPointerException {
 
@@ -127,6 +82,7 @@ public class ProcessableResource
 	    throw new NullPointerException( "Cannot create ProcessableResources with null-ProcessBuilders." );
 
 	this.processBuilder = pb;
+	this.postData       = postData; // May be null!
 	
     }
 
@@ -160,8 +116,27 @@ public class ProcessableResource
 	if( !readOnly ) 
 	    throw new IOException( "ProccessableResources can only be opened in read-only mode." );
 
-	// Might throw IOException 
+	// Might throw IOException or a SecurityException. 
 	Process process = this.processBuilder.start();
+	
+
+	// Write POST data into process's stdin [if POST data is available]
+	if( this.postData != null ) {
+	    
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".open(...)",
+				  "HTTP POST data is available. Forwarding POST data to system process ..." );
+	    long readLength = CustomUtil.transfer( this.postData.getInputStream(),
+						   process.getOutputStream(),
+						   this.postData.getContentLength(),  // max read length
+						   256                                // buffer size
+						   );
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".open(...)",
+				  "" + readLength + " bytes of POST data written to system process." );
+	    
+	}
+
 
 	// Call process.waitFor() at this point ??? !!!
 	try {
@@ -204,14 +179,7 @@ public class ProcessableResource
 
 	}
 
-	
-	// Test: print process's data
-	/*
-	System.out.println( "Reading process data ..." );
-	int b;
-	while( (b = in.read()) != -1 )
-	    System.out.print( (char)b );
-	*/
+
 	
 	// Store the input stream's data into a BufferedResource.
 	this.bufferedResource = new BufferedResource( this.getHTTPHandler(),
@@ -344,6 +312,7 @@ public class ProcessableResource
 	    pr = new ProcessableResource( null,  // no http handler
 					  new ikrs.util.DefaultCustomLogger( "ProcessableResource.main()_TEST" ),
 					  pb,
+					  null,  // no POST data
 					  true   // useFairLocks?
 					  );
 	    

@@ -15,6 +15,8 @@ package ikrs.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
 
 
 public interface FileHandler {
@@ -22,9 +24,11 @@ public interface FileHandler {
     /**
      * Is that a good idea?
      **/
-    public Resource process( HTTPHeaders headers,
+    public Resource process( UUID sessionID,
+			     HTTPHeaders headers,
 			     PostDataWrapper postData,
-			     File file )
+			     File file,
+			     URI requestURI )
 	throws IOException,
 	       HeaderFormatException,
 	       DataFormatException,

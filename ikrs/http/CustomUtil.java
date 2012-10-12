@@ -342,6 +342,7 @@ public class CustomUtil {
 	    //	System.out.print( (char)buffer[i] );
 
 	    out.write( buffer, 0, len );
+	    out.flush();
 	    
 	    totalLength += len;
 	    bytesLeft -= len;

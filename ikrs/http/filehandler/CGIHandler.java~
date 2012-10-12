@@ -1,0 +1,392 @@
+package ikrs.http.filehandler;
+
+/**
+ * 
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-10-12
+ * @version 1.0.0
+ **/
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.ParseException;
+import java.util.List;
+import java.util.logging.Level;
+
+import ikrs.http.AbstractFileHandler;
+import ikrs.http.DataFormatException;
+import ikrs.http.DefaultPostDataWrapper;
+import ikrs.http.FileHandler;
+import ikrs.http.HeaderFormatException;
+import ikrs.http.HTTPHandler;
+import ikrs.http.HTTPHeaderLine;
+import ikrs.http.HTTPHeaders;
+import ikrs.http.PostDataWrapper;
+import ikrs.http.Resource;
+import ikrs.http.UnsupportedFormatException;
+import ikrs.http.resource.InterruptableResource;
+import ikrs.http.resource.ProcessableResource;
+import ikrs.http.datatype.FormData;
+import ikrs.io.BytePositionInputStream;
+import ikrs.util.CustomLogger;
+
+public abstract class CGIHandler
+    extends AbstractFileHandler {
+
+    
+
+    public static final String CGI_ENV_AUTH_TYPE              = "AUTH_TYPE";
+    public static final String CGI_ENV_CONTENT_LENGTH         = "CONTENT_LENGTH";
+    public static final String CGI_ENV_CONTENT_TYPE           = "CONTENT_TYPE";
+    public static final String CGI_ENV_GATEWAY_INTERFACE      = "GATEWAY_INTERFACE";
+    public static final String CGI_ENV_PATH_INFO              = "PATH_INFO";
+    public static final String CGI_ENV_PATH_TRANSLATED        = "PATH_TRANSLATED";
+    public static final String CGI_ENV_QUERY_STRING           = "QUERY_STRING";
+    public static final String CGI_ENV_REMOTE_ADDR            = "REMOTE_ADDR";
+    public static final String CGI_ENV_REMOTE_HOST            = "REMOTE_HOST";
+    public static final String CGI_ENV_REMOTE_IDENT           = "REMOTE_IDENT";
+    public static final String CGI_ENV_REMOTE_USER            = "REMOTE_USER";
+    public static final String CGI_ENV_REQUEST_METHOD         = "REQUEST_METHOD";
+    public static final String CGI_ENV_SCRIPT_NAME            = "SCRIPT_NAME";
+    public static final String CGI_ENV_SERVER_NAME            = "SERVER_NAME";
+    public static final String CGI_ENV_SERVER_PORT            = "SERVER_PORT";
+    public static final String CGI_ENV_SERVER_PROTOCOL        = "SERVER_PROTOCO";
+    public static final String CGI_ENV_SERVER_SOFTWARE        = "SERVER_SOFTWARE";
+
+    public static final String CGI_ENV_HTTP_                  = "HTTP_";
+
+
+
+     /**
+     * Create a new CGIHandler.
+     * 
+     * @param handler The global HTTP handler.
+     * @param logger  A logger to write log messages to (must not be null).
+     **/
+    public CGIandler( HTTPHandler handler, CustomLogger logger ) 
+	throws NullPointerException {
+
+	super( handler, logger );
+
+	
+    }
+    
+
+    /**
+     * Subclasses implementing this method must return a valid system command that can be executed
+     * directly using Java's ProcessBuilder.
+     *
+     * The first list element must be the command name itself, all following elements are the command
+     * line arguments.
+     *
+     *
+     * @param headers    The current request's HTTP headers.
+     * @param postData   The current request's post data (a data wrapper holding the input stream).
+     * @param file       The requested file (in the local file system).
+     * @param requestURI The request's URI (from headers.getRequestURI()).
+     *
+     * @return A list representing the system command.
+     **/
+    public abstract List<String> buildCGISystemCommand( HTTPHeaders headers,
+							PostDataWrapper postData,
+							File file,
+							URI requestURI );
+
+
+    /**
+     * Subclasses implementing the method may define additional/optional CGI environment settings.
+     * Note: there is no need to define the standard CGI environment as it is already contained
+     *       in the handler's default mapping.
+     *
+     *       The default vars are:
+     *          - AUTH_TYPE
+     *          - CONTENT_LENGTH
+     *          - CONTENT_TYPE
+     *          - GATEWAY_INTERFACE
+     *          - HTTP_*
+     *          - PATH_INFO
+     *          - PATH_TRANSLATED
+     *          - QUERY_STRING
+     *          - REMOTE_ADDR
+     *          - REMOTE_HOST
+     *          - REMOTE_IDENT
+     *          - REMOTE_USER
+     *          - REQUEST_METHOD
+     *          - SCRIPT_NAME
+     *          - SERVER_NAME
+     *          - SERVER_PORT
+     *          - SERVER_PROTOCOL
+     *          - SERVER_SOFTWARE
+     *
+     * See CGI specs or http://graphcomp.com/info/specs/cgi11.html for details.
+     *
+     *
+     * If the handler requires to overwrite pre-defined environment vars the method may change/remove
+     * the value in the given mapping. Handle with care.
+     *
+     * If the implementing handler has no additional environment vars the method may just do nothing.
+     *
+     * @param headers     The current request's HTTP headers.
+     * @param postData    The current request's post data (a data wrapper holding the input stream).
+     * @param file        The requested file (in the local file system).
+     * @param requestURI  The request's URI (from headers.getRequestURI()).
+     * @param environment The current environment settings and the target map.
+     *
+     **/
+    public abstract void buildAdditionalCGIEnvironmentVars( HTTPHeaders headers,
+							    PostDataWrapper postData,
+							    File file,
+							    URI requestURI,
+							    
+							    Map<String,String> environment );
+
+
+    //--- BEGIN ------------------------ FileHandler implementation ------------------------------
+    /**
+     * Is that a good idea?
+     **/
+    public Resource process( HTTPHeaders headers,
+			     PostDataWrapper postData,
+			     File file,
+			     URI requestURI )
+	throws IOException,
+	       HeaderFormatException,
+	       DataFormatException,
+               UnsupportedFormatException {
+
+
+	// If the request method is POST there might be some data to be processed.
+	if( headers.isPOSTRequest() ) {
+	    
+	    FormData formdata = this.readPOSTFormData( postData );
+	    // ...
+
+	}
+	    
+     
+
+	List command =  this.buildCGISystemCommand();
+	ProcessBuilder pb = new ProcessBuilder( command );
+	
+	this.buildCGIEnvironment( pb, headers, requestURI, additionalEnvironmentSettings );
+
+	Map<String,String> environment = pg.environment();
+	this.buildAdditionalCGIEnvironment( header, postData, file, requestURI, environment );
+
+
+
+	this.getLogger().log( Level.INFO,
+			      getClass().getName() + ".process(...)",
+			      "Creating a processable resource using the CGI file '" + file.getPath() + "'. System command: " + command.toString() );
+
+	ProcessableResource pr = 
+	    new ProcessableResource( this.getHTTPHandler(),
+				     this.getLogger(),  
+				     pb,
+				     false   // useFairLocks not necessary here; there will be one more resource wrapper
+				     );
+
+
+	
+	// The processable resource stores the system-process's output inside an internal buffer.
+	// Now we can read the CGI's generated header data using an InterruptableResource.
+	InterruptableResource ir = new InterruptableResource( this.getHTTPHandler(),
+							      this.getLogger(),
+							      pr,
+							      true    // useFairLocks (this will be the returned instance)
+							      );
+	
+
+	this.getLogger().log( Level.INFO,
+			      getClass().getName() + ".process(...)",
+			      "CGI output received. Reading generated HTTP headers from InterruptableResource ..." );
+
+	// Note that the InterruptableResource allows to simulate the inputstream to be closed,
+	// which is nothing more than a byte position reset.
+	ir.open( true ); // open in read-only mode
+
+
+	// Warning: even if the process was executed without any exceptions the system process may have failed!
+	// -> check the return code
+	if( pr.getExitValue() == 0 ) {
+	    
+	    // ???
+	    // Store exit code in the resource's meta data?
+	}
+
+
+
+	// Continue ...
+
+	BytePositionInputStream in = ir.getInputStream();
+	HTTPHeaders phpHeaders = HTTPHeaders.read( in );
+
+	try {
+
+	    // Store the generated HTTP headers into the resource's MetaData object.
+	    for( int i = 0; i < phpHeaders.size(); i++ ) {
+
+
+		// PHP creates a special 'Status' line indictating the HTTP respones status.
+		// This status has the format "<status_code> <reason_phrase>" (hopefully) and must be converted into the 
+		// HTTP-conform header line "HTTP/1.x <status_code> <reason_phrase>".
+		HTTPHeaderLine headerLine = phpHeaders.get(i);
+		if( headerLine.getKey() != null && headerLine.getKey().equals("Status") ) {
+
+		    // Convert the 'Status' line into the 'HTTP/1.1 <status> <reason_phrase>'
+		    // Note: This might throw a HeaderFormatException!
+		    HTTPHeaderLine newResponseLine = new HTTPHeaderLine( "HTTP/1.1 " + headerLine.getValue(), 
+									 null 
+									 );
+		    this.getLogger().log( Level.INFO,
+					  getClass().getName() + ".process(...)",
+					  "Converting PHP-generated HTTPHeaders["+i+"] to a new status line and adding to the resource's meta data: " + phpHeaders.get(i) + ", status line replacement: " + newResponseLine );
+
+		    ir.getMetaData().getOverrideHeaders().replaceResponseLine( newResponseLine );
+
+		} else {
+
+		    // A 'normal' key-value-tuple.
+		    this.getLogger().log( Level.INFO,
+					  getClass().getName() + ".process(...)",
+					  "Adding PHP-generated HTTPHeaders["+i+"] to the resource's meta data: " + phpHeaders.get(i) );
+
+		    ir.getMetaData().getOverrideHeaders().add( headerLine );
+		    
+		}
+	    }
+
+	} catch( HeaderFormatException e ) {
+
+	    ir.close();
+	    throw new IOException( "Cannot replace response status line due to HeaderFormatException: " + e.getMessage(),
+				   e );
+		
+
+	} 
+
+	
+	// Now reset the input stream!
+	// This will tell the next instance accessing the resource that it's still at the beginning of the 
+	// input stream (and the second 'open()' call will not fail).
+	ir.resetBytePosition();
+
+	    
+	return ir;
+	    
+    }
+
+    //--- END -------------------------- FileHandler implementation ------------------------------
+
+    /**
+     *
+     **/
+    protected FormData readPostFormData( PostDataWrapper postData ) 
+	throws IOException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException {
+
+	try {
+	    // Before building the system command, we have to read/parse the POST form data
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".readPostFormData(...)",
+				  "The request is a POST request. Reading sent form data ..." );
+
+	    FormData formData = postData.readFormData();
+		
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".readPostFormData(...)",
+				  "POST data parsed to form-data: " + formData );
+
+	} catch( HeaderFormatException e ) {
+		
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".readPostFormData(...)",
+				  "[HeaderFormatException] Failed to process POST data: " + e.getMessage() );
+	    throw e;
+
+	} catch( DataFormatException e ) {
+		
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".readPostFormData(...)",
+				  "[DataFormatException] Failed to process POST data: " + e.getMessage() );
+	    throw e;
+
+	} catch( UnsupportedFormatException e ) {
+		
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".readPostFormData(...)",
+				  "[UnsupportedFormatException] Failed to process POST data: " + e.getMessage() );
+	    throw e;
+
+	}
+    }
+
+
+    private void buildCGIEnvironment( ProcessBuilder pb,
+				      HTTPHeaders headers,
+				      URI requestURI,
+				      Map<String,String> additionalEnvironmentSettings
+				      ) {
+
+
+	// Bind environment settings!
+	if( headers.isGETRequest() ) {
+	    
+	    if( requestURI.getQuery() == null ) {
+
+		this.getLogger().log( Level.INFO,
+				      getClass().getName() + ".buildCGIEnvironment(...)",
+				      "[Method=" + headers.getRequestMethod() + "] Cannot map 'QUERY_STRING' into CGI environment: query string is null. RequestURI=" + requestURI );
+	
+	    } else {
+		
+		this.getLogger().log( Level.INFO,
+				      getClass().getName() + ".buildCGIEnvironment(...)",
+				      "[Method=" + headers.getRequestMethod() + "] Mapping 'QUERY_STRING' into CGI environment: " + requestURI.getQuery() );
+		pb.environment().put( "QUERY_STRING", requestURI.getQuery() );
+
+	    }
+
+	}
+
+
+	// Overwrite with additionals?
+	if( additionalEnvironmentSettings != null ) {
+	    
+	    pb.getEnvironment.addAll( additionalEnvironmentSettings );
+	    
+	}
+    }
+
+    private void addCGIEnvironmentValue( ProcessBuilder pb,
+					 String key,
+					 String value ) {
+
+	if( value == null )
+	    value = "";
+
+	if( requestURI.getQuery() == null ) {
+
+		this.getLogger().log( Level.INFO,
+				      getClass().getName() + ".buildCGIEnvironment(...)",
+				      "[Method=" + headers.getRequestMethod() + "] Cannot map 'QUERY_STRING' into CGI environment: query string is null. RequestURI=" + requestURI );
+	
+	    } else {
+		
+		this.getLogger().log( Level.INFO,
+				      getClass().getName() + ".buildCGIEnvironment(...)",
+				      "[Method=" + headers.getRequestMethod() + "] Mapping 'QUERY_STRING' into CGI environment: " + requestURI.getQuery() );
+		pb.environment().put( "QUERY_STRING", requestURI.getQuery() );
+
+	    }
+	pb.environment().put( key, value );
+
+    }
+
+
+}

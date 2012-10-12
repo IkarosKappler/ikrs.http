@@ -125,7 +125,7 @@ public class GeneralPreparedResponse
 	}
 	    
 	
-	super.addResponseHeader( "Server",            this.getHTTPHandler().getServerName() );
+	super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() );
 
 	if( this.getResponseDataResource() != null ) {
 	    super.addResponseHeader( "Content-Length",    Long.toString(this.getResponseDataResource().getLength()) ); 

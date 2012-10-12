@@ -8,6 +8,7 @@
 
 ?>
 
+These characters are sent with a wrong charset (iso-8859-1) and should look broken:
 
 
 Ä

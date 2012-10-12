@@ -60,6 +60,13 @@ public class KeyValueStringPair {
 
     public static KeyValueStringPair split( String line,
 					    boolean removeQuotes ) {
+	
+	return KeyValueStringPair.split( line, removeQuotes, "=" );
+    }
+
+    public static KeyValueStringPair split( String line,
+					    boolean removeQuotes,
+					    String  separator ) {
 
 	if( line == null )
 	    return null;
@@ -69,7 +76,7 @@ public class KeyValueStringPair {
 	    return new KeyValueStringPair( null, null );
 
 	
-	int index = line.indexOf( "=" );
+	int index = line.indexOf( separator ); // "=" );
 	String key = null;
 	String value = null;
 	

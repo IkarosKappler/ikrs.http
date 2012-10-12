@@ -122,12 +122,14 @@ public class HTTPHeaders {
     }
 
     public boolean isGETRequest() {
-	return this.requestMethod != null 
+	// Call at least once the getRequestMethod() method to determine the method internally!
+	return this.getRequestMethod() != null 
 	    && this.requestMethod.equals("GET");
     }
 
     public boolean isPOSTRequest() {
-	return this.requestMethod != null 
+	// Call at least once the getRequestMethod() method to determine the method internally!
+	return this.getRequestMethod()!= null 
 	    && this.requestMethod.equals("POST");
     }
 

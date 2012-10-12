@@ -15,8 +15,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -85,7 +87,7 @@ public class DefaultDirectoryResource
 	throws IOException {
 
 
-	String title = "Files in " + this.getRequestURI().getPath() + getFormattedLineBreak(2);
+	String title = "Index of " + this.getRequestURI().getPath() + getFormattedLineBreak(2);
 
 	if( this.isHTMLFormat() ) {
 
@@ -106,7 +108,7 @@ public class DefaultDirectoryResource
 		append( "<body>\n"  ).
 		append( "\n"  ).
 		// append( "<h3><img src=\"icon_mini.png\" alt=\"Icon\" id=\"icon_mini\" /> " ).append( title ).append( "</h3>\n"  ).
-		append( "<h3>" ).append( title ).append( "</h3>\n"  ).
+		append( "<h2>" ).append( title ).append( "</h2>\n"  ).
 		append( "\n" );
 		
 	    out.write( htmlHeader.toString().getBytes() );
@@ -130,14 +132,14 @@ public class DefaultDirectoryResource
 
 	if( this.isHTMLFormat() ) {
 	 
-	    String tableStart = "<table border=\"0\">\n";
+	    String tableStart = "<table>\n";
 	    out.write( tableStart.getBytes() );
 	    
 	}
 
 
 	// Write temp file data into buffer
-	this.generateFileListing( out );
+	int totalTextWidth = this.generateFileListing( out );
 	
 
 	Date currentDate = new Date( System.currentTimeMillis() );
@@ -149,7 +151,7 @@ public class DefaultDirectoryResource
 	if( this.isHTMLFormat() ) 
 	    footLine += "<hr />\n";
 	else
-	    footLine += CustomUtil.repeat( "=", 80 ) + getFormattedLineBreak();
+	    footLine += CustomUtil.repeat( "=", totalTextWidth ) + getFormattedLineBreak();
 
 
 	footLine += this.getHTTPHandler().getServerName() + getFormattedLineBreak();
@@ -196,7 +198,7 @@ public class DefaultDirectoryResource
     }
     // --- END ----------------------- AbstractDirectoryResource implementation ------------------------
     
-    private void generateFileListing( OutputStream out ) 
+    private int generateFileListing( OutputStream out ) 
 	throws IOException {
 
 	// WARNING: due to the AbstractDirectoryResource-specs it is NOT GUARANTEED that the file
@@ -216,31 +218,120 @@ public class DefaultDirectoryResource
 	    String message = "File is a directory and cannot be listed.\n";
 	    out.write( message.getBytes() );
 
-	    return;
+	    return -1;
 	}
 
 
 	File[] files = this.getDirectoryFile().listFiles();
 	files = sortFiles( files );
 
-	for( int i = 0; i < files.length; i++ ) {
-	    
-	    // Do NOT include files the file-filter does not allow to be listed!
-	    if( !this.getFileFilter().acceptListing(files[i]) )
+	if( this.isHTMLFormat() ) {
+	
+	    for( int i = 0; i < files.length; i++ ) {
+		
+		// Do NOT include files the file-filter does not allow to be listed!
+		if( !this.getFileFilter().acceptListing(files[i]) )
 		continue;  // Hide due to security reasons
+		
+		
+		buildHTMLLine( lineBuffer, files[i] );
+		out.write( lineBuffer.toString().getBytes("UTF-8") );
+		lineBuffer.delete( 0, lineBuffer.length() );
+		
+	    }
 
+	    return -1;
 
-	    buildLine( lineBuffer, files[i] );
-	    out.write( lineBuffer.toString().getBytes("UTF-8") );
-	    lineBuffer.delete( 0, lineBuffer.length() );
-    
+	} else {
+
+	    List<String[]> tableData = new ArrayList<String[]>( files.length );
+	    int[] rowSizes = null;
+	    String[] rowData = null;
+	    for( int i = 0; i < files.length; i++ ) {
+		
+		rowData = collectRowData( files[i] );
+		tableData.add( rowData );
+
+		if( rowSizes == null )
+		    rowSizes = new int[ rowData.length ];
+
+		for( int c = 0; c < rowData.length; c++ ) {
+
+		    rowSizes[c] = Math.max( rowSizes[c], rowData[c].length() );
+		}
+
+	    } // END for
+	    
+	    // Generate text output
+	    int totalWidth = 80;     // 80 for the case there are not files
+	    for( int i = 0; i < tableData.size(); i++ ) {		
+
+		rowData = tableData.get( i );
+		buildTextLine( lineBuffer,
+			       rowData,
+			       rowSizes,
+			       4    // columnSpacing
+			       );
+		out.write( lineBuffer.toString().getBytes("UTF-8") );
+		totalWidth = lineBuffer.length() - 1;  // do not include line break
+		lineBuffer.delete( 0, lineBuffer.length() );
+
+	    }
+
+	    return totalWidth;
 	}
+    }
+
+    private String[] collectRowData( File file ) {
+	// 0: name
+	// 1: size
+	// 2: type
+	// 3: date
+	String[] row = new String[ 4 ];
+	
+	for( int i = 0; i < row.length; i++ ) {
+	    row[i] =  getFileAttribute( file, i );
+	}
+
+	return row;
+    }
+
+    private void buildTextLine( StringBuffer lineBuffer,
+				String[] rowData,
+				int[] rowSizes,
+				int columnSpacing) {
+
+	for( int i = 0; i < rowData.length; i++ ) {
+
+	    String data = rowData[i];
+	    int len     = rowSizes[i];
+	    
+	    if( i == 1 ) {
+
+		// The length should be aligned right
+		lineBuffer.append( CustomUtil.repeat( " ", len - data.length()) );
+		lineBuffer.append( data );
+		
+	    } else {
+
+		// Other values should be aligned left	
+		lineBuffer.append( data );
+		lineBuffer.append( CustomUtil.repeat( " ", len - data.length()) );
+
+	    }
+
+	    // Print column spacing
+	    lineBuffer.append( CustomUtil.repeat( " ", columnSpacing) );
+	    
+	}
+
+	lineBuffer.append( "\n" );
 
     }
 
-    private void buildLine( StringBuffer lineBuffer,
-			    File file ) {
-
+    private void buildHTMLLine( StringBuffer lineBuffer,
+				File file ) {
+	
 	if( this.isHTMLFormat() ) 
 	    lineBuffer.append( "<tr>\n" );
 

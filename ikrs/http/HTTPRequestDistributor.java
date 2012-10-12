@@ -107,35 +107,37 @@ public class HTTPRequestDistributor
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
 
 
+	    PostDataWrapper postData = null;
+	    if( headers.isPOSTRequest() ) {
 
-	    Long contentLength = headers.getLongValue( HTTPHeaders.NAME_CONTENT_LENGTH );  // This search is case-insensitive
-	    this.logger.log( Level.INFO,
-			     getClass().getName() + ".run()",
-			     "Handling POST data using 'Content-Length': '" + contentLength + "'." );
+		Long contentLength = headers.getLongValue( HTTPHeaders.NAME_CONTENT_LENGTH );  // This search is case-insensitive
+		this.logger.log( Level.INFO,
+				 getClass().getName() + ".run()",
+				 "Handling POST data using 'Content-Length': '" + contentLength + "'." );
 	    
 	    
-	    // Is there a default value if not passed?
-	    InputStream postDataInputStream = null;
-	    if( contentLength == null ) {
+		// Is there a default value if not passed?
+		InputStream postDataInputStream = null;
+		if( contentLength == null ) {
 		
-		postDataInputStream = new BytePositionInputStream( this.socket.getInputStream() );
+		    postDataInputStream = new BytePositionInputStream( this.socket.getInputStream() );
 
-	    } else {
+		} else {
 		
-		postDataInputStream = new ReadLimitInputStream( this.socket.getInputStream(),
-								contentLength.longValue() );
+		    postDataInputStream = new ReadLimitInputStream( this.socket.getInputStream(),
+								    contentLength.longValue() );
 
 
-	    }
+		}
 
 
+		// Wrap the trailing data into a PostDataWrapper
+		postData = new DefaultPostDataWrapper( this.logger,
+						       headers,
+						       postDataInputStream // this.socket.getInputStream() 
+						       );
 
-
-	    // Wrap the trailing data into a PostDataWrapper
-	    PostDataWrapper postData = new DefaultPostDataWrapper( this.logger,
-								   headers,
-								   postDataInputStream // this.socket.getInputStream() 
-								   );
+	    } // END if [is POST request]
 
 	    
 	    // Create the response. 

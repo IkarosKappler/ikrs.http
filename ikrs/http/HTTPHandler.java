@@ -120,7 +120,11 @@ public class HTTPHandler
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
 								      true   // allowsMultipleChildNames
 								      );
-	this.environment.put( Constants.KEY_SERVERNAME, new BasicStringType("Yucca/0.9.2 (Unix) Java/7") ); 
+	this.environment.put( Constants.KEY_SERVERNAME, 
+			      new BasicStringType("Yucca/" + Constants.VERSION + " " + 
+						  "(" + System.getProperty("os.name") + ") " +
+						  "Java/" + System.getProperty("java.version")) 
+			      ); 
 
 	this.initGlobalConfiguration();
 

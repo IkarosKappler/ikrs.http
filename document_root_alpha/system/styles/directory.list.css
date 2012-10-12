@@ -1,13 +1,32 @@
+/**
+ * This is the stylesheet for auto-generated XTHML directory listings 
+ *
+ * @author Ikaros Kappler
+ * @date 2012-10-11
+ * @version 1.0.0
+ **/
 
 
+
+/* Use a monospace font */
 body {
     font-family:       Monospace;
 }
 
+
+/* The file table should have a 10 pixel margin to the left */
 table {
-    border-spacing:    20px 0px;
+    margin-left:       10px;
 }
 
+
+/* To avoid table rows to stick together add a 20 pixel padding to the right */
+td {
+    padding-right:     20px;
+}
+
+
+/* The horizontal line at the bottom of the page */
 hr {
     width:             36%;
     border:            0;

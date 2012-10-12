@@ -105,6 +105,7 @@ public class DefaultDirectoryResource
 		append( "\n"  ).
 		append( "<body>\n"  ).
 		append( "\n"  ).
+		// append( "<h3><img src=\"icon_mini.png\" alt=\"Icon\" id=\"icon_mini\" /> " ).append( title ).append( "</h3>\n"  ).
 		append( "<h3>" ).append( title ).append( "</h3>\n"  ).
 		append( "\n" );
 		

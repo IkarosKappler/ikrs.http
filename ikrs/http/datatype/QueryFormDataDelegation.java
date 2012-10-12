@@ -1,7 +1,8 @@
 package ikrs.http.datatype;
 
 /**
- * 
+ * The QueryFormDataDelegation is a wrapper class that wraps a single Query object (a key-value-map)
+ * into a FormData instance.
  *
  * @author Ikaros Kappler
  * @date 2012-10-04
@@ -52,10 +53,6 @@ public class QueryFormDataDelegation
     public int size() {
 	return this.query.size();
     }
-
-    //public FormDataItem get( int index ) {
-    //	return this.list.get( index );
-    //}
 
     public void add( FormDataItem item ) 
 	throws NullPointerException {

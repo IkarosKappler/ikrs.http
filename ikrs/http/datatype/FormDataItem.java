@@ -12,34 +12,18 @@ package ikrs.http.datatype;
 import ikrs.http.HTTPHeaders;
 
 
-public class FormDataItem {
+public class FormDataItem 
+    extends KeyValueStringPair {
 
-    private String key;
-
-    private String value;
-
-    private HTTPHeaders headers;
+    // private HTTPHeaders headers;
 
     public FormDataItem( String key, String value ) {
-	super();
+	super( key, value );
 
-	this.key    = key;
-	this.value  = value;
+	//this.key    = key;
+	//this.value  = value;
 
-	this.headers = new HTTPHeaders();
-    }
-
-
-    public String getKey() {
-	return this.key;
-    }
-
-    public String getValue() {
-	return this.value;
-    }
-
-    public HTTPHeaders getHeaders() {
-	return this.headers;
+	// this.headers = new HTTPHeaders();
     }
 
 }

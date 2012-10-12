@@ -1,6 +1,21 @@
 package ikrs.http.datatype;
 
 /**
+ * The Query class is a simple parser that splits a given (raw) request query string
+ * and stores it's tokens into a key-value map.
+ *
+ * Example:
+ * The query string 
+ *   my_text_A=This+is+my+very+nice+test+%28B%29.&my_text_B=+++++++++++++Ein+ganz+toller+Text+mit+%C4+Umlauten+und+%DFonderzeichen.%0D%0A%09+++++Sogar+Zeilenumbr%FCche+gibt%27s.%0D%0A%09+++++Und+%26-Zeichen.%0D%0A++&my_file=favicon.ico
+ *
+ * would be splitted and mapped into
+ *   my_file:   "favicon.ico"
+ *   my_text_A: "This is my very nice test (B)."
+ *   my_text_B: "           Ein ganz toller Text mit Ä Umlauten und ßonderzeichen.
+ *                          Sogar Zeilenumbrüche gibt's.
+ *                          Und &-Zeichen."
+ *
+ *
  * @author Ikaros Kappler
  * @date 2012-10-04
  * @version 1.0.0
@@ -27,7 +42,7 @@ public class Query {
     /**
      * Constructs a new case insensitive Query using UTF-8 encoding.
      *
-     * @param rawQueryString The query string (usually retrieves from the HTTP headers' request URI string).
+     * @param rawQueryString The query string (usually retrieved from the HTTP headers' request URI string).
      **/
     public Query( String rawQueryString ) 
 	throws NullPointerException,
@@ -40,7 +55,7 @@ public class Query {
     /**
      * Constructs a new Query.
      *
-     * @param rawQueryString The query string (usually retrieves from the HTTP headers' request URI string).
+     * @param rawQueryString The query string (usually retrieved from the HTTP headers' request URI string).
      * @param encoding       The encoding to use.
      * @param caseSensitive  If set to true the key comparator will be case sensitive.
      * @throws UnsupportedEncodingException If the passed encoding is not supported.

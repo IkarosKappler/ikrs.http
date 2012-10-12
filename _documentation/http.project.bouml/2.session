@@ -1,0 +1,11 @@
+window_sizes 1800 945 450 1344 751 120
+diagrams
+  active  classdiagram_ref 128002 // HTTPHandler
+    1075 600 100 4 0 0
+end
+show_stereotypes
+selected operation_ref 128002 // getLogger
+open
+  class_ref 128002 // HTTPHandler
+end
+end

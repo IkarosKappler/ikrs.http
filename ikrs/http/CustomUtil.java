@@ -333,10 +333,11 @@ public class CustomUtil {
 	byte[] buffer = new byte[ bufferSize ];
 	int len;
 	long totalLength = 0;
-	long bytesLeft = maxReadLength;
+	long bytesLeft = maxReadLength; // Math.max( maxReadLength, bufferSize );
 
-	while( totalLength < maxReadLength 
-	       && (len = in.read(buffer,0,(int)bytesLeft)) > 0 ) {
+	while( (maxReadLength == -1 || totalLength < maxReadLength)
+	       //&& (len = in.read(buffer,0,(int)bytesLeft)) > 0 ) {
+	       && (len = in.read(buffer,0,(int)Math.max( maxReadLength, bufferSize ))) > 0 ) {
 
 	    //for( int i = 0; i < len; i++ )
 	    //	System.out.print( (char)buffer[i] );

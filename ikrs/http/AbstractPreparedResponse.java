@@ -352,8 +352,8 @@ public abstract class AbstractPreparedResponse
 		while( (len = resourceIn.read(buffer)) > 0 ) {
 
 		    // Print the data on stdout?
-		    //for( int i = 0; i < len; i++ )
-		    //	System.out.print( (char)buffer[i] );
+		    for( int i = 0; i < len; i++ )
+		    	System.out.print( (char)buffer[i] );
 		    
 		    // And write each chunck into the socket's output stream
 		    out.write( buffer, 0, len );

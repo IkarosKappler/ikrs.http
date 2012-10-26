@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -28,6 +29,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 
 import ikrs.http.CustomUtil;
+//import ikrs.http.DataFormatException;
+//import ikrs.http.HeaderFormatException;
 import ikrs.http.HTTPFileFilter;
 import ikrs.http.HTTPHandler;
 import ikrs.http.ReadOnlyException;
@@ -62,12 +65,13 @@ public class DefaultDirectoryResource
 				     HTTPFileFilter fileFilter,
 				     File dir,
 				     URI requestURI,
+				     UUID sid,
 				     String format,
 
 				     boolean useFairLocks )
 	throws NullPointerException {
 
-	super( handler, logger, fileFilter, dir, requestURI, useFairLocks );
+	super( handler, logger, fileFilter, dir, requestURI, sid, useFairLocks );
 
 	this.outputFormat             = format;
     }
@@ -80,10 +84,12 @@ public class DefaultDirectoryResource
      * Subclasses must implement this method and write the generated data into the given output stream.
      *
      *
+     * @param sid The current session's ID.
      * @param out The output stream to write the list data to.
      * @throws IOException If any IO errors occur.
      **/
-    public void generateDirectoryListing( OutputStream out )
+    public void generateDirectoryListing( UUID sid,
+					  OutputStream out )
 	throws IOException {
 
 
@@ -91,7 +97,7 @@ public class DefaultDirectoryResource
 
 	if( this.isHTMLFormat() ) {
 
-	    String cssPath = "system/styles/directory.list.css";
+	    String cssPath = "/system/styles/directory.list.css";
 
 	    StringBuffer htmlHeader = new StringBuffer();
 	    htmlHeader.

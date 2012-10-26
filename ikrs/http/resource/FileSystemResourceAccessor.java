@@ -21,6 +21,7 @@ import ikrs.http.ConfigurationException;
 import ikrs.http.Constants;
 import ikrs.http.CustomUtil;
 import ikrs.http.DataFormatException;
+import ikrs.http.FileHandler;
 import ikrs.http.HeaderFormatException;
 import ikrs.http.HTTPConnectionUserID;
 import ikrs.http.HTTPHandler;
@@ -49,8 +50,6 @@ public class FileSystemResourceAccessor
     extends AbstractResourceAccessor 
     implements ResourceAccessor {
 
-    //private File documentRoot = new File("document_root_alpha");
-
 
     private HypertextAccessHandler hypertextAccessHandler;
     
@@ -65,7 +64,7 @@ public class FileSystemResourceAccessor
 	
 	
 	this.hypertextAccessHandler = new HypertextAccessHandler( logger, // ? handler.getLogger(),
-								  true    // strictMode
+								  false    // strictMode
 								  );
 	this.logger = logger;
     }
@@ -182,6 +181,8 @@ public class FileSystemResourceAccessor
 	// Fetch the file extension from the FINAL file!
 	// The file extension is used to determine the MIME-type/Content-Type.
 	String extension = CustomUtil.getFileExtension( requestedFile ); 
+	// The file handler can be null!
+	FileHandler fileHandler = this.getHTTPHandler().getFileHandler( extension );
 
 
 
@@ -217,26 +218,44 @@ public class FileSystemResourceAccessor
 	    // Try to fetch the 'format' param from the query --- if exists :)
 	    String outputFormat = this.fetchFormatFromQuery( uri, "HTML" );  // Use html as default value
 	    
+	    
 	    Resource resource = new DefaultDirectoryResource( this.getHTTPHandler(),
 							      this.getHTTPHandler().getLogger(),
 							      this.getHTTPHandler().getFileFilter(),
 							      requestedFile,
 							      uri,
+							      sessionID,
 							      outputFormat,   // HTML or TXT
 							      true
 							      );
+	    
+	    /*
+	    ikrs.http.filehandler.PHPDirectoryResource resource = new ikrs.http.filehandler.PHPDirectoryResource( this.getHTTPHandler(),
+														  this.getHTTPHandler().getLogger(),
+														  this.getHTTPHandler().getFileFilter(),
+														  requestedFile,
+														  uri,
+														  sessionID,
+														  outputFormat,   // HTML or TXT
+														  true
+														  );*/
+	    
+	    
+
 	    resource.getMetaData().setMIMEType( MIMEType.getByFileExtension( outputFormat ) );
 	    return resource;
 
 
-	} else if( extension != null && extension.equalsIgnoreCase("PHP") ) {
+	} else if( extension != null && fileHandler != null ) { // extension.equalsIgnoreCase("PHP") ) {
 	    
 	    // THIS IS TRICKY ...
 	    // ... think about this one more time ...
 
 	    // !!! FETCH THIS FROM A GLOBAL MAP LATER !!!
-	    ikrs.http.FileHandler fileHandler = new ikrs.http.filehandler.PHPHandler( this.getHTTPHandler(),
+	    /*ikrs.http.FileHandler fileHandler = new ikrs.http.filehandler.PHPHandler( this.getHTTPHandler(),
 										      this.getLogger() );
+	    */
+	   
 										      
 	    Resource resource = fileHandler.process( sessionID,
 						     headers,

@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.DatagramSocket;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +27,7 @@ import java.util.logging.Level;
 
 
 import ikrs.http.resource.FileSystemResourceAccessor;
+import ikrs.http.resource.DefaultDirectoryResource;
 import ikrs.yuccasrv.ConnectionUserID;
 import ikrs.yuccasrv.TCPAdapter;
 import ikrs.yuccasrv.socketmngr.BindManager;
@@ -36,6 +39,7 @@ import ikrs.util.DefaultCustomLogger;
 import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 import ikrs.util.EnvironmentFactory;
+import ikrs.util.FileExtensionKeyMap;
 import ikrs.util.MapFactory;
 import ikrs.util.TreeMapFactory;
 
@@ -101,6 +105,12 @@ public class HTTPHandler
      **/
     private HTTPFileFilter fileFilter;
 
+    /**
+     * A map for the file handlers (by file extension).
+     **/
+    private FileExtensionKeyMap<FileHandler> fileHandlerMap;
+
+
 
     public HTTPHandler() {
 	super();
@@ -160,16 +170,16 @@ public class HTTPHandler
 	logger.log( Level.INFO,
 		    getClass().getName(),
 		    "[Init FileFilter] Initializing the file filter.");
-	this.fileFilter = new DefaultFileFilter();
+	this.fileFilter         = new DefaultFileFilter();
 
 
 	logger.log( Level.INFO,
 		    getClass().getName(),
 		    "[Init ThreadPoolExecutor]");
-	this.requestQueue = new ArrayBlockingQueue<Runnable>( 20 );
-	this.threadFactory = new HTTPServerThreadFactory( this,  // HTTPHandler
-							  this.logger
-							  );
+	this.requestQueue       = new ArrayBlockingQueue<Runnable>( 20 );
+	this.threadFactory      = new HTTPServerThreadFactory( this,  // HTTPHandler
+							       this.logger
+							       );
 	this.threadPoolExecutor = new ThreadPoolExecutor( 10,    // corePoolSize
 							  20,    // maximumPoolSize
 							  300L,  // keepAliveTime (for waiting threads)
@@ -179,8 +189,21 @@ public class HTTPHandler
 							  (RejectedExecutionHandler)this   // RejectedExcecutionHandler
 							  );
 
-	this.responseBuilder = new DefaultResponseBuilder( this );
-	this.resourceAccessor = new FileSystemResourceAccessor( this, this.logger );
+	this.responseBuilder    = new DefaultResponseBuilder( this );
+	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
+	this.fileHandlerMap     = new FileExtensionKeyMap<FileHandler>();
+	this.initFileHandlers();
+	/*this.fileHandlerMap.put( ".php", new DefaultDirectoryResource( this,
+								       this.getLogger(),
+								       this.getFileFilter(),
+								       requestedFile,
+								       uri,
+								       sessionID,
+								       outputFormat,   // HTML or TXT
+								       true )
+								       ); */
+	
+	
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
@@ -188,6 +211,54 @@ public class HTTPHandler
 	logger.log( Level.INFO,
 		    getClass().getName(),
 		    "Initialization done. System ready.");
+    }
+
+    /**
+     * This method initializes the FileHandler map.
+     **/
+    private void initFileHandlers() {
+
+	String handlerClassName = "ikrs.http.filehandler.PHPHandler";
+	try {   
+	    Class<?> handlerClass = Class.forName( handlerClassName );
+	    // Implements the 'FileHandler' interface?
+	    Class<?>[] ifs = handlerClass.getInterfaces();
+	    boolean isFileHandler = false;
+	    for( int i = 0; i < ifs.length && !isFileHandler; i++ ) {
+		
+		isFileHandler = ifs[i].getName().equals("ikrs.http.FileHandler");
+		
+	    }
+
+	    if( !isFileHandler ) {
+
+		logger.log( Level.SEVERE,
+			getClass().getName(),
+			"Failed to instantiate handler class '" + handlerClassName + "': this does not implement ikrs.http.FileHandler." );
+
+	    } else {
+
+		FileHandler fileHandler = (FileHandler)handlerClass.newInstance();
+		fileHandler.setHTTPHandler( this );
+		fileHandler.setLogger( this.getLogger() );
+		this.fileHandlerMap.put( ".php", fileHandler ); // new ikrs.http.filehandler.PHPHandler(this, this.logger) );
+
+	    }
+
+	} catch( ClassNotFoundException e ) {
+	    logger.log( Level.SEVERE,
+			getClass().getName(),
+			"Failed to load handler class (not found): " + handlerClassName );
+	} catch( InstantiationException e ) {
+	    logger.log( Level.SEVERE,
+			getClass().getName(),
+			"[InstantiationException] Failed to instantiate '" + handlerClassName + "': " + e.getMessage() );
+	} catch( IllegalAccessException e ) {
+	    logger.log( Level.SEVERE,
+			getClass().getName(),
+			"[IllegalAccessException] Failed to instantiate '" + handlerClassName + "': " + e.getMessage() );
+	}
+
     }
 
     /**
@@ -284,6 +355,18 @@ public class HTTPHandler
     public HTTPFileFilter getFileFilter() {
 	return this.fileFilter;
     }
+
+    /**
+     * This method resolves the FileHandler matching the given file extension.
+     **/
+    public FileHandler getFileHandler( String fileExtension ) {
+
+	if( fileExtension == null )
+	    return null;
+
+	return this.fileHandlerMap.get( fileExtension );
+    }
+    
 
     //---BEGIN-------------------- RejectedExcecutionHandler Implementation -------------------------
     /**

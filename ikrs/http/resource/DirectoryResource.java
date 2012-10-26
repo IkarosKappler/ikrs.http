@@ -11,6 +11,7 @@ import java.io.OutputStream;
 
 import ikrs.http.Resource;
 import ikrs.util.MIMEType;
+import java.util.UUID;
 
 
 public interface DirectoryResource
@@ -24,10 +25,12 @@ public interface DirectoryResource
      * Subclasses must implement this method and write the generated data into the given output stream.
      *
      *
+     * @param sid The current session's ID.
      * @param out The output stream to write the list data to.
      * @throws IOException If any IO errors occur.
      **/
-    public abstract void generateDirectoryListing( OutputStream out )
+    public abstract void generateDirectoryListing( UUID sid,
+						   OutputStream out )
 	throws IOException;
 
 

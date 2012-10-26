@@ -1,0 +1,63 @@
+<?php 
+      echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Contents of /polygon_berlin gsdf</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="/system/styles/directory.list.css" /></head>
+
+<body>
+
+
+<h2>Index of <?php echo $_GET["path"]; ?><br/>
+<br/>
+</h2>
+
+<a href="/">parent dir</a><br/><br/>
+<table>
+<tr>
+      <td><a href="/polygon_berlin/v0.2.2">v0.2.2</a></td>
+      <td align="right">4.096 bytes</td>
+      <td>dir</td>
+      <td>2012-10-18 01:20:44</td>
+</tr>
+
+<?php
+
+
+	$filePath = $_GET["absoluteDirectoryPath"];
+	echo "Dir=" .  $filePath . "\n";
+
+		  
+	$dir = opendir( $filePath );
+	
+	//$fileList = scandir( $dir );
+	
+	
+	while( ($filename = readdir($dir)) !== false ) {
+
+	       print_r( $filename );
+	       echo "<br/>\n";
+
+	}
+	
+
+	closedir( $dir );
+
+	echo "_GET=";
+	print_r( $_GET );
+	echo "<br/>\n";
+
+?>
+
+</table>
+
+
+
+</body>
+</html>
+

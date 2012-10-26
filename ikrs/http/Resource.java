@@ -24,7 +24,7 @@ public interface Resource {
     public ResourceMetaData getMetaData();
 
     /**
-     * Get the resource's hypertext access file settings. If the resource has not
+     * Get the resource's hypertext access file settings. If the resource has no
      * hypertext access settings available the method may return null.
      **/
     public HypertextAccessFile getHypertextAccessFile();

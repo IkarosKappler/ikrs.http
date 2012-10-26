@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -48,6 +49,12 @@ public abstract class AbstractDirectoryResource
      * The URI the directory file was requested through.
      **/
     private URI requestURI;
+
+
+    /**
+     * The current session's ID.
+     **/
+    private UUID sessionID;
 
     /**
      * The input stream that will be used as a buffer for the generated contents.
@@ -83,6 +90,7 @@ public abstract class AbstractDirectoryResource
 				      HTTPFileFilter fileFilter,
 				      File dir,
 				      URI requestURI,
+				      UUID sid,
 				      boolean useFairLocks ) 
 	throws NullPointerException {
 
@@ -97,6 +105,7 @@ public abstract class AbstractDirectoryResource
 	this.fileFilter   = fileFilter;
 	this.dir          = dir;
 	this.requestURI   = requestURI;
+	this.sessionID    = sid;
 
 	this.dateFormat   = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
     }
@@ -109,10 +118,12 @@ public abstract class AbstractDirectoryResource
      * Subclasses must implement this method and write the generated data into the given output stream.
      *
      *
+     * @param sid The current session's ID.
      * @param out The output stream to write the list data to.
      * @throws IOException If any IO errors occur.
      **/
-    public abstract void generateDirectoryListing( OutputStream out )
+    public abstract void generateDirectoryListing( UUID sid,
+						   OutputStream out )
 	throws IOException;
 
 
@@ -220,7 +231,7 @@ public abstract class AbstractDirectoryResource
 
 	// Call the subclasses directory listing generator :)
 	ByteArrayOutputStream out = new ByteArrayOutputStream( 1024 );
-	this.generateDirectoryListing( out );
+	this.generateDirectoryListing( this.sessionID, out );
 	out.close();
 
 	// Apply the MIME type (also specified in the subclass).

@@ -229,6 +229,8 @@ public class HTTPRequestDistributor
 	session.put( Constants.SKEY_REMOTE_HOST,    new BasicStringType(this.socket.getInetAddress().getHostName()) );
 	// session.put( Constants.SKEY_REMOTE_IDENT,   null ); ??? 
 	// session.put( Constants.SKEY_REMOTE_USER, null );    ???
+	
+	//System.out.println( "session=" + session );
 
 
 

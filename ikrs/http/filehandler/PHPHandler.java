@@ -1,7 +1,7 @@
 package ikrs.http.filehandler;
 
 /**
- * This is a PHP file handler. It passed the requested file to the PHP (php-cgi) interpreter
+ * This is a PHP file handler. It passes the requested file to the PHP (php-cgi) interpreter
  * and stores the generated data inside a buffered resource.
  *
  * Future implementations might send the generated data in runtime (without a buffer), but
@@ -81,7 +81,6 @@ public class PHPHandler
 
 	// WARNING: php-cgi must be installed on the system
 	command.add( "php-cgi" );
-	// command.add( "--enable-discard-path" );
 	command.add( "-n" );
 	command.add( file.getAbsolutePath() );  // This is the file argument for the PHP interpreter :)
 

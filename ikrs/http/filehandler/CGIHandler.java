@@ -186,8 +186,16 @@ public abstract class CGIHandler
 
 
     //--- BEGIN ------------------------ FileHandler implementation ------------------------------
-    /**
-     * Is that a good idea?
+     /**
+     * The 'process' method is very generic. It depends on the underlying implementation how the passed
+     * file should be processed.
+     *
+     * @param sessionID   The current session's ID.
+     * @param headers     The HTTP request headers.
+     * @param postData    The HTTP post data; if the method is not HTTP POST the 'postData' should be null
+     *                    (or empty).
+     * @param file        The requested file itself (inside the local file system).
+     * @param requestURI  The requested URI (relative to DOCUMENT_ROOT).
      **/
     public Resource process( UUID sessionID,
 			     HTTPHeaders headers,
@@ -199,7 +207,11 @@ public abstract class CGIHandler
 	       DataFormatException,
                UnsupportedFormatException {
 	    
-     
+
+	getLogger().log( Level.INFO,
+			 getClass().getName() + ".process(...)",
+			 "Processing. requestURI=" + requestURI + ". file=" + file.getAbsolutePath() );
+	
 	// Fetch the system command (specified and constructed in the sub-class).
 	List<String> command =  this.buildCGISystemCommand( headers, postData, file, requestURI );
 	ProcessBuilder pb = new ProcessBuilder( command );
@@ -211,13 +223,13 @@ public abstract class CGIHandler
 
 
 
-	this.getLogger().log( Level.INFO,
-			      getClass().getName() + ".process(...)",
-			      "Creating a processable resource using the CGI file '" + file.getPath() + "'. System command: " + command.toString() );
-
+	getLogger().log( Level.INFO,
+			 getClass().getName() + ".process(...)",
+			 "Creating a processable resource using the CGI file '" + file.getPath() + "'. System command: " + command.toString() );
+	
 	ProcessableResource cgiOutput = 
-	    new ProcessableResource( this.getHTTPHandler(),
-				     this.getLogger(),  
+	    new ProcessableResource( getHTTPHandler(),
+				     getLogger(),
 				     pb,
 				     postData,  // Should be null if HTTP method is not POST
 				     false      // useFairLocks not necessary here; there will be one more resource wrapper
@@ -265,8 +277,11 @@ public abstract class CGIHandler
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_CONTENT_LENGTH,    headers.getStringValue(HTTPHeaders.NAME_CONTENT_LENGTH) );
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_CONTENT_TYPE,      headers.getStringValue(HTTPHeaders.NAME_CONTENT_TYPE) );
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_GATEWAY_INTERFACE, "CGI/1.1" );
-	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_INFO,         file.getAbsolutePath() );
+
+	// this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_INFO,         requestURI.getPath() ); // file.getAbsolutePath() );
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_TRANSLATED,   file.getAbsolutePath() );  // ??!
+
+
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_QUERY_STRING,      requestURI.getRawQuery() ); // url-encoded!
 	if( wrp_remoteAddr != null )
 	    this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_REMOTE_ADDR,       wrp_remoteAddr.getString() );
@@ -282,7 +297,7 @@ public abstract class CGIHandler
 
 
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_REQUEST_METHOD,    headers.getRequestMethod() );
-	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SCRIPT_NAME,       file.getAbsolutePath() ); 
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SCRIPT_NAME,       requestURI.getPath() ); // file.getAbsolutePath() ); 
 
 
 	if( host_port_pair != null && host_port_pair.getKey() != null )
@@ -295,9 +310,22 @@ public abstract class CGIHandler
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SERVER_SOFTWARE,   this.getHTTPHandler().getSoftwareName() );
 	
 
-	// Add some additional header fields ...
-	// CGI_ENV_HTTP_    
+	// Add some additional header fields beginning with 'CGI_ENV_HTTP_' ...
+	for( int i = 0; i < headers.size(); i++ ) {
 
+	    HTTPHeaderLine hl = headers.get(i);
+	    String key        = hl.getKey();
+	    key               = key.toUpperCase();
+	    key               = key.replaceAll( "-", "_" );
+	    key               = CGIHandler.CGI_ENV_HTTP_ + key;
+	    
+	    this.bindCGIEnvironmentVar( headers, 
+					requestURI, 
+					pb, 
+					key, 
+					hl.getValue() );
+
+	}
 
 
 

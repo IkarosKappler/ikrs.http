@@ -100,10 +100,14 @@ public class ReadLimitInputStream
 	throws IOException {
 
  
+	len = Math.min( b.length, 
+			Math.min( (int)(this.readLimit - this.in.getAbsoluteBytePosition()),
+				  len ) );
+
+
 	return this.in.read( b, 
 			     off, 
-			     Math.min( (int)(this.readLimit - this.in.getAbsoluteBytePosition()),
-				       len )
+			     len
 			     );
 
 
@@ -119,10 +123,10 @@ public class ReadLimitInputStream
     public synchronized long skip( long n ) 
 	throws IOException {
 
+	n = Math.min( (int)(this.readLimit - this.in.getAbsoluteBytePosition()),
+		      n );
 
-	return this.in.skip( Math.min( this.readLimit - this.in.getAbsoluteBytePosition(),
-				       n )
-			     );
+	return this.in.skip( n ); 
 	
 	
     }

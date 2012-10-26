@@ -48,17 +48,79 @@ public abstract class AbstractFileHandler
 	
     }
 
+    //--- BEGIN ------------------------ FileHandler implementation ------------------------------
+    /**
+     * Get get FileHandler's global HTTPHandler.
+     *
+     * Warning: as subclasses might be instantiated using the Class.newInstance() method
+     *          in some very unusual cases the returned handler might be null. In that case
+     *          be sure you have the handler set before by the use of setHTTPHandler(...).
+     *
+     * @return The global HTTP handler (if available).
+     **/
     public HTTPHandler getHTTPHandler() {
 	return this.httpHandler;
     }
-    
-    public CustomLogger getLogger() {
-	return this.logger;
+
+    /**
+     * Set the global HTTP handler.
+     *
+     * @param handler The new handler (must not be null).
+     * @throws NullPointerException If handler is null.
+     **/
+    public void setHTTPHandler( HTTPHandler handler )
+	throws NullPointerException {
+
+	if( handler == null )
+	    throw new NullPointerException( "Cannot apply null handler." );
+
+	this.httpHandler = handler;
     }
 
-    //--- BEGIN ------------------------ FileHandler implementation ------------------------------
+
     /**
-     * Is that a good idea?
+     * Get the custom logger to use to write log messages.
+     *
+     * Warning: as subclasses might be instantiated using the Class.newInstance() method
+     *          in some very unusual cases the returned logger might be null. In that case
+     *          be sure you have the logger set before by the use of setLogger(...).
+     *
+     * @return The logger to use (if available).
+     **/
+    public CustomLogger getLogger() {
+	if( this.logger == null && this.httpHandler != null )
+	    return this.httpHandler.getLogger();
+	else
+	    return this.logger;
+    }
+
+
+    /**
+     * Set the logger to use.
+     *
+     * @param logger The new logger (must not be null).
+     * @throws NullPointerException If logger is null.
+     **/
+    public void setLogger( CustomLogger logger )
+	throws NullPointerException {
+
+	if( logger == null )
+	    throw new NullPointerException( "Cannt apply null loggers." );
+
+	this.logger = logger;
+
+    }
+    
+    /**
+     * The 'process' method is very generic. It depends on the underlying implementation how the passed
+     * file should be processed.
+     *
+     * @param sessionID   The current session's ID.
+     * @param headers     The HTTP request headers.
+     * @param postData    The HTTP post data; if the method is not HTTP POST the 'postData' should be null
+     *                    (or empty).
+     * @param file        The requested file itself (inside the local file system).
+     * @param requestURI  The requested URI (relative to DOCUMENT_ROOT).
      **/
     public abstract Resource process( UUID sessionID,
 				      HTTPHeaders headers,

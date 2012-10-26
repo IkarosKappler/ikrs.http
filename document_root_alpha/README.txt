@@ -1,18 +1,46 @@
 
+THIS MUST BE CAUGHT!
+Exception in thread "Thread-5" java.lang.IndexOutOfBoundsException
+        at java.io.ByteArrayInputStream.read(ByteArrayInputStream.java:180)
+        at ikrs.io.BytePositionInputStream.read(BytePositionInputStream.java:137)
+        at ikrs.http.CustomUtil.transfer(CustomUtil.java:339)
+        at ikrs.http.filehandler.PHPDirectoryResource.generateDirectoryListing(PHPDirectoryResource.java:126)
+        at ikrs.http.resource.AbstractDirectoryResource.open(AbstractDirectoryResource.java:234)
+        at ikrs.http.response.successful.OK.prepare(OK.java:169)
+        at ikrs.http.DefaultResponseBuilder.create(DefaultResponseBuilder.java:96)
+        at ikrs.http.HTTPRequestDistributor.run(HTTPRequestDistributor.java:146)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+        at ikrs.http.HTTPServerThread.run(HTTPServerThread.java:50)
+Oct 24, 2012 4:09:00 AM ikrs.util.DefaultCustomLogger log
+
+
+
 
 
 TO DO:
+[2012-10-15]
+ - There is an issue with the session/REMOTE_ADDR,REMOTE_HOST values; they are not properly passed to the
+   CGI environment vars when using HTTP POST.
+ - Make a new Directory-listing class with configurable/custom HTML templates.
+
 [2012-10-12]
  - Include the 'AUTH_TYPE' field into the CGI environment vars (ikrs.http.filehandler.CGIHandler).
  - The CGI environment's 'PATH_TRANSLATED' must be a fully qualified global URL.
  - The HTTPRequestDistributor must - when initializing the session - put REMOTE_IDENT and REMOTE_USER (where get
    that from?).
+ - [DONE 2012-10-15; actually is was a PHP config issue]
+   PHPHandler: on HTTP POST with file transfer the post data must be pre-parsed, the file data stored into a 
+   temp file and the POST params adapted (mind the _FILES array).
+ - Move the PHPHandler into its own package (there is the CGIHandler which does most of the work). PHP has nothing
+   to do with HTTP.
 
 [2012-10-11]
  - The DefaultDirectoryResource should be splitted into two subclasses: one for TEXT listing and one for XHTML.
  - Specify a general DirectoryResource interface and make it configurable through the handler class.
  - Move class 'FileResource' from package 'ikrs.http' to 'ikrs.http.resource'.
- - Build the CGI interface (for PHP).
+ - [DONE 2012-10-15]
+   Build the CGI interface (for PHP).
  - Make HTTPHandler.documentRoot configurable.
  - Make MIME type list configurable by a config file (currently the list is hard coded).
  - .htgroups file has to be processed (if present). The current implementation only handles .htaccess and .htpasswd.
@@ -59,7 +87,8 @@ TO DO:
    There seems to be a special generated header field ('Status') indicating such errors, too;
    The resource.getMetaData().getOverrideHeaders() must be applied in the actual HTTP response.
 
- - Generating the directory listing is just a dirty hack so far ... replace by anything neat ...
+ - [DONE 2012-10-10]
+   Generating the directory listing is just a dirty hack so far ... replace by anything neat ...
    ... some HTML template stuff or a configurable HTML list generator or something like that.
 
  - YUCCA's security manager must be configured (I think anyone can flood me right now).
@@ -143,6 +172,22 @@ The "File not found" issue
    	   to the environment vars which will finally fix the "File not found" issue.
 
    NOTE 2: I only changed my config in /etc/php5/cgi/, I left /etc/php5/cli unchanged.
+
+
+
+File-Upload issue: $_FILES is always empty
+------------------------------------------
+
+As soon as PHP (CGI mode) is running there might be the problem of failing file uploads (HTTP POST):
+PHP's $_FILES array is always empty, even if the file data was successfully sent using HTTP POST 
+method.
+  (i)  Does you upload form use method="post" and enctype="multipart/form-data"? :)
+  (ii) Check your php.ini (in /etc/php5/cgi):
+    - Check if 'file_uploads' is enabled.
+    - Check if 'upload_tmp_dir' is set (to your system's tempfiles directory or a temp dir of your 
+      choice) [near line ~890].
+    - Check if your upload-file size does not exceed 'post_max_size'.
+  
 
 
 Files

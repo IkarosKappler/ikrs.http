@@ -10,7 +10,7 @@
 
 
 This form sends a POST request.
-<form method="post" action="HTTP_POST.php" >
+<form method="post" enctype="multipart/form-data" action="HTTP_POST.php" >
   Text A: <input type="text" name="my_text_A" value="This is my very nice test (B)." /><br/>
   Text_B: 
   <textarea name="my_text_B">
@@ -27,6 +27,10 @@ This form sends a POST request.
    
    echo "_POST=";
    print_r( $_POST );
+   echo "<br/><br/>\n";
+
+   echo "_FILES=";
+   print_r( $_FILES );
    echo "<br/><br/>\n";
    
 

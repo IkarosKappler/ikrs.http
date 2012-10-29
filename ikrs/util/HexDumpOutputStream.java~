@@ -1,0 +1,89 @@
+package ikrs.util;
+
+import java.io.IOException;
+import java.io.Writer;
+
+
+public class HexDumpOutputStreamWriter
+    extends OutputStream {
+
+    /**
+     * The underlying core writer (must not be null).
+     **/
+    private Writer coreWriter;
+
+    /**
+     * Block sizes in 'number of bytes' (not number of chars).
+     **/
+    private int[] blockSizes;
+
+    /**
+     * This will be set if the underyling writer was closed.
+     **/
+    private boolean isClosed;
+    
+    /**
+     * Create a new HexDumpWriter with the given core writer.
+     *
+     * @param writer The underlying writer object (must not be null).
+     * @throws NullPointerException If the passed writer is null.
+     **/
+    public HexDumpWriter( Writer writer ) 
+	throws NullPointerException {
+
+	this( writer, new int[] { 8, 8 } );
+    }
+
+
+    /**
+     * Create a new HexDumpWriter with the given core writer.
+     *
+     * @param writer      The underlying writer object (must not be null).
+     * @param blockSizes  The desired output block size (in bytes, not in chars).
+     * @throws NullPointerException If the passed writer is null.
+     **/
+    public HexDumpWriter( Writer writer,
+			  int[] blockSizes ) 
+	throws NullPointerException {
+
+	super();
+
+	if( writer == null )
+	    throw new NullPointerException( "Cannot create HexDumpWriter with null core writer." );
+	if( blockSizes == null ) 
+	    throw new NullPointerException( "Cannot create HexDumpWriter with null-blockSizes." );
+
+	this.coreWriter = writer;
+	this.blockSizes = java.util.Arrays.copyOf( blockSizes, blockSizes.length );
+    }
+
+
+    public boolean isClosed() {
+	return this.isClosed;
+    }
+
+    //--- BEGIN --------------------- Writer implementation --------------------
+    public void	close() 
+	throws IOException {
+
+	this.isClosed = true;
+	this.coreWriter.close();
+    }
+
+    public void flush() 
+	throws IOException {
+
+	this.coreWriter.flush();
+    }
+
+    public void write(char[] cbuf, int off, int len) 
+	throws IOException {
+
+	if( this.isClosed() )
+	    throw new IOException( "Cannot write to a closed HexDumpWriter." );
+
+	
+    }
+    //--- END ----------------------- Writer implementation --------------------
+
+}

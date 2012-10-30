@@ -28,13 +28,20 @@ public abstract class AbstractFileHandler
      **/
     private CustomLogger logger;
 
+
+    public AbstractFileHandler() 
+	throws NullPointerException {
+
+	super();
+	
+    }
     
     /**
      * Create a new AbstractFileHandler.
      * 
      * @param logger A logger to write log messages to (must not be null).
      **/
-    public AbstractFileHandler( HTTPHandler handler,
+    /*public AbstractFileHandler( HTTPHandler handler,
 				CustomLogger logger ) 
 	throws NullPointerException {
 
@@ -47,6 +54,7 @@ public abstract class AbstractFileHandler
 	this.logger = logger;
 	
     }
+    */
 
     //--- BEGIN ------------------------ FileHandler implementation ------------------------------
     /**

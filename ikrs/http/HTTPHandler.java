@@ -9,8 +9,11 @@ package ikrs.http;
  **/
 
 
+import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.DatagramSocket;
@@ -26,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 
+import ikrs.http.datatype.KeyValueStringPair;
 import ikrs.http.resource.FileSystemResourceAccessor;
 import ikrs.http.resource.DefaultDirectoryResource;
 import ikrs.yuccasrv.ConnectionUserID;
@@ -108,7 +112,12 @@ public class HTTPHandler
     /**
      * A map for the file handlers (by file extension).
      **/
-    private FileExtensionKeyMap<FileHandler> fileHandlerMap;
+    private FileExtensionKeyMap<FileHandler> fileHandlerExtensionMap;
+
+    /**
+     * A map for the file handler names.
+     **/
+    private Map<String,FileHandler> fileHandlerNameMap;
 
 
 
@@ -191,7 +200,8 @@ public class HTTPHandler
 
 	this.responseBuilder    = new DefaultResponseBuilder( this );
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
-	this.fileHandlerMap     = new FileExtensionKeyMap<FileHandler>();
+	this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
+	this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
 	this.initFileHandlers();
 	/*this.fileHandlerMap.put( ".php", new DefaultDirectoryResource( this,
 								       this.getLogger(),
@@ -218,33 +228,99 @@ public class HTTPHandler
      **/
     private void initFileHandlers() {
 
-	String handlerClassName = "ikrs.http.filehandler.PHPHandler";
+	String fileHandlersFileName = "filehandlers.ini";
+	String handlerClassName = null; // "ikrs.http.filehandler.PHPHandler";
 	try {   
-	    Class<?> handlerClass = Class.forName( handlerClassName );
-	    // Implements the 'FileHandler' interface?
-	    Class<?>[] ifs = handlerClass.getInterfaces();
-	    boolean isFileHandler = false;
-	    for( int i = 0; i < ifs.length && !isFileHandler; i++ ) {
+
+	    BufferedReader reader = new BufferedReader( new InputStreamReader( new FileInputStream(new File(fileHandlersFileName)) ) );
+	    String line;
+	    int lineNumber = 0;
+	    while( (line = reader.readLine()) != null ) {
+
+		lineNumber++;
+
+		// Ignore empty lines
+		if( (line = line.trim()).length() == 0 )
+		    continue;
+
+		// Ignore comments
+		if( line.startsWith("#") )
+		    continue;
+
+
+
+		KeyValueStringPair pair = KeyValueStringPair.split( line,
+								    false,  // No need to remove quotes?
+								    "=" );
+		// The key cannot be null as the string is not null and not empty.
+		// But the value can
+		if( pair.getValue() == null || pair.getValue().length() == 0 ) {
+
+		    logger.log( Level.WARNING,
+				getClass().getName(),
+				"Invalid entry in file '" + fileHandlersFileName + "' at line "+lineNumber+". Missing key part in: " + line );
+
+		}
+		    
+		String handlerName = pair.getKey();
+		String[] split = pair.getValue().split( "(\\s)+" );
+		//for( int i = 0; i < split.length; i++ )
+		//    System.out.println( "split[" + i + "]=" + split[i] );
+
+		// At the first position is the handler CLASS NAME
+		handlerClassName = split[0];
 		
-		isFileHandler = ifs[i].getName().equals("ikrs.http.FileHandler");
 		
+
+		Class<?> handlerClass = Class.forName( handlerClassName );
+		// Implements the 'FileHandler' interface?
+		/*Class<?>[] ifs = handlerClass.getInterfaces();
+		boolean isFileHandler = false;
+		for( int i = 0; i < ifs.length && !isFileHandler; i++ ) {
+		
+		    isFileHandler = ifs[i].getName().equals("ikrs.http.FileHandler");
+		
+		}
+		*/ 
+		boolean isFileHandler = CustomUtil.classImplementsInterface( handlerClass, 
+									     "ikrs.http.FileHandler", 
+									     true   // includeSuperClasses
+									     );
+
+		if( !isFileHandler ) {
+
+		    logger.log( Level.SEVERE,
+				getClass().getName(),
+				"Failed to instantiate handler class '" + handlerClassName + "': this does not implement ikrs.http.FileHandler." );
+
+		} else {
+
+		    FileHandler fileHandler = (FileHandler)handlerClass.newInstance();
+		    fileHandler.setHTTPHandler( this );
+		    fileHandler.setLogger( this.getLogger() );
+		    
+		    // Associate all file extensions from the config file with the created handlers.
+		    // Note: at index 0 is the classname itself!
+		    for( int i = 1; i < split.length; i++ ) {
+			//this.fileHandlerMap.put( ".php", fileHandler ); // new ikrs.http.filehandler.PHPHandler(this, this.logger) );
+			logger.log( Level.INFO,
+				    getClass().getName(),
+				    "Mappind file handler '"+ handlerName + "' to extension: " + split[i] );
+			this.fileHandlerExtensionMap.put( split[i], fileHandler );
+		    }
+
+		    logger.log( Level.INFO,
+				getClass().getName(),
+				"Mappind file handler '"+ handlerName + "' to handler class: " + handlerClassName );
+		    this.fileHandlerNameMap.put( handlerName, fileHandler );
+		}
 	    }
 
-	    if( !isFileHandler ) {
 
-		logger.log( Level.SEVERE,
+	} catch( IOException e ) {
+	    logger.log( Level.SEVERE,
 			getClass().getName(),
-			"Failed to instantiate handler class '" + handlerClassName + "': this does not implement ikrs.http.FileHandler." );
-
-	    } else {
-
-		FileHandler fileHandler = (FileHandler)handlerClass.newInstance();
-		fileHandler.setHTTPHandler( this );
-		fileHandler.setLogger( this.getLogger() );
-		this.fileHandlerMap.put( ".php", fileHandler ); // new ikrs.http.filehandler.PHPHandler(this, this.logger) );
-
-	    }
-
+			"Failed to read file handler config from file '" + fileHandlersFileName + "': " + e.getMessage() );
 	} catch( ClassNotFoundException e ) {
 	    logger.log( Level.SEVERE,
 			getClass().getName(),
@@ -359,12 +435,25 @@ public class HTTPHandler
     /**
      * This method resolves the FileHandler matching the given file extension.
      **/
-    public FileHandler getFileHandler( String fileExtension ) {
+    public FileHandler getFileHandlerByExtension( String fileExtension ) {
 
 	if( fileExtension == null )
 	    return null;
 
-	return this.fileHandlerMap.get( fileExtension );
+	// System.out.println( "Locating file handler by extension '" + fileExtension + "'. handlerExtensionMap=" + this.fileHandlerExtensionMap.toString() );
+
+	return this.fileHandlerExtensionMap.get( fileExtension );
+    }
+
+    /**
+     * This method resolves the FileHandler matching the given file extension.
+     **/
+    public FileHandler getFileHandlerByName( String handlerName ) {
+
+	if( handlerName == null )
+	    return null;
+
+	return this.fileHandlerNameMap.get( handlerName );
     }
     
 

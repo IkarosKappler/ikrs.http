@@ -1,9 +1,16 @@
 
 
+[2012-10-29]
+  - The 'filehandlers.ini' is now interpreted and contains the file handler mappings.
+  - The htaccess 'SetHandler' and 'AddHandler' directives work now.
+
+[2012-10-15]
+  - HTTP POST works now with PHP (actually it was an unsolved php-cgi issue).
+
 [2012-10-12]	
   - Replaced HTTPHandler.getServerName() by HTTPHandler.getSoftwareName() to avoid CGI name clash.
   - Built new HTTPHandler.getServerName() method.
-  - Build basic CGI/1.1 handler.
+  - Built basic CGI/1.1 handler.
   - Finished PHP POST handling.
 
 
@@ -11,6 +18,9 @@
   - htaccess 'DirectoryIndex' implemented.
   - htaccess 'Options {+|-}Indexes' implemented.
   - New class for directory listings: ikrs.http.resource.DefaultDirectoryResource.
+
+[2012-09-30]
+  - Bug fixed: server sent an '200 OK' even if the external file handler reported runtime errors.
 
 [2012-09-15]
   - htaccess 'Digest' authorization implemented (not apache compatible: ikrs.http.MD5).

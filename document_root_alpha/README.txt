@@ -1,24 +1,11 @@
 
-THIS MUST BE CAUGHT!
-Exception in thread "Thread-5" java.lang.IndexOutOfBoundsException
-        at java.io.ByteArrayInputStream.read(ByteArrayInputStream.java:180)
-        at ikrs.io.BytePositionInputStream.read(BytePositionInputStream.java:137)
-        at ikrs.http.CustomUtil.transfer(CustomUtil.java:339)
-        at ikrs.http.filehandler.PHPDirectoryResource.generateDirectoryListing(PHPDirectoryResource.java:126)
-        at ikrs.http.resource.AbstractDirectoryResource.open(AbstractDirectoryResource.java:234)
-        at ikrs.http.response.successful.OK.prepare(OK.java:169)
-        at ikrs.http.DefaultResponseBuilder.create(DefaultResponseBuilder.java:96)
-        at ikrs.http.HTTPRequestDistributor.run(HTTPRequestDistributor.java:146)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
-        at ikrs.http.HTTPServerThread.run(HTTPServerThread.java:50)
-Oct 24, 2012 4:09:00 AM ikrs.util.DefaultCustomLogger log
-
-
-
 
 
 TO DO:
+[2012-10-29]
+ - [DONE 2012-10-29] There is a new file called 'filehandlers.ini' in the working dir. It specifies the handler classes.
+   	 	     Implement the SetType- and AddType-Handling directives from the htaccess (FileSystemResourceAccessor).
+
 [2012-10-15]
  - There is an issue with the session/REMOTE_ADDR,REMOTE_HOST values; they are not properly passed to the
    CGI environment vars when using HTTP POST.

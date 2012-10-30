@@ -43,18 +43,30 @@ import ikrs.util.CustomLogger;
 public class PHPHandler
     extends CGIHandler {
 
+
+
+    public PHPHandler() 
+	throws NullPointerException {
+
+	super();
+
+	
+    }
+
+
      /**
      * Create a new PHPHandler.
      * 
      * @param logger A logger to write log messages to (must not be null).
      **/
-    public PHPHandler( HTTPHandler handler, CustomLogger logger ) 
+    /*public PHPHandler( HTTPHandler handler, CustomLogger logger ) 
 	throws NullPointerException {
 
 	super( handler, logger );
 
 	
-    }
+	}*/
+
 
 
     //--- BEGIN ----------------------- CGIHandler implementation ----------------------------------

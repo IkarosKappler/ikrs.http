@@ -378,12 +378,16 @@ public class HypertextAccessFile {
     }
 
     /**
-     * This method returns the file that was set by the "SetHandler" directive(s). 
+     * This method returns the name that was set by the "SetHandler" directive(s). If there were
+     * more than one 'SetHandeler' directives (only allowed in non-strict mode) the last name is returned.
      *
-     * @return The file that was set by the "SetHandler" directive(s). The returned List is never null.
+     * @return The file that was set by the "SetHandler" directive(s) or null if not available.
      **/
-    public List<String> getSetHandlers() {
-	return this.setHandlers;
+    public String getSetHandler() {
+	if( this.setHandlers.size() == 0 )
+	    return null;
+	else
+	    return this.setHandlers.get( this.setHandlers.size()-1 );
     }
 
     /**

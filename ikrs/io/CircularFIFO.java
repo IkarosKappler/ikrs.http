@@ -58,12 +58,37 @@ public class CircularFIFO {
     }
     
     /**
-     * Get the number of bytes currently stored inside tis buffer.
+     * Get the number of bytes currently stored inside this buffer.
      * 
      * @return The number of bytes currently stored inside tis buffer.
      **/
     public int length() {
 	return this.length;
+    }
+
+    /**
+     * Checks whether this buffer is empty. A buffer is empty if its length equals 0 (zero).
+     *
+     * No more read operations are allowed in this stats until at least one byte was written.
+     * Otherwise the read() methods will raise BufferUnderflowExceptions.
+     *
+     * @return A boolean value indicating if the buffer is empty.
+     **/
+    public boolean isEmpty() {
+	return this.length() <= 0;
+    }
+
+
+    /**
+     * Checks whether this buffer is full. A buffer is full if its length equals its capacity.
+     *
+     * No more write operations are allowed in this stats until at least one byte was read.
+     * Otherwise the write() methods will raise BufferOverflowExceptions.
+     *
+     * @return A boolean value indicating if the buffer is full.
+     **/
+    public boolean isFull() {
+	return this.length() >= this.capacity();
     }
 
     /**

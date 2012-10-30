@@ -52,6 +52,61 @@ public class CustomUtil {
 	
     }
 
+    public static boolean equalFileExtensions( String extensionA,
+					       String extensionB,
+					       boolean caseSensitive,
+					       boolean dotSensitive ) {
+
+	if( extensionA == extensionB )
+	    return true; // same instance
+
+	if( extensionA == null && extensionB != null )
+	    return false;
+
+	if( extensionA != null && extensionB == null )
+	    return false;
+
+	// At this point: both are NOT null
+	// (otherwise the first case would have matched).
+
+	// Remove dots?
+	if( dotSensitive && extensionA.startsWith(".") )
+	    extensionA = extensionA.substring(1);
+	
+	if( dotSensitive && extensionB.startsWith(".") )
+	    extensionB = extensionB.substring(1);
+
+	if( caseSensitive )
+	    return extensionA.equals(extensionB);
+	else
+	    return extensionA.equalsIgnoreCase(extensionB);
+
+    }
+
+    public static boolean classImplementsInterface( Class<?> c,
+						    String interfaceName,
+						    boolean includeSuperClasses ) {
+	
+	Class<?>[] ifs = c.getInterfaces();
+	boolean isFileHandler = false;
+	for( int i = 0; i < ifs.length && !isFileHandler; i++ ) {
+	    
+	    if( ifs[i].getName().equals("ikrs.http.FileHandler") ) {
+
+		// Interface found!
+		return true;
+
+	    }
+	    
+	}
+
+	// Recursive search?
+	if( includeSuperClasses && c.getSuperclass() != null )
+	    return CustomUtil.classImplementsInterface( c.getSuperclass(), interfaceName, includeSuperClasses );
+	else
+	    return false;
+
+    }
 
     /**
      * This method checks if the passed string represents an MD5 checksum.

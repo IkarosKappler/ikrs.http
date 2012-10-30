@@ -74,20 +74,28 @@ public abstract class CGIHandler
 
 
 
-     /**
+    public CGIHandler() 
+	throws NullPointerException {
+
+	super();
+
+	
+    }
+
+    /**
      * Create a new CGIHandler.
      * 
      * @param handler The global HTTP handler.
      * @param logger  A logger to write log messages to (must not be null).
      **/
-    public CGIHandler( HTTPHandler handler, 
+    /*public CGIHandler( HTTPHandler handler, 
 		       CustomLogger logger ) 
 	throws NullPointerException {
 
 	super( handler, logger );
 
 	
-    }
+	}*/
     
 
     //--- BEGIN --------- These methods must be implemented by subclasses --------------------------

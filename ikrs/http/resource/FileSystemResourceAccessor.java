@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -182,7 +183,13 @@ public class FileSystemResourceAccessor
 	// The file extension is used to determine the MIME-type/Content-Type.
 	String extension = CustomUtil.getFileExtension( requestedFile ); 
 	// The file handler can be null!
-	FileHandler fileHandler = this.getHTTPHandler().getFileHandler( extension );
+	FileHandler fileHandler = this.htaccess_resolveFileHandler( uri, 
+								    requestedFile, 
+								    extension, 
+								    htaccess ); // this.getHTTPHandler().getFileHandler( extension );
+	this.getHTTPHandler().getLogger().log( Level.INFO,
+					       getClass().getName() + ".locate(...)",
+					       "Resolved file handler for requested file? fileHandler=" + fileHandler );  // may be null
 
 
 
@@ -230,6 +237,9 @@ public class FileSystemResourceAccessor
 							      );
 	    
 	    /*
+	     // This was a try of generating the directory listing via PHP script, but this is a bad idea
+	     //  - due to security reasons (any external code might be executed!).
+	     //  - xdue to the fact that PHP is not necesarily installed on all systems.
 	    ikrs.http.filehandler.PHPDirectoryResource resource = new ikrs.http.filehandler.PHPDirectoryResource( this.getHTTPHandler(),
 														  this.getHTTPHandler().getLogger(),
 														  this.getHTTPHandler().getFileFilter(),
@@ -683,6 +693,100 @@ public class FileSystemResourceAccessor
 	
 	// Otherwise return the configured value.
 	return option.booleanValue();
+    }
+
+
+    private FileHandler htaccess_resolveFileHandler( URI requestURI,
+						     File requestedFile,
+						     String fileExtension,
+						     HypertextAccessFile htaccess ) 
+	throws ConfigurationException {
+
+	// Use this order:
+	//  (i)    The 'AddHandler' settings (extension-specific; overrides directory-wide 'SetHandler' directive).
+	//  (ii)   The 'SetHandler' setting (overrides the global default handler)
+
+	
+	if( htaccess != null ) {
+
+
+	    if( fileExtension != null ) {
+	    	    
+		Map<String,List<String>> htaccess_addedHandlers = htaccess.getAddedHandlers();
+		Iterator<Map.Entry<String,List<String>>> iter = htaccess_addedHandlers.entrySet().iterator();
+		while( iter.hasNext() ) {
+
+		    Map.Entry<String,List<String>> entry = iter.next();
+		    String handlerName                   = entry.getKey();
+		    List<String> handlerExtensions       = entry.getValue();
+
+		    // Check if the file's extension is inside the current handler's extension list.
+		    for( int i = 0; i < handlerExtensions.size(); i++ ) {
+
+			// Note from the apache specs: 
+			//   "The extension argument is case-insensitive and can be specified with or without a leading dot"
+			String handlerExt                    = handlerExtensions.get(i);
+			boolean equalFileExtensions          = CustomUtil.equalFileExtensions( fileExtension,
+											       handlerExt,
+											       false,      // not case sensitive
+											       false       // not dot sensitive
+											       );
+
+			if( equalFileExtensions ) {
+			    
+			    // The extensions are equal. 
+			    // Resolve associated handler from the global config.
+			    FileHandler fileHandler = this.getHTTPHandler().getFileHandlerByName( handlerName );
+
+			    if( fileHandler == null ) {
+
+				this.getHTTPHandler().getLogger().log( Level.SEVERE,
+								       getClass().getName() + ".resolveFileHandler(...)",
+								       "The htaccess file contains an 'AddHandler' directive for the file extension '" + fileExtension + "' but the retrieved file handler name '"+ handlerName +"' was not found in the global configuration! requestedURI=" + requestURI.getPath() );
+				throw new ConfigurationException( "A requested file handler was not found [0].", null );
+
+			    } else {
+
+				return fileHandler;
+
+			    }
+			}
+		    }
+
+		}
+
+	    } // END if [fileExtension != null]
+	    
+	    
+	    // Obviously no FileHandler was found by the use of 'AddHandler' here.	    
+	    // Continue with 'SetHandler'. 
+	    String handlerName = htaccess.getSetHandler();
+	    if( handlerName != null ) {
+		
+		FileHandler fileHandler = this.getHTTPHandler().getFileHandlerByName( handlerName );
+
+		if( fileHandler == null ) {
+
+		    this.getHTTPHandler().getLogger().log( Level.SEVERE,
+							   getClass().getName() + ".resolveFileHandler(...)",
+							   "The htaccess file contains an 'SetHandler' directive for the file extension '" + fileExtension + "' but the retrieved file handler name '" + handlerName + "' was not found in the global configuration! requestedURI=" + requestURI.getPath() );
+		    throw new ConfigurationException( "A requested file handler was not found [0].", null );
+
+		} else {
+
+		    return fileHandler;
+
+		}
+
+	    }
+	} // END if [htaccess != null]
+
+
+	// System.out.println( "File extension: " + fileExtension );
+
+	// It seems there is no 'AddHandler' and no 'SetHandler' directive in the htaccess file.
+	// Use default global setting (if available).
+	return this.getHTTPHandler().getFileHandlerByExtension( fileExtension );
     }
 
     private String fetchFormatFromQuery( URI requestedURI,

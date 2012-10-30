@@ -344,16 +344,27 @@ public abstract class AbstractPreparedResponse
 		
 		this.getHTTPHandler().getLogger().log( Level.INFO,
 						       getClass().getName() + ".execute()",
-						       "Sending data ..." );
+						       "Sending data ... [also also printing a hex dump to stdout]" );
 		
 		byte[] buffer = new byte[ 1024 ];
 		int len = -1;
+		// Print the data on stdout?
+		ikrs.util.HexDumpOutputStream hexOut = 
+		    new ikrs.util.HexDumpOutputStream( new java.io.OutputStreamWriter( System.out ),
+						       new int[]{ 8, 8, 
+								  0,     // one separator column
+								  8, 8, 
+								  0, 0,  // two separator columns
+								  8, 8, 
+								  0,     // one separator column
+								  8, 8 });
 		// Read the resource's data chunk by chunk
 		while( (len = resourceIn.read(buffer)) > 0 ) {
 
 		    // Print the data on stdout?
 		    for( int i = 0; i < len; i++ )
-		    	System.out.print( (char)buffer[i] );
+			hexOut.write( buffer[i] );
+		    hexOut.flush();
 		    
 		    // And write each chunck into the socket's output stream
 		    out.write( buffer, 0, len );

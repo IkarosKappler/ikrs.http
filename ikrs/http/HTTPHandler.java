@@ -284,7 +284,7 @@ public class HTTPHandler
 		*/ 
 		boolean isFileHandler = CustomUtil.classImplementsInterface( handlerClass, 
 									     "ikrs.http.FileHandler", 
-									     true   // includeSuperClasses
+									     true   // includeSuperClasses 
 									     );
 
 		if( !isFileHandler ) {
@@ -440,7 +440,7 @@ public class HTTPHandler
 	if( fileExtension == null )
 	    return null;
 
-	// System.out.println( "Locating file handler by extension '" + fileExtension + "'. handlerExtensionMap=" + this.fileHandlerExtensionMap.toString() );
+	//System.out.println( "Locating file handler by extension '" + fileExtension + "'. handlerExtensionMap=" + this.fileHandlerExtensionMap.toString() );
 
 	return this.fileHandlerExtensionMap.get( fileExtension );
     }
@@ -452,6 +452,8 @@ public class HTTPHandler
 
 	if( handlerName == null )
 	    return null;
+
+	//System.out.println( "Locating file handler by name '" + handlerName + "'. handlerExtensionMap=" + this.fileHandlerExtensionMap.toString() );
 
 	return this.fileHandlerNameMap.get( handlerName );
     }

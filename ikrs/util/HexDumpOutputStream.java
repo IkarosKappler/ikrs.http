@@ -266,7 +266,7 @@ public class HexDumpOutputStream
 
 
 	    java.io.InputStream in = new java.io.FileInputStream( new java.io.File(argv[0]) );
-	    Writer writer = new java.io.PrintWriter( new java.io.OutputStreamWriter( System.out ) );
+	    Writer writer = new java.io.PrintWriter( new java.io.OutputStreamWriter( System.out ) ); 
 	    HexDumpOutputStream out = new HexDumpOutputStream( writer );
 
 	    

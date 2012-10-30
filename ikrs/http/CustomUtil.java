@@ -70,10 +70,10 @@ public class CustomUtil {
 	// (otherwise the first case would have matched).
 
 	// Remove dots?
-	if( dotSensitive && extensionA.startsWith(".") )
+	if( !dotSensitive && extensionA.startsWith(".") )
 	    extensionA = extensionA.substring(1);
 	
-	if( dotSensitive && extensionB.startsWith(".") )
+	if( !dotSensitive && extensionB.startsWith(".") )
 	    extensionB = extensionB.substring(1);
 
 	if( caseSensitive )
@@ -101,7 +101,7 @@ public class CustomUtil {
 	}
 
 	// Recursive search?
-	if( includeSuperClasses && c.getSuperclass() != null )
+	if( includeSuperClasses && c.getSuperclass() != null ) 
 	    return CustomUtil.classImplementsInterface( c.getSuperclass(), interfaceName, includeSuperClasses );
 	else
 	    return false;

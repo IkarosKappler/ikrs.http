@@ -706,9 +706,11 @@ public class FileSystemResourceAccessor
 	//  (i)    The 'AddHandler' settings (extension-specific; overrides directory-wide 'SetHandler' directive).
 	//  (ii)   The 'SetHandler' setting (overrides the global default handler)
 
-	
 	if( htaccess != null ) {
 
+	    this.getHTTPHandler().getLogger().log( Level.INFO,
+						   getClass().getName() + ".resolveFileHandler(...)",
+						   "Looking up fileExtension='"+ fileExtension + "' in htaccess file (checking for 'AddHandler' directive)." );
 
 	    if( fileExtension != null ) {
 	    	    
@@ -731,7 +733,7 @@ public class FileSystemResourceAccessor
 											       false,      // not case sensitive
 											       false       // not dot sensitive
 											       );
-
+			
 			if( equalFileExtensions ) {
 			    
 			    // The extensions are equal. 
@@ -780,7 +782,6 @@ public class FileSystemResourceAccessor
 
 	    }
 	} // END if [htaccess != null]
-
 
 	// System.out.println( "File extension: " + fileExtension );
 

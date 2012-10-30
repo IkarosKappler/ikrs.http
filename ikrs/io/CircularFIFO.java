@@ -200,13 +200,13 @@ public class CircularFIFO {
     public synchronized void clear() {
 	this.front  = 0;
 	this.length = 0;
-    }
+    } 
 
 
     /**
      * Get the byte at the given buffer offset (relative).
      * This is not really FIFO style, but might be helpful.
-     *
+     * 
      * @param offset The byte offset (0 <= offset < this.length()).
      * @return The byte value at the given offset.
      **/

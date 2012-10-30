@@ -385,7 +385,7 @@ public class HypertextAccessFile {
      **/
     public String getSetHandler() {
 	if( this.setHandlers.size() == 0 )
-	    return null;
+	    return null; 
 	else
 	    return this.setHandlers.get( this.setHandlers.size()-1 );
     }

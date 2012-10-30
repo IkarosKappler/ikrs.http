@@ -1,2 +1,2 @@
 
-SetHandler php-script
+AddHandler php-script .php php5 PHP4

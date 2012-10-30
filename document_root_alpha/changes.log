@@ -18,7 +18,7 @@
   - htaccess 'DirectoryIndex' implemented.
   - htaccess 'Options {+|-}Indexes' implemented.
   - New class for directory listings: ikrs.http.resource.DefaultDirectoryResource.
-
+ 
 [2012-09-30]
   - Bug fixed: server sent an '200 OK' even if the external file handler reported runtime errors.
 

@@ -56,7 +56,7 @@ TO DO:
     The response MUST include an Allow header containing a list of valid methods for the requested resource."
 
 [2012-10-04]
- - Check if with 'Content-Type: application/x-www-form-urlencoded' really the correct charset from the 
+ - Check if with 'Content-Type: application/x-www-form-urlencoded' really the correct charset from the  
   'Accept-Charset' header is used! (default is ISO-8859-1 --- is that really the correct default value?).
  - The session handling needs to be built (internal SESSION.START and SESSION.END).
 

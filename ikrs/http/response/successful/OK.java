@@ -22,6 +22,7 @@ import ikrs.http.AbstractPreparedResponse;
 import ikrs.http.AuthorizationException;
 import ikrs.http.ConfigurationException;
 import ikrs.http.Constants;
+import ikrs.http.CustomUtil;
 import ikrs.http.DataFormatException;
 import ikrs.http.HeaderFormatException;
 import ikrs.http.HTTPHandler;
@@ -106,10 +107,48 @@ public class OK
 	       SecurityException,
 	       IOException {
 
-
-	// The current implemenation of tiny server only supports HTTP-GET and -POST.
+	// The current implemenation of tiny server only supports HTTP-GET, -POST and -OPTIONS.
 	String httpMethod = this.checkValidHTTPMethod();
 
+	if( this.getRequestHeaders().isGETRequest() 
+	    || this.getRequestHeaders().isPOSTRequest() ) {
+	 
+	    this.prepareGETorPOST( optionalReturnSettings );
+
+	} else if( this.getRequestHeaders().isOPTIONSRequest() ) {
+
+	    this.prepareOPTIONS( optionalReturnSettings );
+
+	} else {
+
+	    throw new UnsupportedMethodException( httpMethod, "Unsupported HTTP method ('" + httpMethod + "')" );
+
+	}
+
+    }
+
+
+    /**
+     * This method prepares GET and POST requests.
+     *
+     * @param optionalReturnSettings An (optional) map for error retrieval and internal settings retrieval.
+     **/
+    private void prepareGETorPOST( Map<String,BasicType> optionalReturnSettings ) 
+	throws MalformedRequestException,
+	       UnsupportedVersionException,
+	       UnsupportedMethodException,
+	       UnknownMethodException,
+	       ConfigurationException,
+	       MissingResourceException,
+	       AuthorizationException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException,
+	       SecurityException,
+	       IOException {
+
+
+	String httpMethod = this.getRequestHeaders().getRequestMethod();
 
 	// Fetch the request URI
 	String requestURI = this.getRequestHeaders().getRequestURI();
@@ -259,6 +298,44 @@ public class OK
 
 	}
     }
+
+
+     /**
+     * This method prepares OPTIONS requests.
+     *
+     * @param optionalReturnSettings An (optional) map for error retrieval and internal settings retrieval.
+     **/
+    private void prepareOPTIONS( Map<String,BasicType> optionalReturnSettings ) 
+	throws MalformedRequestException,
+	       UnsupportedVersionException,
+	       UnsupportedMethodException,
+	       UnknownMethodException,
+	       ConfigurationException,
+	       MissingResourceException,
+	       AuthorizationException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException,
+	       SecurityException,
+	       IOException {
+
+
+	String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
+	String optionsCSV = CustomUtil.implode( supportedMethods, "," );
+	
+	
+	
+	// Add default headers
+	super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() ); 
+	super.addResponseHeader( "Content-Length",    "0" ); 
+	super.addResponseHeader( "Connection",        "close" );
+
+
+	// This is the actual OPTIONS response
+	super.addResponseHeader( "Allow", optionsCSV );
+	 
+    }
+
 
 
     /**

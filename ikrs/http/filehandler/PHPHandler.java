@@ -93,7 +93,7 @@ public class PHPHandler
 
 	// WARNING: php-cgi must be installed on the system
 	command.add( "php-cgi" );
-	command.add( "-n" );
+	// command.add( "-n" );  // Param '-n' means: no php.ini will be used
 	command.add( file.getAbsolutePath() );  // This is the file argument for the PHP interpreter :)
 
 	return command;

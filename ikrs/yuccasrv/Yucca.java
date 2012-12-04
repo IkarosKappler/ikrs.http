@@ -14,6 +14,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -207,6 +208,15 @@ public class Yucca
 
 	if( forceQuit )
 	    System.exit( 0 );
+    }
+
+    public void performStatus() {
+	
+	String statusString = this.bindManager.getStatusString();
+	 this.getLogger().log( Level.INFO,
+			       "Socket manager status:\n " + statusString
+			      );
+
     }
 
     //---BEGIN------------------------- BindListener ------------------------------
@@ -545,9 +555,8 @@ public class Yucca
 	for( int i = 0; i < serverList.size(); i++ ) {
 
 	    Environment<String,BasicType> server = serverList.get( i );
-	    System.out.println( "binding server '" + server.get("name") + "'" );
-	    
 	    performAutoBind( server );
+	    
 	    
 	}
 
@@ -562,8 +571,17 @@ public class Yucca
 	for( int i = 0; i < listenList.size(); i++ ) {
 	    
 	    Environment<String,BasicType> listen = listenList.get( i );
-	    performAutoBind( server, 
-			     listen );
+
+	    // Check if 'autobind' flag is set.
+	    BasicType autobind = listen.get( Constants.CONFIG_SERVER_AUTOBIND );
+	    if( autobind == null || autobind.getBoolean() ) {
+
+		this.getLogger().log( Level.INFO,
+				      "Binding server '" + server.get("name") + "' ..." 
+				      );
+		performAutoBind( server, 
+				 listen );
+	    }
 	    
 	    
 	}
@@ -597,8 +615,8 @@ public class Yucca
 	    ConnectionHandler handler = (ConnectionHandler)handlerClass.newInstance();
 
 	    /* Fetch connect data */
-	    host = listen.get( "host" ).getString();
-	    port = listen.get( "port" ).getInt();
+	    host   = listen.get( "host" ).getString();
+	    port   = listen.get( "port" ).getInt();
 		
 	    InetAddress address = InetAddress.getByName( host );
 
@@ -646,6 +664,11 @@ public class Yucca
 
 	    this.getLogger().severe( "Failed to bind server '" + server.get(Constants.CONFIG_SERVER_NAME) + "': handlerClass '"+handlerClassName+"' could not be accessed: "+e.getMessage() );
 	    return false;
+
+	} catch( GeneralSecurityException e ) {
+
+	    this.getLogger().severe( "Failed to bind server '" + server.get(Constants.CONFIG_SERVER_NAME) + "' due to general security exception: " + e.getMessage() );
+	    return false;  
 	    
 	} catch( BasicTypeException e ) {
 
@@ -669,10 +692,11 @@ public class Yucca
 
     public void performListen( BasicType host,
 			       BasicType port,
-			       Map<String,BasicType> serverSettings ) 
+			       Environment<String,BasicType> serverSettings ) 
 	throws UnknownHostException,
 	       BasicTypeException,
-	       IOException {
+	       IOException,
+	       GeneralSecurityException {
 
 	
 	/* First step: resolve hostname */
@@ -707,11 +731,46 @@ public class Yucca
 	
 	/* Init the server*/
 	Environment<String,BasicType> serverConfig = null;
+
+	/* Pre-locate config file argument */
+	String configFileName = null;
+	int i = 0;
+	while( i < myCall.getParamCount() 
+	       && configFileName == null ) {
+	    
+	    BasicType argument = myCall.getParamAt(i);
+	    BasicType nextArgument = (i+1 < myCall.getParamCount() ? myCall.getParamAt(i+1) : null);
+
+	    if( argument.getString().equals("--config") ) {
+
+		if( nextArgument == null ) {
+
+		    System.err.println( "Config file param missing ('" + argument.getString() + "')." );
+		    System.exit( 1 );
+
+		} else {
+
+		    configFileName = nextArgument.getString();
+
+		}
+
+	    }
+
+	}
+
 	Yucca yucca = null;
 	// Read config
 	try {
-	    serverConfig = 
-		ConfigReader.read( new File(System.getProperty("user.home") + "/.yuccasrv/server.xml") );
+	    
+	    if( configFileName == null ) {
+
+		// serverConfig = ConfigReader.read( new File(System.getProperty("user.home") + "/.yuccasrv/server.xml") );
+		configFileName = System.getProperty("user.home") + "/.yuccasrv/server.xml";
+	    }
+	
+	    
+	    System.out.println( "Loading server config '" + configFileName + "' ..." );
+	    serverConfig = ConfigReader.read( new File(configFileName) );
 
 
 	    // Default config successfully read
@@ -730,7 +789,7 @@ public class Yucca
 	
 
 	/* Interprete command line arguments */
-	int i = 0;
+	i = 0;
 	while( i < myCall.getParamCount() ) {
 	    
 	    BasicType argument = myCall.getParamAt(i);
@@ -750,6 +809,11 @@ public class Yucca
 		    serverConfig.put( Constants.KEY_STARTUP_LOGLEVEL, nextArgument );
 		    i+=2; 
 
+		} else if( argument.getString().equalsIgnoreCase("--config") ) {
+
+		    i+=2;
+		    // Ignore [was previously fetched]
+
 		} else {
 		    System.out.println( "Unknown option: "+argument.getString() );
 		    i++;
@@ -763,7 +827,7 @@ public class Yucca
 	}
 
 	// Apply config
-	BasicType elem = serverConfig.get(Constants.KEY_STARTUP_LOGLEVEL);
+	BasicType elem = serverConfig.get( Constants.KEY_STARTUP_LOGLEVEL );
 	if( elem != null ) {
 
 	    try {

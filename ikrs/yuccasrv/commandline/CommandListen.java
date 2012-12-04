@@ -11,6 +11,7 @@ package ikrs.yuccasrv.commandline;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -21,6 +22,9 @@ import ikrs.util.AbstractCommand;
 import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.Command;
 import ikrs.util.CommandStringIncompleteException;
+import ikrs.util.DefaultEnvironment;
+import ikrs.util.Environment;
+import ikrs.util.TreeMapFactory;
 import ikrs.yuccasrv.Constants;
 
 
@@ -55,8 +59,10 @@ public class CommandListen
 
 	String protocol = null;
 	int backlog = -1;
-	Map<String,BasicType> serverSettings = new TreeMap<String,BasicType>( CaseInsensitiveComparator.sharedInstance );
-	
+	// Map<String,BasicType> serverSettings = new TreeMap<String,BasicType>( CaseInsensitiveComparator.sharedInstance );
+	TreeMapFactory<String,BasicType> mapFactory = new TreeMapFactory<String,BasicType>( CaseInsensitiveComparator.sharedInstance );
+	Environment<String,BasicType> serverSettings = new DefaultEnvironment<String,BasicType>( mapFactory );
+
 	while( i < this.getParamCount() && this.getParamAt(i).getString().startsWith("-") ) {
 		
 		BasicType argument = this.getParamAt(i);
@@ -131,7 +137,8 @@ public class CommandListen
 	    //this.getFactory().getServer().performQuit( forceQuit );
 	    this.getFactory().getServer().performListen( host, 
 							 port, 
-							 serverSettings );
+							 serverSettings 
+							 );
 	    //this.getFactory().getServer().getLogger().log( Level.INFO, 
 	    //						   "New server created." );
 	    return 0; // implies SUCCESS :)
@@ -153,6 +160,11 @@ public class CommandListen
 	    
 	    this.getFactory().getServer().getLogger().log( Level.SEVERE,
 							   "[IOException] " + e.getMessage() );
+	    return 102; // implies error
+	} catch( GeneralSecurityException e ) {
+	    
+	    this.getFactory().getServer().getLogger().log( Level.SEVERE,
+							   "[GeneralSecurityException] " + e.getMessage() );
 	    return 102; // implies error
 	}
     }

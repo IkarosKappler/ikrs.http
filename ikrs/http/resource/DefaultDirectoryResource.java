@@ -289,11 +289,12 @@ public class DefaultDirectoryResource
     }
 
     private String[] collectRowData( File file ) {
-	// 0: name
-	// 1: size
-	// 2: type
-	// 3: date
-	String[] row = new String[ 4 ];
+	// 0: icon
+	// 1: name
+	// 2: size
+	// 3: type
+	// 4: date
+	String[] row = new String[ 5 ];
 	
 	for( int i = 0; i < row.length; i++ ) {
 	    row[i] =  getFileAttribute( file, i );
@@ -312,7 +313,7 @@ public class DefaultDirectoryResource
 	    String data = rowData[i];
 	    int len     = rowSizes[i];
 	    
-	    if( i == 1 ) {
+	    if( i == 2 ) {
 
 		// The length should be aligned right
 		lineBuffer.append( CustomUtil.repeat( " ", len - data.length()) );
@@ -342,11 +343,11 @@ public class DefaultDirectoryResource
 	    lineBuffer.append( "<tr>\n" );
 
 	    
-	for( int i = 0; i < 4; i++ ) {
+	for( int i = 0; i < 5; i++ ) {
 	    
 	    if( this.isHTMLFormat() ) {
 		lineBuffer.append( "      <td" );
-		if( i == 1 ) // size
+		if( i == 0 || i == 2 ) // icon or size
 		    lineBuffer.append( " align=\"right\"" );
 		lineBuffer.append( ">" );
 	    } else if( i > 0 ) {
@@ -377,6 +378,14 @@ public class DefaultDirectoryResource
 		
 	switch( field ) {
 	case 0: 
+	    if( this.isHTMLFormat() ) {
+		if( file.isDirectory() ) return "<div class=\"icon_directory\"></div>";
+		else                     return "<div class=\"icon_file\"></div>";
+	    } else {
+		return "";
+	    }
+
+	case 1: 
 
 	    // File name [make an anchor!]
 	    if( this.isHTMLFormat() ) {
@@ -388,7 +397,7 @@ public class DefaultDirectoryResource
 		return file.getName();
 	    }
 	    
-	case 1:  
+	case 2:  
  
 	    // File size [make nice dotted format]
 	    StringBuffer buffer = new StringBuffer();
@@ -411,7 +420,7 @@ public class DefaultDirectoryResource
 	    //return Long.toString(file.length()) + " bytes";
 	    return buffer.toString();
 
-	case 2:
+	case 3:
 	    
 	    // File type
 	    if( file.isDirectory() )

@@ -95,7 +95,7 @@ public class HTTPRequestDistributor
 	
 
 	// Do not use the connectionUserID after this point any more! 
-	// It's too strong bound to the socketmanager, from which the HTTP handler should not be bound too strong.
+	// It's too strong bound to the socketmanager, to which the HTTP handler should not be bound at all (except as a handler).
 	// Use the session ID instead to keep the underlying implementations disconnected from the yucca.* package.
 
 	//UUID sessionID = session.getSessionID();

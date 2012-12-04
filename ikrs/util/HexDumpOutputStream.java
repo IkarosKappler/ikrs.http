@@ -126,11 +126,19 @@ public class HexDumpOutputStream
 	throws IOException {
 
 	this.isClosed = true;
+	this.flush();
 	this.coreWriter.close();
     }
 
     public void flush() 
 	throws IOException {
+
+	if( this.buffer.length() == 0 ) {
+	    
+	    this.coreWriter.flush();
+	    return;
+	}
+
 
 	this.writeOffset();
 	this.coreWriter.write( "  " );
@@ -168,11 +176,16 @@ public class HexDumpOutputStream
 	throws IOException {
 
 	this.coreWriter.write( "0x" );
-	String addr = 
-	    Integer.toString( (int)( (this.writeOffset>>24) & 0xFF ), 16 ) +
-	    Integer.toString( (int)( (this.writeOffset>>16) & 0xFF ), 16 ) +
-	    Integer.toString( (int)( (this.writeOffset>> 8) & 0xFF ), 16 ) +
-	    Integer.toString( (int)( (this.writeOffset    ) & 0xFF ), 16 );
+	String addr =
+	    Integer.toString( (int)( (this.writeOffset>>28) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>>24) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>>20) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>>16) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>>12) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>> 8) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset>> 4) & 0xF ), 16 ) +
+	    Integer.toString( (int)( (this.writeOffset    ) & 0xF ), 16 );
+
 	
 	// Fill the address prefix with zeros.
 	for( int i = addr.length(); i < 8; i++ )

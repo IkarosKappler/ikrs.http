@@ -55,8 +55,9 @@ public class HTTPHandler
     implements RejectedExecutionHandler {
 
     protected static final String[] SUPPORTED_METHODS = new String[] {
-	"GET",
-	"POST"
+	Constants.HTTP_METHOD_GET,
+	Constants.HTTP_METHOD_POST,
+	Constants.HTTP_METHOD_OPTIONS
     };
 
     private File documentRoot;
@@ -264,8 +265,6 @@ public class HTTPHandler
 		    
 		String handlerName = pair.getKey();
 		String[] split = pair.getValue().split( "(\\s)+" );
-		//for( int i = 0; i < split.length; i++ )
-		//    System.out.println( "split[" + i + "]=" + split[i] );
 
 		// At the first position is the handler CLASS NAME
 		handlerClassName = split[0];
@@ -273,15 +272,6 @@ public class HTTPHandler
 		
 
 		Class<?> handlerClass = Class.forName( handlerClassName );
-		// Implements the 'FileHandler' interface?
-		/*Class<?>[] ifs = handlerClass.getInterfaces();
-		boolean isFileHandler = false;
-		for( int i = 0; i < ifs.length && !isFileHandler; i++ ) {
-		
-		    isFileHandler = ifs[i].getName().equals("ikrs.http.FileHandler");
-		
-		}
-		*/ 
 		boolean isFileHandler = CustomUtil.classImplementsInterface( handlerClass, 
 									     "ikrs.http.FileHandler", 
 									     true   // includeSuperClasses 
@@ -302,16 +292,16 @@ public class HTTPHandler
 		    // Associate all file extensions from the config file with the created handlers.
 		    // Note: at index 0 is the classname itself!
 		    for( int i = 1; i < split.length; i++ ) {
-			//this.fileHandlerMap.put( ".php", fileHandler ); // new ikrs.http.filehandler.PHPHandler(this, this.logger) );
 			logger.log( Level.INFO,
 				    getClass().getName(),
-				    "Mappind file handler '"+ handlerName + "' to extension: " + split[i] );
+				    "Mapping file handler '"+ handlerName + "' to extension: " + split[i] );
+			// Split[i] contains the file extension
 			this.fileHandlerExtensionMap.put( split[i], fileHandler );
 		    }
 
 		    logger.log( Level.INFO,
 				getClass().getName(),
-				"Mappind file handler '"+ handlerName + "' to handler class: " + handlerClassName );
+				"Mapping file handler '"+ handlerName + "' to handler class: " + handlerClassName );
 		    this.fileHandlerNameMap.put( handlerName, fileHandler );
 		}
 	    }
@@ -515,7 +505,7 @@ public class HTTPHandler
 					     Socket sock,
 					     ConnectionUserID<ConnectionUserID> userID ) {
 	
-	enqueue( source, socketID, sock, userID );
+	this.enqueue( source, socketID, sock, userID );
 	
 	
     }

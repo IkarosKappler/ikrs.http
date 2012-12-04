@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.swing.*;
 
 import ikrs.typesystem.*;
+import ikrs.util.Environment;
 import ikrs.yuccasrv.Constants;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
@@ -139,7 +140,7 @@ public class ServerManagerDialog
 
     protected boolean performStartServer( InetAddress address,
 					  int port,
-					  Map<String,BasicType> bindSettings ) {
+					  Environment<String,BasicType> bindSettings ) {
 
 	try {
 	    
@@ -153,6 +154,11 @@ public class ServerManagerDialog
 	    exc.printStackTrace();
 	    return false;
 
+	} catch( java.security.GeneralSecurityException exc ) {
+
+	    setStatus( "[GeneralSecurityException] "+exc.getMessage(), true );
+	    exc.printStackTrace();
+	    return false;
 	}
     }
 				       

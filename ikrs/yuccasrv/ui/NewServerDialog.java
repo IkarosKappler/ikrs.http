@@ -16,6 +16,9 @@ import javax.swing.*;
 
 import ikrs.yuccasrv.Constants;
 import ikrs.typesystem.*;
+import ikrs.util.DefaultEnvironment;
+import ikrs.util.Environment;
+
 
 public class NewServerDialog 
     extends JDialog 
@@ -127,9 +130,12 @@ public class NewServerDialog
 	    int backlog = this.backlogSpinnerModel.getNumber().intValue();
 
 
-	    Collator caseInsensitive = Collator.getInstance();
-	    caseInsensitive.setStrength( Collator.PRIMARY );
-	    Map<String,BasicType> bindSettings = new TreeMap<String,BasicType>( caseInsensitive );
+	    //Collator caseInsensitive = Collator.getInstance();
+	    //caseInsensitive.setStrength( Collator.PRIMARY );
+	    // Map<String,BasicType> bindSettings = new TreeMap<String,BasicType>( caseInsensitive );
+	    java.util.Comparator<String> caseInsensitiveComparator = ikrs.util.CaseInsensitiveComparator.sharedInstance;
+	    Environment<String,BasicType> bindSettings = 
+		new DefaultEnvironment<String,BasicType>( new ikrs.util.TreeMapFactory<String,BasicType>(caseInsensitiveComparator) );
 	    bindSettings.put( Constants.CONFIG_SERVER_PROTOCOL, new BasicStringType(protocol) );
 	    bindSettings.put( Constants.CONFIG_SERVER_BACKLOG,  new BasicNumberType(backlog) );
 	    bindSettings.put( Constants.CONFIG_SERVER_ADDRESS,  new BasicStringType(address.toString()) );

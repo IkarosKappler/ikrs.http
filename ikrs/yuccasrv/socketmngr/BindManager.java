@@ -18,6 +18,7 @@ package ikrs.yuccasrv.socketmngr;
 import java.io.IOException;
 import java.net.*;
 import java.nio.channels.IllegalBlockingModeException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import ikrs.yuccasrv.UDPConnectionUserID;
 
 import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
+import ikrs.util.Environment;
 
 
 public class BindManager 
@@ -55,8 +57,6 @@ public class BindManager
 	bindListeners;
 
     /* This might be null */
-    //private Logger
-    //	logger;
     private CustomLogger
 	logger;
 
@@ -100,7 +100,6 @@ public class BindManager
     protected CustomLogger getLogger() {
 	return this.logger;
     }
-
 
     private void fireServerCreated( UUID socketID ) {
 
@@ -357,8 +356,11 @@ public class BindManager
      **/
     public synchronized UUID bind( InetAddress address,
 				   int port,
-				   Map<String,BasicType> bindSettings ) 
-	throws IOException {
+				   //Map<String,BasicType> bindSettings 
+				   Environment<String,BasicType> bindSettings
+				   ) 
+	throws IOException,
+	       GeneralSecurityException {
 
 	if( bindSettings.get(Constants.CONFIG_SERVER_PROTOCOL) == null )
 	    bindSettings.put( Constants.CONFIG_SERVER_PROTOCOL, new BasicStringType("TCP") );
@@ -366,7 +368,8 @@ public class BindManager
 
 	if( bindSettings.get(Constants.CONFIG_SERVER_PROTOCOL).getString("TCP").equalsIgnoreCase("TCP") ) {
 	    
-	    ServerSocketThread server = new ServerSocketThread( address,
+	    ServerSocketThread server = new ServerSocketThread( this.getLogger(),
+								address,
 								port,
 								bindSettings,
 								this  // observer
@@ -467,7 +470,23 @@ public class BindManager
     }
 
 
+    public String getStatusString() {
+	StringBuffer b = new StringBuffer();
+	b.append( "There are " ).append( this.serverSocketThreads.size() ).append( " listening sockets:\n" );
+	
+	Iterator<Map.Entry<UUID,ServerSocketThread>> iter = this.serverSocketThreads.entrySet().iterator();
+	while( iter.hasNext() ) {
 
+	    Map.Entry<UUID,ServerSocketThread> entry = iter.next();
+	    b.append( "\n" ).append( entry.getValue().getStatusString() ).append( "\n" );
+
+	}
+	
+
+	return b.toString();
+    }
+
+    /*
     public static void main( String[] argv ) {
 
 
@@ -475,5 +494,6 @@ public class BindManager
 
 
     }
+    */
 
 }

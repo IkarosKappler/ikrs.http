@@ -73,6 +73,8 @@ public class YuccaCommandFactory
 	    cmd = new CommandQuit();
 	else if( name.equalsIgnoreCase("UNLISTEN") || name.equalsIgnoreCase("RELEASE") || name.equalsIgnoreCase("UNBIND") ) 
 	    cmd = new CommandUnlisten();
+	else if( name.equalsIgnoreCase("STATUS") ) 
+	    cmd = new CommandStatus();
 	else 
 	    throw new UnknownCommandException( "Unknown command: '"+name+"'.", name );
 

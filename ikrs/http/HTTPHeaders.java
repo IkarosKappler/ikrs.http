@@ -63,13 +63,13 @@ public class HTTPHeaders {
 
     //--- BEGIN --------------------------- Response header fields ---------------------------
     /**
-     * This field is used to store the status code from the 'HTTP1/1 [STATUS] [REASON_PHRASE]' line (if exists).
+     * This field is used to store the status code from the 'HTTP/1.1 [STATUS] [REASON_PHRASE]' line (if exists).
      * Note: this is affects the response (!) headers.
      **/
     private String responseStatus;
 
     /**
-     * This field is used to store the status code from the 'HTTP1/1 [STATUS] [REASON_PHRASE]' line (if exists).
+     * This field is used to store the status code from the 'HTTP/1.1 [STATUS] [REASON_PHRASE]' line (if exists).
      * Note: this is affects the response (!) headers.
      **/
     private String responseReasonPhrase;
@@ -122,16 +122,43 @@ public class HTTPHeaders {
 	}
     }
 
+    /**
+     * This method checks if the headers represent a HTTP GET request.
+     *
+     * If no HTTP* header is present the method returns false.
+     *
+     * @return true If the representing request is a HTTP GET request, false otherwise.
+     **/
     public boolean isGETRequest() {
 	// Call at least once the getRequestMethod() method to determine the method internally!
 	return this.getRequestMethod() != null 
 	    && this.requestMethod.equals( Constants.HTTP_METHOD_GET );
     }
 
+    /**
+     * This method checks if the headers represent a HTTP POST request.
+     *
+     * If no HTTP* header is present the method returns false.
+     *
+     * @return true If the representing request is a HTTP POST request, false otherwise.
+     **/
     public boolean isPOSTRequest() {
 	// Call at least once the getRequestMethod() method to determine the method internally!
 	return this.getRequestMethod() != null 
 	    && this.requestMethod.equals( Constants.HTTP_METHOD_POST );
+    }
+
+    /**
+     * This method checks if the headers represent a HTTP OPTIONS request.
+     *
+     * If no HTTP* header is present the method returns false.
+     *
+     * @return true If the representing request is a HTTP OPTIONS request, false otherwise.
+     **/
+    public boolean isOPTIONSRequest() {
+	// Call at least once the getRequestMethod() method to determine the method internally!
+	return this.getRequestMethod() != null 
+	    && this.requestMethod.equals( Constants.HTTP_METHOD_OPTIONS );
     }
 
     /**

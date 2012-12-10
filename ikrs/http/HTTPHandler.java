@@ -57,7 +57,12 @@ public class HTTPHandler
     protected static final String[] SUPPORTED_METHODS = new String[] {
 	Constants.HTTP_METHOD_GET,
 	Constants.HTTP_METHOD_POST,
-	Constants.HTTP_METHOD_OPTIONS
+	Constants.HTTP_METHOD_OPTIONS,
+	Constants.HTTP_METHOD_HEAD,
+
+	// Note that TRACE is not secure
+	// See: http://www.cgisecurity.com/whitehat-mirror/WH-WhitePaper_XST_ebook.pdf
+	Constants.HTTP_METHOD_TRACE
     };
 
     private File documentRoot;

@@ -125,7 +125,7 @@ public class HTTPHeaders {
     /**
      * This method checks if the headers represent a HTTP GET request.
      *
-     * If no HTTP* header is present the method returns false.
+     * If no respective header is present (should not happen) the method returns false.
      *
      * @return true If the representing request is a HTTP GET request, false otherwise.
      **/
@@ -138,7 +138,7 @@ public class HTTPHeaders {
     /**
      * This method checks if the headers represent a HTTP POST request.
      *
-     * If no HTTP* header is present the method returns false.
+     * If no respective header is present (should not happen) the method returns false.
      *
      * @return true If the representing request is a HTTP POST request, false otherwise.
      **/
@@ -151,7 +151,7 @@ public class HTTPHeaders {
     /**
      * This method checks if the headers represent a HTTP OPTIONS request.
      *
-     * If no HTTP* header is present the method returns false.
+     * If no respective header is present (should not happen) the method returns false.
      *
      * @return true If the representing request is a HTTP OPTIONS request, false otherwise.
      **/
@@ -159,6 +159,32 @@ public class HTTPHeaders {
 	// Call at least once the getRequestMethod() method to determine the method internally!
 	return this.getRequestMethod() != null 
 	    && this.requestMethod.equals( Constants.HTTP_METHOD_OPTIONS );
+    }
+
+    /**
+     * This method checks if the headers represent a HTTP HEAD request.
+     *
+     * If no HTTP* header is present the method returns false.
+     *
+     * @return true If the representing request is a HTTP HEAD request, false otherwise.
+     **/
+    public boolean isHEADRequest() {
+	// Call at least once the getRequestMethod() method to determine the method internally!
+	return this.getRequestMethod() != null 
+	    && this.requestMethod.equals( Constants.HTTP_METHOD_HEAD );
+    }
+
+    /**
+     * This method checks if the headers represent a HTTP TRACE request.
+     *
+     * If no respective header is present (should not happen) the method returns false.
+     *
+     * @return true If the representing request is a HTTP TRACE request, false otherwise.
+     **/
+    public boolean isTRACERequest() {
+	// Call at least once the getRequestMethod() method to determine the method internally!
+	return this.getRequestMethod() != null 
+	    && this.requestMethod.equals( Constants.HTTP_METHOD_TRACE );
     }
 
     /**

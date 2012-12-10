@@ -95,7 +95,8 @@ public abstract class AbstractMapDelegation<K,V>
 								      StringBuffer b,
 								      int indent ) {
 
-	makeIndent( b, indent, ' ' ).append( map.getClass().getName() ).append( "={" );
+	  //makeIndent( b, indent, ' ' ).append( map.getClass().getName() ).append( "={" );
+	  makeIndent( b, indent, ' ' ).append( "{" );
 	
 	// print map
 	

@@ -292,6 +292,16 @@ public class HTTPRequestDistributor
     private void handleSession_connectionEnd( UUID sessionID ) {
 	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().get( sessionID );
 
+	if( session == null ) {
+	    
+	    /*
+	    this.getLogger().log( Level.WARN,
+				  getClass().getName()
+	    return;
+	    */
+
+	}
+
 	// Trace the session access time
 	session.put( Constants.SKEY_LASTACCESSTIME, new BasicNumberType(System.currentTimeMillis()) );
 	session.put( Constants.SKEY_ISALIVE, new BasicBooleanType(true) );

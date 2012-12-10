@@ -1,7 +1,31 @@
 
 
+TRACE verussacht noch einen Feher.
+Suche in ... ???
+
+keel@schnaps:~$ telnet 127.0.0.1 8888
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+TRACE /system/styles/icon_directory_16px.png HTTP/1.1
+
+HTTP/1.1 200 OK
+Server: Yucca/0.9.3 (Linux) Java/1.7.0_09
+Content-Length: 54
+Connection: close
+Content-Language: en
+Content-Type: text/plain; charset=utf8
+
+
 
 TO DO:
+[2012-12-09]
+ - It must be possible to disable HTTP methods (particulary TRACE).
+
+[2012-10-30]
+ - [Done 2012-11-27]
+   The socketmanager must be capable to support secure sockets.
+
 [2012-10-29]
  - [DONE 2012-10-29] There is a new file called 'filehandlers.ini' in the working dir. It specifies the handler classes.
    	 	     Implement the SetType- and AddType-Handling directives from the htaccess (FileSystemResourceAccessor).
@@ -36,9 +60,12 @@ TO DO:
    .htaccess: 'DirectoryIndex' directive must be handled.
 
 [2012-10-10]
- - Build method: OPTIONS ('Supported Methods').
- - Build method: HEAD.
- - Build method: TRACE.
+ - [DONE 2012-12-04] 
+   Build method: OPTIONS ('Supported Methods').
+ - [DONE 2012-12-04]
+   Build method: HEAD.
+ - [DONE 2012-12-05]
+   Build method: TRACE.
  - The ErrorResponseBuilder should process all quotes and slashes on client error 'Unauthorized'.
 
 [2012-10-08]

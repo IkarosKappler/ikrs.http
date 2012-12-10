@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.TreeMap;
@@ -111,13 +112,20 @@ public class OK
 	String httpMethod = this.checkValidHTTPMethod();
 
 	if( this.getRequestHeaders().isGETRequest() 
-	    || this.getRequestHeaders().isPOSTRequest() ) {
+	    || this.getRequestHeaders().isPOSTRequest() 
+	    || this.getRequestHeaders().isHEADRequest() ) {
 	 
-	    this.prepareGETorPOST( optionalReturnSettings );
+	    this.prepareGETorPOSTorHEAD( optionalReturnSettings );
 
 	} else if( this.getRequestHeaders().isOPTIONSRequest() ) {
 
 	    this.prepareOPTIONS( optionalReturnSettings );
+
+	} else if( this.getRequestHeaders().isTRACERequest() ) {
+
+	    // Note that TRACE is not secure.
+	    // http://www.cgisecurity.com/whitehat-mirror/WH-WhitePaper_XST_ebook.pdf
+	    this.prepareTRACE( optionalReturnSettings );  
 
 	} else {
 
@@ -133,7 +141,7 @@ public class OK
      *
      * @param optionalReturnSettings An (optional) map for error retrieval and internal settings retrieval.
      **/
-    private void prepareGETorPOST( Map<String,BasicType> optionalReturnSettings ) 
+    private void prepareGETorPOSTorHEAD( Map<String,BasicType> optionalReturnSettings ) 
 	throws MalformedRequestException,
 	       UnsupportedVersionException,
 	       UnsupportedMethodException,
@@ -280,7 +288,14 @@ public class OK
 
 	
 
-	    super.setResponseDataResource( resource );
+	    // "The HEAD method is identical to GET except that the server MUST NOT return a message-body in the response."
+	    // See http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+	    if( !this.getRequestHeaders().isHEADRequest() ) {
+
+		super.setResponseDataResource( resource );
+
+	    }
+
 
 	} catch( URISyntaxException e ) {
 
@@ -300,7 +315,7 @@ public class OK
     }
 
 
-     /**
+    /**
      * This method prepares OPTIONS requests.
      *
      * @param optionalReturnSettings An (optional) map for error retrieval and internal settings retrieval.
@@ -337,6 +352,75 @@ public class OK
     }
 
 
+    /**
+     * This method prepares OPTIONS requests.
+     *
+     * @param optionalReturnSettings An (optional) map for error retrieval and internal settings retrieval.
+     **/
+    private void prepareTRACE( Map<String,BasicType> optionalReturnSettings ) 
+	throws MalformedRequestException,
+	       UnsupportedVersionException,
+	       UnsupportedMethodException,
+	       UnknownMethodException,
+	       ConfigurationException,
+	       MissingResourceException,
+	       AuthorizationException,
+	       HeaderFormatException,
+	       DataFormatException,
+	       UnsupportedFormatException,
+	       SecurityException,
+	       IOException {
+
+
+	// "The TRACE method is used to invoke a remote, application-layer loop- back of the request message. 
+	//  The final recipient of the request SHOULD reflect the message received back to the client as the 
+	// entity-body of a 200 (OK) response."
+	// See http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+	
+	StringBuffer buffer = new StringBuffer();
+	Iterator<HTTPHeaderLine> iter = this.getRequestHeaders().iterator();
+	// Add all header lines to the buffer
+	//int CR = 0xD;  // 13 decimal
+	//int LF = 0xA;  // 10 decimal
+	while( iter.hasNext() ) {
+
+	    HTTPHeaderLine line = iter.next();
+	    buffer.append( line.getKey() );
+	    if( line.getValue() != null ) 
+		buffer.append( ": " ).append( line.getValue() );
+	    buffer.append( (char)Constants.CR ).append( (char)Constants.LF );
+	    
+	    
+	    //buffer.append( line.getRawBytes( CharSet  ...) );
+	}
+
+	Resource resource = new ByteArrayResource( this.getHTTPHandler(),
+						   this.getHTTPHandler().getLogger(),
+						   buffer.toString().getBytes(),
+						   false       // no need to use fair locks
+						   );
+
+	resource.getReadLock().lock();
+	resource.open( true ); // Open in read-only mode
+	
+	
+	// Add default headers
+	super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() ); 
+	super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) ); 
+	super.addResponseHeader( "Connection",        "close" );
+	super.addResponseHeader( "Content-Language",  "en" );      // HTTP is in english somehow ... I think
+	super.addResponseHeader( "Content-Type",      "text/plain; charset=utf8" );
+
+	
+
+
+
+	// Store generated header response resource
+	super.setResponseDataResource( resource );
+	 
+    }
+
+
 
     /**
      * This method will be called in the final end - even if the execute() method failed.
@@ -361,7 +445,7 @@ public class OK
 
 	    this.getHTTPHandler().getLogger().log( Level.WARNING,
 						   getClass().getName() + ".dispose()",
-						   "Faile to close resource: " + e.getMessage() );
+						   "Failed to close resource: " + e.getMessage() );
 
 	} finally {
 

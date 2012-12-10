@@ -94,7 +94,7 @@ public class YuccaCommandFactory
 
     public static String[] getImplementedCommands() {
 	return new String[] {
-	    "LISTEN", "HELP", "QUIT", "UNLISTEN"
+	      "HELP", "LISTEN", "STATUS", "UNLISTEN", "QUIT"
 	};
     }
     

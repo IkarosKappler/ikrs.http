@@ -416,10 +416,10 @@ public class ServerSocketThread
 
     public String getStatusString() {
 	StringBuffer b = new StringBuffer();
-	b.append( "bindAddress=" ).append(this.bindAddress.toString() ).
-	    append( ", bindPort=" ).append( this.bindPort ).
-	    append( ", bindSettings=" ).append( this.bindSettings.toString() ).
-	    append( ", uuid=" ).append( this.uuid );
+	b.append( "bindAddress=" ).append(this.bindAddress.toString() ).append( ",\n" ).
+	      append( "bindPort=" ).append( this.bindPort ).append( ",\n" ).
+	      append( "bindSettings=" ).append( this.bindSettings.toString() ).append( ",\n" ).
+	      append( "uuid=" ).append( this.uuid );
 	return b.toString();
     }
 

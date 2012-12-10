@@ -103,6 +103,7 @@ public final class HTTPHeaderLine
 	    tmp += ": " + this.getValue();
 	
 	tmp += "\n";
+	// tmp += ((char)Constants.CR + (char)Constants.LF);
 
 	return tmp.getBytes( charset );
     }

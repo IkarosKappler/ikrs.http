@@ -325,7 +325,9 @@ public abstract class AbstractPreparedResponse
 	} while( iter.hasNext() );
 	
 	// Send an empty line that implies 'end-of-headers'
-	out.write( (byte)'\n' );
+	//out.write( (byte)'\n' );
+	out.write( (char)Constants.CR );
+	out.write( (char)Constants.LF );
 
 	// Flush the header data
 	out.flush();

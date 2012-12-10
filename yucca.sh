@@ -1,3 +1,3 @@
 #!/bin/sh
 
-java ikrs.yuccasrv.Yucca -c -l FINEST
+java ikrs.yuccasrv.Yucca --config _.yuccasrv/server.xml -c -l FINEST

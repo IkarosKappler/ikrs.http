@@ -22,7 +22,7 @@ table {
 
 /* To avoid table rows to stick together add a 20 pixel padding to the right */
 td {
-    padding-right:     20px;
+    padding-right:     10px;
 }
 
 
@@ -34,4 +34,20 @@ hr {
     height:            1px;
     margin-left:       0px;
     text-align:        left;
+}
+
+/* This is an empty div leading the file name in the list */
+div.icon_file {
+    width:             16px;
+    height:            16px;
+    background-image:  url( '/system/styles/icon_file_16px.png' );
+    background-repeat: no-repeat;
+}
+
+/* This is an empty div leading the directory name in the list */
+div.icon_directory {
+    width:             16px;
+    height:            16px;
+    background-image:  url( '/system/styles/icon_directory_16px.png' );
+    background-repeat: no-repeat;
 }

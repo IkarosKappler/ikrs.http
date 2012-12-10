@@ -379,7 +379,7 @@ public class DefaultEnvironment<K,V>
 		    }
 		    
 		}
-		b.append( "\n" );
+		b.append( "" );
 		
 	    }
 	}

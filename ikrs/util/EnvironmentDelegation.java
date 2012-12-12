@@ -82,6 +82,25 @@ public class EnvironmentDelegation<K,V>
 	return this.coreEnvironment.getChild( name );
     }
 
+ 
+    /**
+     * Locate a child in the environment tree structure. If the environment has
+     * multiple children with the same name (if allowed; see allowsMultipleChildNames())
+     * the method returns the child at the most left path (first child in subset).
+     *
+     * If the path is empty the method returns this environment itself.
+     *
+     * If a path element cannot be found in the child subsets the method returns null.
+     *
+     * @param path The path that determines the desired child environment.
+     * @return The child environment that is located at the given path or null if the path
+     *         is invalid in the environment tree.
+     **/
+    public Environment<K,V> locateChild( Path<String> path ) {
+	return this.coreEnvironment.locateChild( path );
+    }
+
+
     /**
      * This method simply returns a list containing _all_ children.
      **/

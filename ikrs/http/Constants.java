@@ -26,6 +26,20 @@ public class Constants {
     /* For the LogManager. */
     public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
 
+    /* The http yucca-driven config constants */
+    public static final String KEY_HTTPCONFIG                                    = "httpConfig";
+
+    public static final String KEY_HTTPCONFIG_SETTINGS                           = "httpSettings";
+    public static final String KEY_HTTPCONFIG_SETTINGS_FILE                      = "configFile";
+
+    public static final String KEY_HTTPCONFIG_FILEHANDLERS                       = "fileHandlers";
+    public static final String KEY_HTTPCONFIG_FILEHANDLERS_FILE                  = "configFile";
+
+    
+    /* The ikrs.http config constants */
+    public static final String CKEY_HTTPCONFIG_DISABLE_METHOD_BASE               = "DISABLE_METHOD.{HTTP_METHOD}";
+
+
     public static final String KEY_AUTHORIZATION_METHOD                          = "Authorization.Method";
     public static final String KEY_AUTHORIZATION_USER                            = "Authorization.User";
     public static final String KEY_AUTHORIZATION_PASS                            = "Authorization.Pass";

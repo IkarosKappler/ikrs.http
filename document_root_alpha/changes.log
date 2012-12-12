@@ -1,4 +1,13 @@
 
+[2012-12-12]
+  - INI-file parser added.
+
+[2012-12-11]
+  - The ConnectionHandler has a customizable init() method now which applies the whole yucca server config
+    into the handler.
+  - The yucca config has an (optional) 'httpConfig' node now that can be used to define additional custom
+    config settings to the HTTP handler.
+  - The filehandlers config is now defined inside the yucca config: httpConfig-node.
 
 [2012-12-05]
   - The HTTP server is now capable to process HTTP TRACE.

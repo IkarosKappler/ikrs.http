@@ -25,6 +25,9 @@ public class BasicStringType
 
 	this.string = str;
 
+	if( str == null )
+	    return;
+
 	// Try to parse number values
 	if( !parseIntegerType(str) && !parseDoubleType(str) )
 	    ;

@@ -206,9 +206,9 @@ public class HTTPHandler
 
 	this.responseBuilder    = new DefaultResponseBuilder( this );
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
-	this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
-	this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
-	this.initFileHandlers();
+	//this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
+	//this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
+	//this.initFileHandlers();
 	/*this.fileHandlerMap.put( ".php", new DefaultDirectoryResource( this,
 								       this.getLogger(),
 								       this.getFileFilter(),
@@ -232,13 +232,17 @@ public class HTTPHandler
     /**
      * This method initializes the FileHandler map.
      **/
-    private void initFileHandlers() {
+    protected void initFileHandlers( File fileHandlersFile ) {
 
-	String fileHandlersFileName = "filehandlers.ini";
+	this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
+	this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
+
+	//String fileHandlersFileName = "filehandlers.ini";
 	String handlerClassName = null; // "ikrs.http.filehandler.PHPHandler";
 	try {   
 
-	    BufferedReader reader = new BufferedReader( new InputStreamReader( new FileInputStream(new File(fileHandlersFileName)) ) );
+	    //BufferedReader reader = new BufferedReader( new InputStreamReader( new FileInputStream(new File(fileHandlersFileName)) ) );
+	    BufferedReader reader = new BufferedReader( new InputStreamReader( new FileInputStream(fileHandlersFile) ) );
 	    String line;
 	    int lineNumber = 0;
 	    while( (line = reader.readLine()) != null ) {
@@ -264,7 +268,7 @@ public class HTTPHandler
 
 		    logger.log( Level.WARNING,
 				getClass().getName(),
-				"Invalid entry in file '" + fileHandlersFileName + "' at line "+lineNumber+". Missing key part in: " + line );
+				"Invalid entry in file '" + fileHandlersFile.getPath() + "' at line "+lineNumber+". Missing key part in: " + line );
 
 		}
 		    
@@ -315,7 +319,7 @@ public class HTTPHandler
 	} catch( IOException e ) {
 	    logger.log( Level.SEVERE,
 			getClass().getName(),
-			"Failed to read file handler config from file '" + fileHandlersFileName + "': " + e.getMessage() );
+			"Failed to read file handler config from file '" + fileHandlersFile.getPath() + "': " + e.getMessage() );
 	} catch( ClassNotFoundException e ) {
 	    logger.log( Level.SEVERE,
 			getClass().getName(),
@@ -360,8 +364,31 @@ public class HTTPHandler
 
     public boolean isSupportedMethod( String method ) {
 	for( int i = 0; i <  HTTPHandler.SUPPORTED_METHODS.length; i++ ) {
-	    if( HTTPHandler.SUPPORTED_METHODS[i].equals(method) )
-		return true;
+	    if( HTTPHandler.SUPPORTED_METHODS[i].equals(method) ) {
+
+		// The method is generally implemented and supported.
+		// Now check if the method was disabled by the admin!
+		String keyName = Constants.CKEY_HTTPCONFIG_DISABLE_METHOD_BASE.replaceAll( "\\{HTTP_METHOD\\}", method );
+		BasicType wrp_methodDisabled = this.getGlobalConfiguration().get( keyName );
+
+		// The HTTP method is NOT disabled 
+		//  -    if the DISABLE* flag is not present
+		//  - OR if the DISABLE* flag is set to false.
+		try {
+
+		    return ( wrp_methodDisabled == null || !wrp_methodDisabled.getBoolean() );
+
+		} catch( BasicTypeException e ) {
+
+		    // Ooops. This is configuration error. The flag has no valid boolean value.
+		    this.getLogger().log( Level.SEVERE,
+					  getClass().getName() + ".isSupportedMethod(...)",
+					  "Configuration error: the entity '" + keyName + "' is not a valid boolean value: " + wrp_methodDisabled.getString() );
+		    // Consider method 'disabled'.
+		    return false;
+		}
+
+	    }
 	}
 	return false;
     }
@@ -500,6 +527,46 @@ public class HTTPHandler
 
 
     //---BEGIN-------------------- TCPHandler Implementation -------------------------
+
+    /**
+     * This method will be called after the connection handler was instantiated (usually using the
+     * Class.newInstance() method).
+     *
+     * Both params might be null or empty depending on the underlying interface implementation.
+     *
+     * This method must throw an InstantiationException if any required params are missing.
+     *
+     * @param additionalSettings   An environment containing additional initialization params. Might be null or empty.
+     * @param optionalReturnValues An environment the method may use to store (optional) return values in. May be null.
+     **/
+    public void init( Environment<String,BasicType> additionalSettings,
+		      Environment<String,BasicType> optionalReturnValues  )
+	throws InstantiationException {
+	
+	
+	HTTPConfiguration config = new HTTPConfiguration( this, this.getLogger() );
+	
+	try {
+
+	    config.applyConfiguration( additionalSettings );
+
+	} catch( IOException e ) {   
+	    
+	    this.getLogger().log( Level.SEVERE,
+				  getClass().getName() + ".init(...)",
+				  "[IOException] " + e.getMessage() );
+	    throw new InstantiationException( "[IOException] " + e.getMessage() );
+	    
+	} catch( ConfigurationException e ) {
+	    
+	    this.getLogger().log( Level.SEVERE,
+				  getClass().getName() + ".init(...)",
+				  "[ConfigurationException] " + e.getMessage() );
+	    throw new InstantiationException( "[ConfigurationException] " + e.getMessage() );
+	}
+
+    }
+
     /**
      * @param source The BindManager that reports the event.
      * @param sockedID The server socket's unique ID.

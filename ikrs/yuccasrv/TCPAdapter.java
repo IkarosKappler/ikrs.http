@@ -16,12 +16,29 @@ import java.net.Socket;
 import java.net.DatagramSocket;
 import java.util.UUID;
 
+import ikrs.typesystem.BasicType;
+import ikrs.util.Environment;
 import ikrs.yuccasrv.ConnectionUserID;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
 
 public abstract class TCPAdapter
     extends ConnectionHandler {
+
+    /**
+     * This method will be called after the connection handler was instantiated (usually using the
+     * Class.newInstance() method).
+     *
+     * Both params might be null or empty depending on the underlying interface implementation.
+     *
+     * This method must throw an InstantiationException if any required params are missing.
+     *
+     * @param additionalSettings   An environment containing additional initialization params. Might be null or empty.
+     * @param optionalReturnValues An environment the method may use to store (optional) return values in. May be null.
+     **/
+    public abstract void init( Environment<String,BasicType> additionalSettings,
+			       Environment<String,BasicType> optionalReturnValues  )
+	  throws InstantiationException; 
 
     /**
      * This method does nothing except forwarding an INFO/WARNING to the global logger instance

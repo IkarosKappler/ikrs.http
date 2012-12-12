@@ -19,6 +19,7 @@ public class Constants {
 
     public static final String CONFIG_SERVER_NAME                    = "name";
     public static final String CONFIG_SERVER_HANDLERCLASS            = "handlerClass";
+      // public static final String CONFIG_SERVER_CONFIGFILE              = "configFile";
     public static final String CONFIG_SERVER_ADDRESS                 = "address";
     public static final String CONFIG_SERVER_PORT                    = "port";
     public static final String CONFIG_SERVER_PROTOCOL                = "protocol";

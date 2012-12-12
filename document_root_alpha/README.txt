@@ -1,24 +1,25 @@
 
 
-TRACE verussacht noch einen Feher.
-Suche in ... ???
-
-keel@schnaps:~$ telnet 127.0.0.1 8888
-Trying 127.0.0.1...
-Connected to 127.0.0.1.
-Escape character is '^]'.
-TRACE /system/styles/icon_directory_16px.png HTTP/1.1
-
-HTTP/1.1 200 OK
-Server: Yucca/0.9.3 (Linux) Java/1.7.0_09
-Content-Length: 54
-Connection: close
-Content-Language: en
-Content-Type: text/plain; charset=utf8
-
 
 
 TO DO:
+[2012-12-12]
+ - There is a new class: ikrs.util.KeyValuePair which can parse key-value-strings. 
+   This class should be used in HTTPHeaderLine.parse( String ).
+ - The httpd confuguration can now be loaded into the server and it is possible to disable HTTP methods;
+   but the HTTPHandler.getSupportedMethods() method still returns the whole list (ignoring the config)!
+   Maybe better replace the Method's signature and return a List/Set.
+
+[2012-12-11]
+ - The HTTPHandler.rejectedExecution(...) is still empty (called if all preserved server threads are busy). 
+   A fast (!) "503 Service Unavailable" response would be appropriate.
+ - The customized HTTP config file (reference inside the yucca config) must be interpreted and applied.
+ - [DONE 2012-12-11; Note: the file is defined in the yucca config, not in the http config. See HTTPConfiguration class]
+   Add a 'fileHandlers' entity to the customized HTTP config.
+
+[2012-12-10]
+ - Yucca has still dozens of hard coded config identifiers; they should be defined in a common header file.
+
 [2012-12-09]
  - It must be possible to disable HTTP methods (particulary TRACE).
 
@@ -40,7 +41,7 @@ TO DO:
  - The CGI environment's 'PATH_TRANSLATED' must be a fully qualified global URL.
  - The HTTPRequestDistributor must - when initializing the session - put REMOTE_IDENT and REMOTE_USER (where get
    that from?).
- - [DONE 2012-10-15; actually is was a PHP config issue]
+ - [DONE 2012-10-15; actually this was a PHP config issue]
    PHPHandler: on HTTP POST with file transfer the post data must be pre-parsed, the file data stored into a 
    temp file and the POST params adapted (mind the _FILES array).
  - Move the PHPHandler into its own package (there is the CGIHandler which does most of the work). PHP has nothing

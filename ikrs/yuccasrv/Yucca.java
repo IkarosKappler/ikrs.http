@@ -35,6 +35,7 @@ import ikrs.typesystem.BasicUUIDType;
 import ikrs.util.Command;
 import ikrs.util.DefaultCommand;
 import ikrs.util.DefaultCustomLogger;
+import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 import ikrs.yuccasrv.commandline.YuccaCommandFactory;
 import ikrs.yuccasrv.commandline.YuccaLine;
@@ -75,7 +76,7 @@ public class Yucca
 
 
 	/* Create a new global logger */
-	this.logger = Logger.getLogger( Constants.DEFAULT_LOGGER_NAME ); //getAnonymousLogger();
+	this.logger = Logger.getLogger( Constants.DEFAULT_LOGGER_NAME ); 
 	LogManager.getLogManager().addLogger( this.logger );
 	
 	/* Create a new log file handler that writes the logs into 
@@ -242,7 +243,7 @@ public class Yucca
 			      );
 
 	this.getLogger().log( Level.FINEST,
-			      "Bound  " + 
+			      "Bound " + 
 			      source.getServerSettings(socketID).get(Constants.CONFIG_SERVER_ADDRESS).getString() + 
 			      ":" + 
 			      source.getServerSettings(socketID).get(Constants.CONFIG_SERVER_PORT).getString() +  
@@ -601,18 +602,38 @@ public class Yucca
 	    return false;
 
 	} 
+
+
+	/* Retrieve the configFile attribute */
+	/*BasicType configFileName = server.get( Constants.CONFIG_SERVER_CONFIGFILE );
+	if( configFileName == null || configFileName.equals("") ) {
+
+	    this.getLogger().warning( "The server '" + server.get(Constants.CONFIG_SERVER_NAME) + "' has no "+Constants.CONFIG_SERVER_CONFIGFILE + " defined (ignoring)." );
+
+	} 
+	*/
   
 
 
 	/* Retrieve network address */
 	String host = null;
 	int port;
+	//Environment<String,BasicType> additionalSettings   = new DefaultEnvironment<String,BasicType>();
+	Environment<String,BasicType> optionalReturnValues = new DefaultEnvironment<String,BasicType>();
 	try {
 
 	    /* Handler classname is set -> locate class */
 	    Class<?> handlerClass = Class.forName( handlerClassName.getString() );
 	    /* Create a new handler instance */
 	    ConnectionHandler handler = (ConnectionHandler)handlerClass.newInstance();
+
+
+	    /* Apply the config file (if present) to the connection handler */
+	    /* Note: this might throw an InstantiationException */
+	    handler.init( server,               // pass the whole config to the handler
+			  optionalReturnValues 
+			  );
+
 
 	    /* Fetch connect data */
 	    host   = listen.get( "host" ).getString();

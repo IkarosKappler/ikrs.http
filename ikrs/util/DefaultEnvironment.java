@@ -173,6 +173,40 @@ public class DefaultEnvironment<K,V>
     }
 
     /**
+     * Locate a child in the environment tree structure. If the environment has
+     * multiple children with the same name (if allowed; see allowsMultipleChildNames())
+     * the method returns the child at the most left path (first child in subset).
+     *
+     * If the path is empty the method returns this environment itself.
+     *
+     * If a path element cannot be found in the child subsets the method returns null.
+     *
+     * @param path The path that determines the desired child environment.
+     * @return The child environment that is located at the given path or null if the path
+     *         is invalid in the environment tree.
+     **/
+    public Environment<K,V> locateChild( Path<String> path ) {
+	
+	if( path == null )
+	    throw new NullPointerException( "Cannot locate children by null-paths." );
+	
+	if( path.getLength() == 0 )
+	    return this;
+
+	Environment<K,V> child = this.getChild( path.getFirstElement() );
+
+	if( child == null || path.getLength() == 1 ) {
+
+	    // No such child found or end-of-path reached
+	    return child;
+
+	}
+
+	// Child found and path has more elements.
+	return child.locateChild( path.getTrailingPath() );
+    }
+
+    /**
      * This method simply returns a list containing _all_ children.
      **/
     public List<Environment<K,V>> getAllChildren() {

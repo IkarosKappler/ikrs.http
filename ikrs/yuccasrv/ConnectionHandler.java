@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.net.DatagramSocket;
 import java.util.UUID;
 
+import ikrs.typesystem.BasicType;
+import ikrs.util.Environment;
 import ikrs.util.ObjectWithUUID;
 import ikrs.yuccasrv.socketmngr.BindListener;
 import ikrs.yuccasrv.socketmngr.BindManager;
@@ -27,6 +29,22 @@ public abstract class ConnectionHandler
 	this.uuid = UUID.randomUUID();
     }
 
+    /**
+     * This method will be called after the connection handler was instantiated (usually using the
+     * Class.newInstance() method).
+     *
+     * Both params might be null or empty depending on the underlying interface implementation.
+     *
+     * This method must throw an InstantiationException if any required params are missing.
+     *
+     * @param additionalSettings   An environment containing additional initialization params. Might be null or empty.
+     * @param optionalReturnValues An environment the method may use to store (optional) return values in. May be null.
+     **/
+    public abstract void init( Environment<String,BasicType> additionalSettings,
+			       Environment<String,BasicType> optionalReturnValues  )
+	  throws InstantiationException;
+
+    //--- BEGIN ------------------ BindListener -----------------------------------
     /**
      * @param source The BindManager that reports the event.
      * @param socketID A unique ID to identify the created socket by the use of
@@ -97,6 +115,8 @@ public abstract class ConnectionHandler
      **/
     public abstract void finalize( long time,
 				   java.util.concurrent.TimeUnit unit );
+
+    //--- END -------------------- BindListener -----------------------------------
 
     //---BEGIN---------------------- ObjectWithUUID -------------------------
     /**

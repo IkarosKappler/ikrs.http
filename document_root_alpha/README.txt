@@ -4,11 +4,17 @@
 
 TO DO:
 [2012-12-12]
- - There is a new class: ikrs.util.KeyValuePair which can parse key-value-strings. 
+ - [Done 2012-12-13]
+   There is a new class: ikrs.util.KeyValuePair which can parse key-value-strings. 
    This class should be used in HTTPHeaderLine.parse( String ).
- - The httpd confuguration can now be loaded into the server and it is possible to disable HTTP methods;
+ - [Done 2012-12-13]
+   The httpd configuration can now be loaded into the server and it is possible to disable HTTP methods;
    but the HTTPHandler.getSupportedMethods() method still returns the whole list (ignoring the config)!
    Maybe better replace the Method's signature and return a List/Set.
+ - See RFC 2616, page 171:
+   "Servers MUST report a 400 (Bad Request) error if an HTTP/1.1
+        request does not include a Host request-header."
+ - Check if The request is HTTP/1.1 or HTTP/1.0.
 
 [2012-12-11]
  - The HTTPHandler.rejectedExecution(...) is still empty (called if all preserved server threads are busy). 

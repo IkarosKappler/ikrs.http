@@ -200,6 +200,32 @@ public class CustomUtil {
     }
 
     /**
+     * This method implodes the given String-list with the given separator by the use                                                   
+     * of a StringBuffer.                                                                                                                  
+     *                                                                                                                                     
+     * @param values    The list to implode.
+     * @param separator The separator string to use.
+     *                                                                                                                                     
+     * @return A new String with the format: values.get(0) + separator + values.get(1) + separator + ... + separator + values.get(n).
+     **/
+    public static String implode( List<String> values,
+                                  String separator ) {
+
+        StringBuffer buffer = new StringBuffer();
+        for( int i = 0; i < values.size(); i++ ) {
+
+            if( i > 0 )
+                buffer.append( separator );
+
+            buffer.append( values.get(i) );
+
+        }
+
+        return buffer.toString();
+    }
+
+
+    /**
      * This method repeats the given token by concatenating it 'count' times with itself.
      *
      * return 'count' times tehe given token in a new string.

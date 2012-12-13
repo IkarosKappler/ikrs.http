@@ -40,7 +40,7 @@ public class HTTPHeaders {
 
     //--- BEGIN --------------------------- Request header fields ---------------------------
     /**
-     * The method field ot the request line.
+     * The method field of the request line.
      **/
     private String requestMethod;
     

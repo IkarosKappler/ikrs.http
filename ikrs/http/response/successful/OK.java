@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.TreeMap;
@@ -335,7 +336,8 @@ public class OK
 	       IOException {
 
 
-	String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
+	//String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
+	List<String> supportedMethods = this.getHTTPHandler().getSupportedMethods();
 	String optionsCSV = CustomUtil.implode( supportedMethods, "," );
 	
 	

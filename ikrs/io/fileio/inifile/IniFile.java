@@ -115,7 +115,7 @@ public class IniFile {
 		continue;
 
 	    // Skip comments
-	    if( line.startsWith("#") )
+	    if( line.startsWith("#") || line.startsWith(";") )
 		continue;
 
 	    // Case A:
@@ -128,7 +128,10 @@ public class IniFile {
 	    } else {
 
 		// Parse a key-value-pair
-		KeyValuePair<String,String> pair = KeyValuePair.splitLine( line, "=" );
+		KeyValuePair<String,String> pair = KeyValuePair.splitLine( line, 
+									   "=",   // separator
+									   true   // trim
+									   );
 		currentEnvironment.put( pair.getKey(),
 					new BasicStringType(pair.getValue()) );
 

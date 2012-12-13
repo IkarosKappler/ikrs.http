@@ -9,6 +9,7 @@ package ikrs.http;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.Map;
@@ -211,8 +212,9 @@ public class ErrorResponseBuilder
 		//    The method specified in the Request-Line is not allowed for the resource identified by the Request-URI. 
 		//    The response MUST include an Allow header containing a list of valid methods for the requested resource."
 
-		String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
-		String allowValue         = CustomUtil.implode( supportedMethods, ", " );
+		//String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
+		List<String> supportedMethods = this.getHTTPHandler().getSupportedMethods();
+		String allowValue             = CustomUtil.implode( supportedMethods, ", " );
 		response.addResponseHeader( HTTPHeaders.NAME_ALLOW, allowValue );
 		
 

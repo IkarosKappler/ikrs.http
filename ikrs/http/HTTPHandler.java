@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -368,36 +370,56 @@ public class HTTPHandler
 
 		// The method is generally implemented and supported.
 		// Now check if the method was disabled by the admin!
-		String keyName = Constants.CKEY_HTTPCONFIG_DISABLE_METHOD_BASE.replaceAll( "\\{HTTP_METHOD\\}", method );
-		BasicType wrp_methodDisabled = this.getGlobalConfiguration().get( keyName );
-
-		// The HTTP method is NOT disabled 
-		//  -    if the DISABLE* flag is not present
-		//  - OR if the DISABLE* flag is set to false.
-		try {
-
-		    return ( wrp_methodDisabled == null || !wrp_methodDisabled.getBoolean() );
-
-		} catch( BasicTypeException e ) {
-
-		    // Ooops. This is configuration error. The flag has no valid boolean value.
-		    this.getLogger().log( Level.SEVERE,
-					  getClass().getName() + ".isSupportedMethod(...)",
-					  "Configuration error: the entity '" + keyName + "' is not a valid boolean value: " + wrp_methodDisabled.getString() );
-		    // Consider method 'disabled'.
-		    return false;
-		}
+		return !this.isDisabledMethod( method );
 
 	    }
 	}
 	return false;
     }
 
+    private boolean isDisabledMethod( String method ) {
+
+	String keyName = Constants.CKEY_HTTPCONFIG_DISABLE_METHOD_BASE.replaceAll( "\\{HTTP_METHOD\\}", method );
+	BasicType wrp_methodDisabled = this.getGlobalConfiguration().get( keyName );
+
+	// The HTTP method is NOT disabled                                                                                                
+	//  -    if the DISABLE* flag is not present                                                                                      
+	//  - OR if the DISABLE* flag is set to false.                                                                                    
+	try {
+	    
+	    return ( wrp_methodDisabled != null && wrp_methodDisabled.getBoolean() );
+	    
+	} catch( BasicTypeException e ) {
+	    
+	    // Ooops. This is configuration error. The flag has no valid boolean value.                                                   
+	    this.getLogger().log( Level.SEVERE,
+				  getClass().getName() + ".isDisabledMethod(...)",
+				  "Configuration error: the entity '" + keyName + "' is not a valid boolean value: " + wrp_methodDisabled.getString() );
+	    // Consider method 'disabled'.                                                                                                
+	    return true;
+	}
+
+    }
+
     /**
      * Get a list of allowed (implemented) methods. The returned array is a new copy.
      **/
-    public String[] getSupportedMethods() {
-	return java.util.Arrays.copyOf( HTTPHandler.SUPPORTED_METHODS, HTTPHandler.SUPPORTED_METHODS.length );
+    //public String[] getSupportedMethods() {
+    //	return java.util.Arrays.copyOf( HTTPHandler.SUPPORTED_METHODS, HTTPHandler.SUPPORTED_METHODS.length );
+    //}
+
+    public List<String> getSupportedMethods() {
+	List<String> list = new ArrayList<String>( Math.max( 1, HTTPHandler.SUPPORTED_METHODS.length ) );
+
+	for( int i = 0; i < HTTPHandler.SUPPORTED_METHODS.length; i++ ) {
+
+	    String method = HTTPHandler.SUPPORTED_METHODS[i];
+	    if( !this.isDisabledMethod(method) )
+		list.add( method );
+
+	}
+
+	return list;
     }
 
     /**

@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 
 
 import ikrs.util.CRLFLineReader;
+import ikrs.util.KeyValuePair;
 
 
 public final class HTTPHeaderLine 
@@ -185,9 +186,21 @@ public final class HTTPHeaderLine
      **/
     public static HTTPHeaderLine parse( String line ) {
 
+	
+
+	
 	if( line == null )
 	    return null;
 	
+	KeyValuePair<String,String> pair = KeyValuePair.splitLine( line, 
+								   ":",    // separator
+								   true    // trim
+								   );
+
+	HTTPHeaderLine header = new HTTPHeaderLine( pair.getKey(), pair.getValue() );
+	return header;
+
+	/*
 
 	HTTPHeaderLine header = new HTTPHeaderLine( line );
 
@@ -225,6 +238,7 @@ public final class HTTPHeaderLine
 	
 	
 	return header;
+	*/
     }
 
     public String toString() {

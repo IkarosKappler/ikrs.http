@@ -43,6 +43,7 @@ import ikrs.typesystem.BasicNumberType;
 import ikrs.util.CustomLogger;
 import ikrs.util.Environment;
 import ikrs.yuccasrv.Constants;
+import ikrs.yuccasrv.Yucca;
 
 
 
@@ -70,7 +71,7 @@ public class ServerSocketThread
     protected ServerSocketThread( CustomLogger logger,
 				  InetAddress bindAddress,
 				  int bindPort,
-				  Environment<String,BasicType> bindSettings, // Map<String,BasicType> bindSettings,
+				  Environment<String,BasicType> bindSettings, 
 				  ServerSocketThreadObserver observer 				  
 				  ) 
 	throws IOException,
@@ -120,40 +121,6 @@ public class ServerSocketThread
 
 	this.uuid = UUID.randomUUID();
 
-
-	/** TO MAKE THE SERVER SECURE: http://java.sun.com/developer/technicalArticles/Security/secureinternet/
-	   import javax.net.ssl.*;
-	   import java.security.*;
-
-	   ..
-
-	   String keystore = "serverkeys";
-	   char keystorepass[] = "hellothere".toCharArray();
-	   char keypassword[] = "hiagain".toCharArray();
-
-	   // The port number which the server will be listening on
-	   public static final int HTTPS_PORT = 443;
-
-    
-	   public ServerSocket getServer() throws Exception {
-
-	   KeyStore ks = KeyStore.getInstance("JKS");
-	   ks.load(new FileInputStream(keystore), keystorepass);
-	   KeyManagerFactory kmf = 
-	   KeyManagerFactory.getInstance("SunX509");
-	   kmf.init(ks, keypassword);
-	   SSLContext sslcontext = 
-	   SSLContext.getInstance("SSLv3");
-	   sslcontext.init(kmf.getKeyManagers(), null, null);
-	   ServerSocketFactory ssf = 
-	   sslcontext.getServerSocketFactory();
-	   SSLServerSocket serversocket = (SSLServerSocket) 
-	   ssf.createServerSocket(HTTPS_PORT);
-	   return serversocket;
-
-
-	 **/
-
     }
 
     private SSLServerSocket createSSLServerSocket( int bindPort,
@@ -184,10 +151,11 @@ public class ServerSocketThread
 	KeyStore keyStore = null;
 	if( wrp_keyStoreName != null && wrp_keyStoreName.getString().length() != 0 ) {
 
+	    String keyStoreName = Yucca.processCustomizedFilePath( wrp_keyStoreName.getString() );
 	    logger.log( Level.INFO,
 			getClass().getName() + ".createSSLServerSocket(...)",
-			"Loading key store '" + wrp_keyStoreName.getString() + "' ... " );
-	    keyStore = loadKeyStore( wrp_keyStoreName.getString(),
+			"Loading key store '" + keyStoreName + "' ... " );
+	    keyStore = loadKeyStore( keyStoreName,
 				     (wrp_keyStorePass==null?new char[0]:wrp_keyStorePass.getString().toCharArray()),
 				     (wrp_keyStoreType==null?null:wrp_keyStoreType.getString())
 				     );
@@ -198,10 +166,11 @@ public class ServerSocketThread
 	KeyStore trustStore = null;
 	if( wrp_trustStoreName != null && wrp_trustStoreName.getString().length() != 0 ) {
 	    
+	    String trustStoreName = Yucca.processCustomizedFilePath( wrp_trustStoreName.getString() );
 	    logger.log( Level.INFO,
 			getClass().getName() + ".createSSLServerSocket(...)",
-			"Loading trust store '" + wrp_trustStoreName.getString() + "' ... " );
-	    trustStore = loadKeyStore( wrp_trustStoreName.getString(),
+			"Loading trust store '" + trustStoreName + "' ... " );
+	    trustStore = loadKeyStore( trustStoreName,
 				       (wrp_trustStorePass==null?new char[0]:wrp_trustStorePass.getString().toCharArray()),
 				       (wrp_trustStoreType==null?null:wrp_trustStoreType.getString())
 				     );

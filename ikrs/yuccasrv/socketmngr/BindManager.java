@@ -379,8 +379,8 @@ public class BindManager
 	    
 	    // Also store ID into settings
 	    bindSettings.put( Constants.CONFIG_SERVER_ADDRESS, new BasicStringType(address.getHostName()) );
-	    bindSettings.put( Constants.CONFIG_SERVER_PORT, new BasicNumberType(port) );
-	    bindSettings.put( Constants.KEY_ID, new BasicUUIDType(server.getUUID()) );
+	    bindSettings.put( Constants.CONFIG_SERVER_PORT,    new BasicNumberType(port) );
+	    bindSettings.put( Constants.KEY_ID,                new BasicUUIDType(server.getUUID()) );
 
 	    // Tell the listeners about the new server
 	    this.fireServerCreated( server.getUUID() );

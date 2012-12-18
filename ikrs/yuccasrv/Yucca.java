@@ -8,7 +8,9 @@ package ikrs.yuccasrv;
  * @version 1.0.0
  **/
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -214,10 +216,61 @@ public class Yucca
     public void performStatus() {
 	
 	String statusString = this.bindManager.getStatusString();
-	 this.getLogger().log( Level.INFO,
-			       "Socket manager status:\n " + statusString
+	this.getLogger().log( Level.INFO,
+			      "Socket manager status:\n " + statusString
 			      );
+	
+    }
 
+    public void performPrintLicense() {
+	String licenseFile = "gpl-3.0.txt";
+	BufferedReader reader = null;
+	try {
+
+	    // System.out.println( "LICENSE ... " );
+	    reader = new BufferedReader( new FileReader( new File(licenseFile) ) );
+	    String line = null;
+	    while( (line = reader.readLine()) != null ) {
+
+		System.out.println( line );
+
+	    }
+	    
+	    reader.close();
+
+	} catch( IOException e ) {
+	    
+	    this.getLogger().log( Level.INFO,
+				  "[IOException] Failed to print license: " + e.getMessage()
+			      );
+	    
+	} 
+    }
+
+    public void performPrintWarranty() {
+	Yucca.printWarranty();
+    }
+
+    public static void printWarranty() {
+	String licenseFile = "warranty.txt";
+	BufferedReader reader = null;
+	try {
+
+	    reader = new BufferedReader( new FileReader( new File(licenseFile) ) );
+	    String line = null;
+	    while( (line = reader.readLine()) != null ) {
+
+		System.out.println( line );
+
+	    }
+	    
+	    reader.close();
+
+	} catch( IOException e ) {
+	    
+	    System.err.println( "[IOException] Failed to print warranty: " + e.getMessage() );
+	    
+	} 
     }
 
     //---BEGIN------------------------- BindListener ------------------------------
@@ -602,16 +655,6 @@ public class Yucca
 	    return false;
 
 	} 
-
-
-	/* Retrieve the configFile attribute */
-	/*BasicType configFileName = server.get( Constants.CONFIG_SERVER_CONFIGFILE );
-	if( configFileName == null || configFileName.equals("") ) {
-
-	    this.getLogger().warning( "The server '" + server.get(Constants.CONFIG_SERVER_NAME) + "' has no "+Constants.CONFIG_SERVER_CONFIGFILE + " defined (ignoring)." );
-
-	} 
-	*/
   
 
 
@@ -739,9 +782,26 @@ public class Yucca
 	this.bindManager.release( uuid ); 
 	
     }
+
+
+    public static String processCustomizedFilePath( String filePath ) {
+	if( filePath == null )
+	    return null;
+
+	filePath = filePath.replaceAll( "\\{USER_HOME\\}", System.getProperty("user.home") );
+	// ...
+	
+	return filePath;
+    }
 	
 
     public static void main( String[] argv ) {
+
+	//Yucca.printWarranty();
+	System.out.println( "    ikrs.yucca Copyright (C) 2012 Ikaros Kappler" );
+	System.out.println( "    This program comes with ABSOLUTELY NO WARRANTY; for details type 'warranty'" );
+	System.out.println( "    This is free software, and you are welcome to redistribute it" );
+	System.out.println( "    under certain conditions; type `license' for details." );
 
 	/* Convert the command line arguments into a command */
 	Command myCall = new DefaultCommand( "yucca",
@@ -786,9 +846,13 @@ public class Yucca
 	    if( configFileName == null ) {
 
 		// serverConfig = ConfigReader.read( new File(System.getProperty("user.home") + "/.yuccasrv/server.xml") );
-		configFileName = System.getProperty("user.home") + "/.yuccasrv/server.xml";
-	    }
-	
+		//configFileName = System.getProperty("user.home") + "/.yuccasrv/server.xml";
+		configFileName = "{USER_HOME}/.yuccasrv/server.xml";
+	    } 
+
+
+	    // Clean up placeholders in config path
+	    configFileName = Yucca.processCustomizedFilePath( configFileName );
 	    
 	    System.out.println( "Loading server config '" + configFileName + "' ..." );
 	    serverConfig = ConfigReader.read( new File(configFileName) );
@@ -867,12 +931,15 @@ public class Yucca
 	// Start commandline?
 	if( serverConfig.get(Constants.KEY_STARTUP_COMMANDLINE) != null 
 	    && serverConfig.get(Constants.KEY_STARTUP_COMMANDLINE).getBoolean(false) ) {
-
-	    System.out.println( "Starting command line ..." );
+	    
 	    try {
 		yucca.yuccaLine = new YuccaLine( new YuccaCommandFactory(yucca) );
+
+		System.out.println( "Starting command line ..." );
 		// The method will block here
 		yucca.yuccaLine.runCommandLine();
+
+	
 	    } catch( IOException e ) {
 
 		e.printStackTrace();

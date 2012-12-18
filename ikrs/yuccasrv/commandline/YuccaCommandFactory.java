@@ -73,6 +73,10 @@ public class YuccaCommandFactory
 	    cmd = new CommandQuit();
 	else if( name.equalsIgnoreCase("UNLISTEN") || name.equalsIgnoreCase("RELEASE") || name.equalsIgnoreCase("UNBIND") ) 
 	    cmd = new CommandUnlisten();
+	else if( name.equalsIgnoreCase("LICENSE") ) 
+	    cmd = new CommandLicense();
+	else if( name.equalsIgnoreCase("WARRANTY") ) 
+	    cmd = new CommandWarranty();
 	else if( name.equalsIgnoreCase("STATUS") ) 
 	    cmd = new CommandStatus();
 	else 
@@ -94,7 +98,7 @@ public class YuccaCommandFactory
 
     public static String[] getImplementedCommands() {
 	return new String[] {
-	      "HELP", "LISTEN", "STATUS", "UNLISTEN", "QUIT"
+	    "HELP", "LICENSE", "LISTEN", "STATUS", "UNLISTEN", "WARRANTY", "QUIT"
 	};
     }
     

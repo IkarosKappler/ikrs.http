@@ -47,7 +47,7 @@ public class CommandStatus
      **/
     public int execute() {
 	
-	// The UNLISTEN listen command is described as follows:
+	// The STATUS listen command is described as follows:
 	// STATUS
 
 

@@ -103,6 +103,10 @@ public class AbstractCommandLine<C extends Command>
 		return;
 	    //System.out.println( "Line Read: " + line );
 
+	    line = line.trim();
+	    if( line.length() == 0 )
+		continue;
+
 	    
 	    // Add line to ring buffer
 	    this.topOfBuffer = (this.topOfBuffer + 1) % this.ringBuffer.length;

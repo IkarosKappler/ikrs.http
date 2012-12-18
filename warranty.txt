@@ -1,0 +1,4 @@
+    ikrs.yucca/ikrs.httpd  Copyright (C) 2012 Ikaros Kappler
+    This program comes with ABSOLUTELY NO WARRANTY; for details type 'warranty'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `license' for details.

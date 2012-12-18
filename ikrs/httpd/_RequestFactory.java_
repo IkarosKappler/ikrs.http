@@ -1,0 +1,48 @@
+package ikrs.http;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-07-19
+ * @version 1.0.0
+ **/
+
+
+import java.io.IOException;
+import java.net.Socket;
+import java.util.UUID;
+
+
+public interface RequestFactory {
+
+    /**
+     * This method translates the given headers and socket into an executable 
+     * HTTPRequest object.
+     *
+     * @param handler  The top level HTTP handler.
+     * @param headers  The previously processed headers.
+     * @param socketID The unique socket ID.
+     * @param socket   The acutual socket;
+     *
+     * @return A new HTTPRequest built from the HTTP headers.
+     *
+     * @throws MalformRequestException If the passed HTTP headers are malformed and cannot be processed.
+     * @throws UnsupportedVersionException If the headers' HTTP version is not supported (supported versions are
+     *                                     1.0 and 1.1).
+     * @throws UnknownCommandException If the headers' command (from the first line) is unknown.
+     * @throws SecurityException If the request cannot be processed due to security reasons.
+     * @throws IOException If any IO errors occur.
+     **/
+    public HTTPRequest create( HTTPHandler handler,
+			       HTTPHeaders headers,
+			       UUID socketID,
+			       Socket socket
+			       ) 
+	throws MalformedRequestException,
+	       UnsupportedVersionException,
+	       UnknownCommandException,
+	       SecurityException,
+	       IOException;
+			       
+
+
+}

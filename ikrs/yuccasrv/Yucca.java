@@ -11,6 +11,7 @@ package ikrs.yuccasrv;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -29,6 +30,8 @@ import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
+
+import ikrs.io.fileio.FileCopy;
 import ikrs.typesystem.BasicBooleanType;
 import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
@@ -795,6 +798,38 @@ public class Yucca
     }
 	
 
+    private static boolean performFirstRun( File configurationFile ) 
+	throws IOException {
+
+	File configurationParentFile = configurationFile.getParentFile();
+
+
+	System.out.println( "It seems this is the first time you are running yucca." );
+	System.out.println( "Yucca needs to create a configuration directory at '" + configurationFile.getPath() + "' and store some config files inside." );
+	System.out.print( "Is that okay? " );
+
+	BufferedReader in = new BufferedReader( new InputStreamReader(System.in) );
+	String line = null;
+	do {
+	    
+	    System.out.println( "Type 'y' or 'n': " );
+	    line = in.readLine();
+
+	} while( !line.equals("y") && !line.equals("n") );
+
+	
+	if( line.equals("n") )
+	    return false;
+
+
+	File configurationTemplateDirectory = new File( "_.templates" );
+	boolean filesCopied = FileCopy.copy( configurationTemplateDirectory, configurationParentFile );
+	
+		
+	// Configuration directory successfully created?
+	return filesCopied;
+    }
+
     public static void main( String[] argv ) {
 
 	//Yucca.printWarranty();
@@ -851,9 +886,26 @@ public class Yucca
 	    } 
 
 
+
 	    // Clean up placeholders in config path
-	    configFileName = Yucca.processCustomizedFilePath( configFileName );
+	    configFileName  = Yucca.processCustomizedFilePath( configFileName );
 	    
+	    File configFile = new File( configFileName );
+	    // Is this the first run?
+	    if( !configFile.exists() ) {
+
+		boolean yuccaDirectoryCreated = Yucca.performFirstRun( configFile );
+		if( !yuccaDirectoryCreated ) {
+
+		    System.err.println( " (!) You decided not to create a yucca configuration in '" + configFileName + "'." );
+		    System.err.println( " (!) Yucca is not able to run without this file. Stopping." );
+		    System.exit( 1 );
+
+		}
+
+	    }
+
+
 	    System.out.println( "Loading server config '" + configFileName + "' ..." );
 	    serverConfig = ConfigReader.read( new File(configFileName) );
 

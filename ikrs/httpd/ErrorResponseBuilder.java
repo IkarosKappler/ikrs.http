@@ -86,8 +86,7 @@ public class ErrorResponseBuilder
 						       "Cannot build error reply. The passed additionals miss some essential params (statusCode="+statusCode+", reasonPhrase="+reasonPhrase+", errorMessage="+errorMessage+"). Senging INTERNAL_SERVER_ERROR. additionals=" + additionals.toString() 
 						       );
 
-		// if( true ) throw new RuntimeException( "Meh" );
-		
+	
 		return buildPreparedErrorResponse( headers, 
 						   socketID, 
 						   socket, 
@@ -141,16 +140,16 @@ public class ErrorResponseBuilder
     //---END-------------------------------- ReplyBuilder implementaion -----------------------
 
 
-    private PreparedHTTPResponse buildPreparedErrorResponse( HTTPHeaders headers, 
-							     UUID socketID, 
-							     Socket socket, 
-							     UUID sessionID,   // ConnectionUserID userID,
-							     int statusCode,
-							     String reasonPhrase,
-							     String errorMessage,
-
-							     Map<String,BasicType> additionalSettings
-							     ) {
+    protected PreparedHTTPResponse buildPreparedErrorResponse( HTTPHeaders headers, 
+							       UUID socketID, 
+							       Socket socket, 
+							       UUID sessionID,   // ConnectionUserID userID,
+							       int statusCode,
+							       String reasonPhrase,
+							       String errorMessage,
+							       
+							       Map<String,BasicType> additionalSettings
+							       ) {
 
 	try {
 	    GeneralPreparedResponse response = new GeneralPreparedResponse( this.getHTTPHandler(),

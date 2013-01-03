@@ -17,15 +17,23 @@ public class Constants {
     public static final String KEY_STARTUP_COMMANDLINE               = "STARTUP_COMMANDLINE";
     public static final String KEY_STARTUP_LOGLEVEL                  = "STARTUP_LOGLEVEL";
 
+    public static final String KEY_PROTOCOL                          = "PROTOCOL";  
+     
+    public static final String NAME_PROTOCOL_TCP                     = "TCP";
+    public static final String NAME_PROTOCOL_UDP                     = "UDP";
+
     public static final String CONFIG_SERVER_NAME                    = "name";
     public static final String CONFIG_SERVER_HANDLERCLASS            = "handlerClass";
-      // public static final String CONFIG_SERVER_CONFIGFILE              = "configFile";
     public static final String CONFIG_SERVER_ADDRESS                 = "address";
     public static final String CONFIG_SERVER_PORT                    = "port";
     public static final String CONFIG_SERVER_PROTOCOL                = "protocol";
     public static final String CONFIG_SERVER_BACKLOG                 = "backlog";
     public static final String CONFIG_SERVER_AUTOBIND                = "autobind";
     public static final String CONFIG_SERVER_SSL                     = "ssl";
+
+    public static final String CONFIG_SERVER_LISTEN_PROPERTY         = "property";
+    public static final String CONFIG_SERVER_LISTEN_PROPERTY_NAME    = "name";
+    public static final String CONFIG_SERVER_LISTEN_PROPERTY_VALUE   = "value";
 
     public static final String CONFIG_SERVER_SSL_KEYSTORE            = "javax.net.ssl.keyStore";
     public static final String CONFIG_SERVER_SSL_KEYSTOREPASSWORD    = "javax.net.ssl.keyStorePassword";

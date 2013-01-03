@@ -363,10 +363,10 @@ public class BindManager
 	       GeneralSecurityException {
 
 	if( bindSettings.get(Constants.CONFIG_SERVER_PROTOCOL) == null )
-	    bindSettings.put( Constants.CONFIG_SERVER_PROTOCOL, new BasicStringType("TCP") );
+	    bindSettings.put( Constants.CONFIG_SERVER_PROTOCOL, new BasicStringType(Constants.NAME_PROTOCOL_TCP) );
 
 
-	if( bindSettings.get(Constants.CONFIG_SERVER_PROTOCOL).getString("TCP").equalsIgnoreCase("TCP") ) {
+	if( bindSettings.get(Constants.CONFIG_SERVER_PROTOCOL).getString(Constants.NAME_PROTOCOL_TCP).equalsIgnoreCase(Constants.NAME_PROTOCOL_TCP) ) {
 	    
 	    ServerSocketThread server = new ServerSocketThread( this.getLogger(),
 								address,
@@ -391,13 +391,13 @@ public class BindManager
 	    // Return the new ID
 	    return server.getUUID();
 
-	} else if( bindSettings.get("PROTOCOL") != null || bindSettings.get("PROTOCOL").getString("UDP").equalsIgnoreCase("UDP") ) {
+	} else if( bindSettings.get(Constants.KEY_PROTOCOL) != null || bindSettings.get(Constants.KEY_PROTOCOL).getString(Constants.NAME_PROTOCOL_UDP).equalsIgnoreCase(Constants.NAME_PROTOCOL_UDP) ) {
 	    
 	    throw new IOException( "Protocol UDP not yet supported, sorry." );
 	    
 	} else {
 
-	    throw new IOException( "Unknown protocol: " + bindSettings.get("PROTOCOL") );
+	    throw new IOException( "Unknown protocol: " + bindSettings.get(Constants.KEY_PROTOCOL) );
 
 	}
 

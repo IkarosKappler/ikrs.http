@@ -13,6 +13,8 @@ package ikrs.httpd.datatype;
 import java.util.ArrayList;
 import java.util.List;
 
+import ikrs.util.KeyValueStringPair;
+
 
 public class QueryFormDataDelegation
     extends AbstractFormData {

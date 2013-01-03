@@ -40,10 +40,11 @@ import ikrs.httpd.UnsupportedFormatException;
 import ikrs.httpd.resource.InterruptableResource;
 import ikrs.httpd.resource.ProcessableResource;
 import ikrs.httpd.datatype.FormData;
-import ikrs.httpd.datatype.KeyValueStringPair;
+// import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.io.BytePositionInputStream;
 import ikrs.util.CustomLogger;
 import ikrs.util.Environment;
+import ikrs.util.KeyValueStringPair;
 import ikrs.util.session.Session;
 import ikrs.typesystem.BasicType;
 

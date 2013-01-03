@@ -85,6 +85,34 @@ public class HTTPRequestDistributor
 	this.socket   = socket;
 	this.userID   = userID;
     }
+
+
+    /**
+     * Get the socketID this distributor is associated with.
+     *
+     * @return The socketID this distributor is associated with.
+     **/
+    public UUID getSocketID() {
+	return this.socketID;
+    }
+
+    /**
+     * Get the socket this distributor operates on.
+     *
+     * @return The socket this distributor operates on.
+     **/
+    public Socket getSocket() {
+	return this.socket;
+    }
+
+    /**
+     * Get the connection-user-ID this distributor is associated with.
+     *
+     * @return The connection-user-ID this distributor is associated with.
+     **/
+    public HTTPConnectionUserID getConnectionUserID() {
+	return this.userID;
+    }
     
 
     public void run() {
@@ -98,13 +126,11 @@ public class HTTPRequestDistributor
 	// It's too strong bound to the socketmanager, to which the HTTP handler should not be bound at all (except as a handler).
 	// Use the session ID instead to keep the underlying implementations disconnected from the yucca.* package.
 
-	//UUID sessionID = session.getSessionID();
-	
+
 
 	try {
 
 	    // Init HTTP connection ... 
-	    //HTTPHeaderLine.read( sock.getInputStream() );
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
 
 

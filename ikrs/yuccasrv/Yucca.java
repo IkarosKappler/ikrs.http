@@ -230,7 +230,6 @@ public class Yucca
 	BufferedReader reader = null;
 	try {
 
-	    // System.out.println( "LICENSE ... " );
 	    reader = new BufferedReader( new FileReader( new File(licenseFile) ) );
 	    String line = null;
 	    while( (line = reader.readLine()) != null ) {

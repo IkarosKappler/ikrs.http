@@ -234,16 +234,16 @@ public class ServerSocketThread
 						 String keyName ) {
 
 	
-	List<Environment<String,BasicType>> children = bindSettings.getChildren( "property" );
+	List<Environment<String,BasicType>> children = bindSettings.getChildren( Constants.CONFIG_SERVER_LISTEN_PROPERTY );
 	Iterator<Environment<String,BasicType>> iter = children.iterator();
 	while( iter.hasNext() ) {
 
 	    Environment<String,BasicType> child = iter.next();
-	    BasicType property = child.get( "name" );
+	    BasicType property = child.get( Constants.CONFIG_SERVER_LISTEN_PROPERTY_NAME ); 
 	    if( property.getString().equalsIgnoreCase(keyName) ) {
 
 		//System.out.println( "--- SSL property '"+keyName+"' loaded: " + child.get("value") );
-		return child.get("value");
+		return child.get( Constants.CONFIG_SERVER_LISTEN_PROPERTY_VALUE );
 
 	    }
 

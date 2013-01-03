@@ -42,6 +42,19 @@ public class DefaultResponseBuilder
 	this.errorResponseBuilder = new ErrorResponseBuilder(handler);
     }
 
+    /**
+     * The default response builder uses a nested response builder for error processing.
+     * In some special cases it can be helpful to access the ErrorResponseBuilder directy (such as
+     * the HTTPHandler does if the threaded execution is rejected by the ThreadPoolExecutor).
+     *
+     * This method simply returns the internal error response builder.
+     *
+     * @return The internal error response builder.
+     **/
+    protected ErrorResponseBuilder getErrorResponseBuilder() {
+	return this.errorResponseBuilder;
+    }
+
 
     //---BEGIN------------------------------ ResponseBuilder implementaion -----------------------
     /**
@@ -71,17 +84,34 @@ public class DefaultResponseBuilder
 					) {
 	
 
-	String command  = headers.getRequestMethod();
-	String protocol = headers.getRequestProtocol();
-	String version  = headers.getRequestVersion();
-	String uri      = headers.getRequestURI();
+	String command      = headers.getRequestMethod();
+	String protocol     = headers.getRequestProtocol();
+	String version      = headers.getRequestVersion();
+	String uri          = headers.getRequestURI();
 
-	// Validate header data
-	// ...
+	HTTPHeaderLine host = headers.get( HTTPHeaders.NAME_HOST );
+	    
 
 
 	Map<String,BasicType> optionalReturnSettings = new TreeMap<String,BasicType>();
 	try {
+
+	    // Validate header PROTOCOL
+	    if( !protocol.equals(Constants.HTTP) )
+		throw new MalformedRequestException( "The server only accepts " + Constants.HTTP + " requests. Protocol '" + protocol + "' is not allowed." );
+
+
+	    // Validate header VERSION
+	    if( !version.equals("1.0") && !version.equals("1.1") )
+		throw new UnsupportedVersionException( "The HTTP version '" + version + "' is not supported. Use version 1.0 or 1.1 instead." );
+
+
+	    // See RFC 2616, page 171:
+	    //   "Servers MUST report a 400 (Bad Request) error if an HTTP/1.1
+	    //    request does not include a Host request-header."
+	    if( version.equals("1.1") && host == null )
+		throw new MalformedRequestException( "HTTP version 1.1 requires the '" + HTTPHeaders.NAME_HOST + "' header to be present." );
+
 
 	    PreparedHTTPResponse response = new OK( this.getHTTPHandler(),
 						    headers,
@@ -307,18 +337,18 @@ public class DefaultResponseBuilder
     //---END-------------------------------- ReplyBuilder implementaion -----------------------
 
 
-    private PreparedHTTPResponse buildPreparedErrorResponse( HTTPHeaders headers,
-							     PostDataWrapper postData,
-							     UUID socketID,
-							     Socket socket,
-							     UUID sessionID,  // ConnectionUserID userID,
-							     Exception e,
-							     int statusCode,
-							     String reasonPhrase,
-							     String errorMessage,
-							     
-							     Map<String,BasicType> additionalSettings,
-							     Map<String,BasicType> optionalReturnSettings
+    protected PreparedHTTPResponse buildPreparedErrorResponse( HTTPHeaders headers,
+							       PostDataWrapper postData,
+							       UUID socketID,
+							       Socket socket,
+							       UUID sessionID,  // ConnectionUserID userID,
+							       Exception e,
+							       int statusCode,
+							       String reasonPhrase,
+							       String errorMessage,
+							       
+							       Map<String,BasicType> additionalSettings,
+							       Map<String,BasicType> optionalReturnSettings
 							     ) {
 
 	this.getHTTPHandler().getLogger().log( Level.INFO,

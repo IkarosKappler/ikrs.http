@@ -12,7 +12,8 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "0.9.4";
+    public static final String VERSION                                           = "0.9.5";
+    public static final String HTTP                                              = "HTTP";
 
     /* Currently only GET, POST, HEAD, TRACE and OPTIONS are implemented */
     public static final String HTTP_METHOD_GET                                   = "GET";

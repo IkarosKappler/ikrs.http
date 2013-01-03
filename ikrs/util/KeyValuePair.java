@@ -52,6 +52,16 @@ public class KeyValuePair<K,V> {
 	return this.value;
     }
 
+    
+    /**
+     * Converts this key-value-pair into a human readable form.
+     **/
+    public String toString() {
+
+	return key + "=" + value;
+
+    }
+
 
     /**
      * This method splits the given string into a key-value tuple using the passed separator.

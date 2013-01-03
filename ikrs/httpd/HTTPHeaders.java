@@ -3,7 +3,7 @@ package ikrs.httpd;
 /**
  * This class wraps HTTPHeaderLines together into a list like searchable structure.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-21
  * @version 1.0.0
  **/
@@ -53,7 +53,7 @@ public class HTTPHeaders {
      * The version field of the request line.
      **/
     private String requestVersion;
-    
+
     /**
      * The URI field of the request line.
      **/
@@ -661,9 +661,9 @@ public class HTTPHeaders {
 
 	// Parse request HTTP-Version
 	String[] split2 = split[2].split("(/)");
-	this.requestVersion = split2[0];	
+	this.requestVersion = split2[1];	
 	if( split2.length >= 2 )
-	    this.requestProtocol = split2[1];
+	    this.requestProtocol = split2[0];
 
 
 	return true;

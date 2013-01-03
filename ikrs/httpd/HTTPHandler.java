@@ -1,5 +1,19 @@
 /**
+ *   ikrs.httpd - A free java http server based on ikrs.yucca.
+ *   Copyright (C) 2012 Ikaros Kappler
  *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
 
@@ -36,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 
-import ikrs.httpd.datatype.KeyValueStringPair;
+// import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.httpd.resource.FileSystemResourceAccessor;
 import ikrs.httpd.resource.DefaultDirectoryResource;
 import ikrs.yuccasrv.ConnectionUserID;
@@ -51,6 +65,7 @@ import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 import ikrs.util.EnvironmentFactory;
 import ikrs.util.FileExtensionKeyMap;
+import ikrs.util.KeyValueStringPair;
 import ikrs.util.MapFactory;
 import ikrs.util.TreeMapFactory;
 
@@ -101,7 +116,7 @@ public class HTTPHandler
     /**
      * The response builder.
      **/
-    private ResponseBuilder responseBuilder;
+    private DefaultResponseBuilder responseBuilder;
 
     /**
      * The resource accessor.
@@ -209,18 +224,6 @@ public class HTTPHandler
 
 	this.responseBuilder    = new DefaultResponseBuilder( this );
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
-	//this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
-	//this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
-	//this.initFileHandlers();
-	/*this.fileHandlerMap.put( ".php", new DefaultDirectoryResource( this,
-								       this.getLogger(),
-								       this.getFileFilter(),
-								       requestedFile,
-								       uri,
-								       sessionID,
-								       outputFormat,   // HTML or TXT
-								       true )
-								       ); */
 	
 	
 
@@ -373,7 +376,6 @@ public class HTTPHandler
 	Environment<String,BasicType> gconfig = this.environment.createChild( Constants.EKEY_GLOBALCONFIGURATION );
 	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(10) ); // 300) );
 	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
-	//gconfig.put( Constants.KEY_SERVERNAME, new BasicStringType("booze.dyndns.org") ); // iso-8859-1") );
 	// ...
     }
 
@@ -474,6 +476,13 @@ public class HTTPHandler
     }
 
     /**
+     * Get the global response builder with dynamic type 'DefaultResponseBuilder'.
+     **/
+    protected DefaultResponseBuilder getDefaultResponseBuilder() {
+	return this.responseBuilder;
+    }
+
+    /**
      * Get the global resource accessor.
      **/
     public ResourceAccessor getResourceAccessor() {
@@ -558,15 +567,41 @@ public class HTTPHandler
 	try {
 
 	    HTTPRequestDistributor distributor = (HTTPRequestDistributor)r;
-	    // ... how to handle? This must be fast because this method blocks the underlying
+	    // This must be handled fast because this method blocks the underlying
 	    // socket manager to accept more connections! -> Threaded?
-	    //distributor.sendErrorReply( );
+	    PreparedHTTPResponse errorResponse = this.getDefaultResponseBuilder().buildPreparedErrorResponse( 
+							 null,                        // no HTTP headers read -> none available!  
+							 null,                        // no POST data
+							 distributor.getSocketID(),   // UUID socketID, 
+							 distributor.getSocket(),     // Socket socket, 
+							 null,                        // no session id UUID sessionID,   
+							 null,                        // No exception
+							 Constants.HTTP_STATUS_SERVERERROR_SERVICE_UNAVAILABLE,  // int statusCode,
+							 null,                        // String reasonPhrase,
+							 null,                        // String errorMessage,
+							 
+							 null,                        // Map<String,BasicType> additionalSettings
+							 null                         //Map<String,BasicType> optionalReturnSettings
+														    );
+	    errorResponse.prepare( null ); // No optionalReturnSettings
+	    errorResponse.execute();
+	    errorResponse.dispose();
+														    
 	    
 	} catch( ClassCastException e ) {
 
 	    this.logger.log( Level.SEVERE,
-			 getClass().getName(),
-			 "The ThreadPoolExecutor rejected the passed Runnable '" + r + "' but it's NOT a HTTPRequestDistributor. Cannot send error reply." );
+			     getClass().getName() + ".rejectedExecution(...)",
+			     "The ThreadPoolExecutor rejected the passed Runnable '" + r + "' but it's NOT a HTTPRequestDistributor. Cannot send error reply." );
+
+	} catch( Exception e ) {
+
+	    // This will be ANY exception throw new the prepared error response (during preparation, execution or cleanup).
+	    // As this is a pertty risky process (the request was not meant to be handled at all) we should simply ignore
+	    // all errors and exceptions.
+	    this.getLogger().log( Level.SEVERE,
+				  getClass().getName() + ".rejectedExecution(...)",
+				  "[" + e.getClass().getName() + "] Failed to process rejected (!) request (ignoring): " + e.getMessage() );
 
 	}
 

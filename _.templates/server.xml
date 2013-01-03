@@ -9,8 +9,8 @@
     </httpConfig>
     <listen protocol="TCP" host="127.0.0.1" port="8888" backlog="10" id="1" autobind="true" />
     <listen protocol="TCP" host="127.0.1.1" port="8888" backlog="4" id="2" autobind="true" ssl="false" />
-    <listen protocol="TCP" host="192.168.1.106" port="8888" backlog="4" id="3" autobind="true" secure="false" />
-    <listen protocol="TCP" host="fe80:0:0:0:5054:5ff:fec4:7772%3" port="8888" backlog="4" id="4" autobind="true" secure="false" />
+    <listen protocol="TCP" host="192.168.1.106" port="8888" backlog="4" id="3" autobind="true" ssl="false" />
+    <listen protocol="TCP" host="fe80:0:0:0:5054:5ff:fec4:7772%3" port="8888" backlog="4" id="4" autobind="true" ssl="false" />
     <listen protocol="TCP" host="127.0.0.1" port="8889" backlog="10" id="5" autobind="true" ssl="true" >
 
       <property name="javax.net.ssl.keyStore" value="{USER_HOME}/.yuccasrv/server_localhost.keystore.jks" />

@@ -111,6 +111,16 @@ public class FileSystemResourceAccessor
 	//Environment<String,BasicType> session = new DefaultEnvironment<String,BasicType>();
 	Session<String,BasicType,HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );
 
+	// Well ... this should not happen. At this point the accessor MUST have a valid session.
+	if( session == null ) {
+	    
+	   this.getHTTPHandler().getLogger().log( Level.SEVERE,
+						  getClass().getName() + ".locate(...)",
+						  "[Internal error] The current accessor has no valid session! (SID="+ sessionID +"). Continuing with an empty fake session" ); 
+	   throw new RuntimeException( "[Internal error] The current accessor has no valid session! (SID="+ sessionID +")." );
+
+	}
+
 
 
 	String path = uri.getPath();	

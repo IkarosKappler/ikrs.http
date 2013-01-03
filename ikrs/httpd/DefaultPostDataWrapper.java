@@ -17,12 +17,13 @@ import java.util.logging.Level;
 
 import ikrs.httpd.datatype.FormData;
 import ikrs.httpd.datatype.HeaderParams;
-import ikrs.httpd.datatype.KeyValueStringPair;
+//import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.httpd.datatype.Query;
 import ikrs.httpd.datatype.QueryFormDataDelegation;
 //import ikrs.io.ByteSequenceTokenizer;
 import ikrs.io.MultipartMIMETokenizer;
 import ikrs.util.CustomLogger;
+import ikrs.util.KeyValueStringPair;
 
 
 public class DefaultPostDataWrapper

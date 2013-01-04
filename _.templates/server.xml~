@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-
-<yuccasrv version="1.0.0">
-  <comment>This is just a comment</comment>
-  <server name="My HTTP Server" handlerClass="ikrs.yuccasrv.http.HTTPHandler">
-    <listen protocol="TCP" host="127.0.0.1" port="8888" backlog="10" id="1" autoconnect="true" />
-    <listen protocol="TCP" host="127.0.1.1" port="8888" backlog="4" id="2" autoconnect="true" />
-  </server>
-</yuccasrv>

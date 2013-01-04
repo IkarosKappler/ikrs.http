@@ -1,9 +1,0 @@
-package ikrs.http;
-
-public interface ResourceAccessor {
-
-
-    
-
-
-}

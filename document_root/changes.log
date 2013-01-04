@@ -1,13 +1,30 @@
 
+
+[2013-01-03]
+  - Moved ikrs.httpd.datatype.KeyValueStringPair to ikrs.util.KeyValueStringPair.
+  - Added a handler method in HTTPHandler.rejectedExecution(...) that processes rejected requests fast and 
+    painless.
+  - SSL default example configuration issue solved.
+
+[2012-12-21]
+  - There is a new utility class: ikrs.io.fileio.FileCopy that can be used to copy files and nested directories.
+  - The yucca main class now has a first-run-check. If the configuration files or -directory do not exist the 
+    program performs a short survey and creates the config files and -directories automatically.
+    The templates are located in '_.templates/'.
+
 [2012-12-17]
   - File paths may now contain the '{USER_HOME}' placeholder (for yucca and httpd).
   - Renamed document root 'document_root_alpha' to 'document_root'.
   - Moved configuration directory '_.yucca/' to '{USER_HOME}/.yucca/'.
-  - But in method ikrs.httpd.CustomUtil.classImplementsInterface(...) fixed.
+  - Buy in method ikrs.httpd.CustomUtil.classImplementsInterface(...) fixed.
   - DOCUMENT_ROOT is now configurable via .yuccasrv/ikrs.httpd.config#DOCUMENT_ROOT.
+  - New yucca-commands: 'warranty' and 'license'.
 
 [2012-12-16]
   - Changed package name from 'ikrs.http' to 'ikrs.httpd'.
+
+[2012-12-15]
+  - HTTP methods can now be disabled: ikrs.httpd.conf#DISABLE_METHOD.{METHOD} = { On | Off }
 
 [2012-12-12]
   - INI-file parser added.

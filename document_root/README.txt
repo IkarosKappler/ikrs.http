@@ -3,19 +3,28 @@
 
 
 TO DO:
+[2013-01-03]
+ - Run some tests to check whether rejected requests really result into an 503 Server Error.
+ - Yucca.performQuit() still lacks some cleanup. Release listeners and handlers.
+ - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It should extend
+   ikrs.util.KeyValueStringPair.
+
 [2012-12-17]
- - The configuration directory was moved to {USER_HOME}/.yuccasrv.
+ - [DONE 2012-12-18]
+   The configuration directory was moved to {USER_HOME}/.yuccasrv.
    Build a directory check/create/copy on system start.
 
 [2012-12-15]
- - There is semantic clash: 
+ - [DONE 2013-01-03; moved to ikrs.util.KeyValueStringPair]
+   There is semantic clash: 
    ikrs.util.KeyValuePair <=> ikrs.httpd.datatype.KeyVauleStringPair
    Idea: move KeyValueStringPair to ikrs.util?
  - [DONE 2012-12-16]
    Change the ikrs.http package name into 'ikrs.httpd' (it's a DAEMON!).
- - Add the 'show w' and 'show c' commands to the command line.
+ - [DONE 2012-12-17; note: the commands are 'warranty' and 'license']
+   Add the 'show w' and 'show c' commands to the command line.
  - Add the GPL application note to *all* source code files (example is in
-   gpl-3.0_howto_applay.txt).
+   gpl-3.0_howto_apply.txt).
  - Separate the *.java and the *.class files into different directories
    /src/ and /bin/
  - Make different JAR archives from the packages:
@@ -25,38 +34,44 @@ TO DO:
     - ikrs.httpd
 
 [2012-12-12]
- - [Done 2012-12-13]
+ - [DONE 2012-12-13]
    There is a new class: ikrs.util.KeyValuePair which can parse key-value-strings. 
    This class should be used in HTTPHeaderLine.parse( String ).
- - [Done 2012-12-13]
+ - [DONE 2012-12-13]
    The httpd configuration can now be loaded into the server and it is possible to disable HTTP methods;
    but the HTTPHandler.getSupportedMethods() method still returns the whole list (ignoring the config)!
    Maybe better replace the Method's signature and return a List/Set.
- - See RFC 2616, page 171:
+ - [DONE 2013-01-03]
+   See RFC 2616, page 171:
    "Servers MUST report a 400 (Bad Request) error if an HTTP/1.1
         request does not include a Host request-header."
  - Check if The request is HTTP/1.1 or HTTP/1.0.
 
 [2012-12-11]
- - The HTTPHandler.rejectedExecution(...) is still empty (called if all preserved server threads are busy). 
+ - [DONE 2013-01-03]
+   The HTTPHandler.rejectedExecution(...) is still empty (called if all preserved server threads are busy). 
    A fast (!) "503 Service Unavailable" response would be appropriate.
- - The customized HTTP config file (reference inside the yucca config) must be interpreted and applied.
+ - [DONE 2012-12-18]
+   The customized HTTP config file (reference inside the yucca config) must be interpreted and applied.
  - [DONE 2012-12-11; Note: the file is defined in the yucca config, not in the http config. See HTTPConfiguration class]
    Add a 'fileHandlers' entity to the customized HTTP config.
 
 [2012-12-10]
- - Yucca has still dozens of hard coded config identifiers; they should be defined in a common header file.
+ - [DONE 2013-01-03]
+   Yucca has still dozens of hard coded config identifiers; they should be defined in a common header file.
 
 [2012-12-09]
- - It must be possible to disable HTTP methods (particulary TRACE).
+ - [DONE 2012-12-15; ikrs.httpd.conf#DISABLE_METHOD.{METHOD} = { On | Off }]
+   It must be possible to disable HTTP methods (particulary TRACE).
 
 [2012-10-30]
- - [Done 2012-11-27]
+ - [DONE 2012-11-27]
    The socketmanager must be capable to support secure sockets.
 
 [2012-10-29]
- - [DONE 2012-10-29] There is a new file called 'filehandlers.ini' in the working dir. It specifies the handler classes.
-   	 	     Implement the SetType- and AddType-Handling directives from the htaccess (FileSystemResourceAccessor).
+ - [DONE 2012-10-29] 
+   There is a new file called 'filehandlers.ini' in the working dir. It specifies the handler classes.
+   Implement the SetType- and AddType-Handling directives from the htaccess (FileSystemResourceAccessor).
 
 [2012-10-15]
  - There is an issue with the session/REMOTE_ADDR,REMOTE_HOST values; they are not properly passed to the
@@ -121,7 +136,7 @@ TO DO:
    Currently the server does not fully understand HTTP POST.
 
 [2012-09-29]
- - finish the ikrs.io.BytePositionInputStream implemenation (mark() and reset()).
+ - finish the ikrs.io.BytePositionInputStream implementation (mark() and reset()).
 
  - the FileSystemResourceAccessor has a hard-coded PHP check (replace by global handler-map).
 

@@ -4,6 +4,7 @@
   - Renamed document root 'document_root_alpha' to 'document_root'.
   - Moved configuration directory '_.yucca/' to '{USER_HOME}/.yucca/'.
   - But in method ikrs.httpd.CustomUtil.classImplementsInterface(...) fixed.
+  - DOCUMENT_ROOT is now configurable via .yuccasrv/ikrs.httpd.config#DOCUMENT_ROOT.
 
 [2012-12-16]
   - Changed package name from 'ikrs.http' to 'ikrs.httpd'.

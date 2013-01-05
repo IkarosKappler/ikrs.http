@@ -178,8 +178,8 @@ The "File not found" issue
    The CGI handler requires to set some environment vars for php-cgi. By default this is not allowed
    by the 'cgi.force_redirect' directive in your php.ini (php-cgi, NOT php-cli!).
    
-   Locate you php-cgi configuration file, something like
-   /etc/php5/cgi/php.init,  
+   Locate your php-cgi configuration file, something like
+   /etc/php5/cgi/php.ini,  
    near line ~834
    ; cgi.force_redirect is necessary to provide security running PHP as a CGI under
    ; most web servers.  Left undefined, PHP turns this on by default.  You can
@@ -209,10 +209,10 @@ The "File not found" issue
 
    Now set 'doc_root' to your document root.
    Example:
-   doc_root = "/home/your_user_name/java/document_root_alpha"
+   doc_root = "/home/your_user_name/java/document_root"
 
    If this does not fix the problem add an additional document-root directive:
-   server.document_root = "/home/your_user_name/java/document_root_alpha"
+   server.document_root = "/home/your_user_name/java/document_root"
    
 
    Now near line ~850:
@@ -290,8 +290,17 @@ This is the user specific directory containing all configuration files required 
 Tools
 =====
 
-ikrs.http.MD5
+ikrs.httpd.MD5
 -------------
  A password hash generator for htaccess 'Digest' authorization.
- Usage: java ikrs.http.MD5 -r <realm> [-s <salt>] -u <user> [-p <password>]
+ Usage: java ikrs.httpd.MD5 -r <realm> [-s <salt>] -u <user> [-p <password>]
  	- salt must be 8 characters long.
+
+ Example:
+    > java ikrs.httpd.MD5 -r "My cool realm" -u testuser -p test
+    Generating random salt ... 
+    Your hashed password (line for .htpasswd): 
+    testuser:${ikrs.http.MD5}$xSngy8uB$9f8d6ab4029a6f8ce8fcdbdb7e671490
+
+ Store the last line printed into your .htpasswd file to add the user to the user list (AuthUserFile).
+   

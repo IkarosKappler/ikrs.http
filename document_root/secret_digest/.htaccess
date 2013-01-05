@@ -3,8 +3,8 @@
 # AuthType Basic
 AuthType Digest
 AuthName "My cool realm"
-AuthUserFile document_root_alpha/secret_digest/.htpasswd
-AuthGroupFile document_root_alpha/secret_digest/.htgroups
+AuthUserFile document_root/secret_digest/.htpasswd
+AuthGroupFile document_root/secret_digest/.htgroups
 Require valid-user
 
 # The value 'On' implies the default value 'iso-8859-1'

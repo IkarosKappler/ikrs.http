@@ -3,11 +3,15 @@
 
 
 TO DO:
-[2013-01-03]
+[2013-01-05]
  - Run some tests to check whether rejected requests really result into an 503 Server Error.
  - Yucca.performQuit() still lacks some cleanup. Release listeners and handlers.
  - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It should extend
    ikrs.util.KeyValueStringPair.
+ - [DONE 2013-01-04]
+   Build a nested htaccess evaluation. Currently the application just searches up the document
+   tree until the first htaccess file is found. That is not correct! *All* htaccess files
+   upon the request path must be used; later occurrences override earlier stated stettings.
 
 [2012-12-17]
  - [DONE 2012-12-18]

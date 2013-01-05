@@ -1,5 +1,11 @@
 
 
+[2013-01-05]
+ - Built a nested htaccess evaluation. Before the application just searched up the document
+   tree until the first htaccess file was found. That was not correct! *All* htaccess files
+   upon the request path are now used; later occurrences override earlier stated stettings.
+   The HyptertextAccessFile class got a new merge() method for this purpose.
+
 [2013-01-03]
   - Moved ikrs.httpd.datatype.KeyValueStringPair to ikrs.util.KeyValueStringPair.
   - Added a handler method in HTTPHandler.rejectedExecution(...) that processes rejected requests fast and 

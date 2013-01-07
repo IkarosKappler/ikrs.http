@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 
-// import ikrs.httpd.datatype.KeyValueStringPair;
+
 import ikrs.httpd.resource.FileSystemResourceAccessor;
 import ikrs.httpd.resource.DefaultDirectoryResource;
 import ikrs.yuccasrv.ConnectionUserID;
@@ -261,6 +261,35 @@ public class HTTPHandler
     }
 
     /**
+     * This method checks whether the passed file-system file is 'inside' the configured document root.
+     * The passed file should be rooted at the global file system root.
+     *
+     * Note that the document root directory is considered to be inside itself, as it is
+     * accessible by the URI '/'.
+     *
+     * @param file A file inside the local system's file system; must not be null.
+     * @return True if - and only if - the passed file is a file or a directory inside the document root
+     *              directory or inside any subdirectory inside the document root or the passed file
+     *              is document root itself. Or in other words: if the passed file is inside the configured 
+     *              HTTP document tree.
+     * @throws NullPointerException If the passed file is null.
+     **/ 
+    public boolean isInsideDocumentRoot( File file ) 
+	throws NullPointerException {
+
+	while( file != null ) {
+	    
+	    if( this.getDocumentRoot().equals(file) )
+		return true;
+
+	    file = file.getParentFile();
+	}
+
+	return false;
+    }
+    
+
+    /**
      * This method initializes the FileHandler map.
      **/
     protected void initFileHandlers( File fileHandlersFile ) {
@@ -457,7 +486,6 @@ public class HTTPHandler
      * Apache/1.3.29 (Unix) PHP/4.3.4
      *
      **/
-    //public String getServerName() {
     public String getSoftwareName() {
 	BasicType name = this.getEnvironment().get( Constants.KEY_SOFTWARENAME );
 

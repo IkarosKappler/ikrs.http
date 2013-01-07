@@ -3,6 +3,7 @@
 
 
 TO DO:
+
 [2013-01-05]
  - Run some tests to check whether rejected requests really result into an 503 Server Error.
  - Yucca.performQuit() still lacks some cleanup. Release listeners and handlers.
@@ -12,6 +13,13 @@ TO DO:
    Build a nested htaccess evaluation. Currently the application just searches up the document
    tree until the first htaccess file is found. That is not correct! *All* htaccess files
    upon the request path must be used; later occurrences override earlier stated stettings.
+ - [DONE 2013-01-07]
+   Currently the system writes a hexdump of requested files on stdout. The output MUST be limited to 
+   a max mark, such as 1MB or so ... otherwise the dump may take minutes to hours on large files
+   before the actual download can start.
+ - [DONE 2013-01-07; log output moved to ikrs.httpd.HTTPRequestDistributor]
+   ikrs.httpd.HTTPHeaders.read(...) still writes debug data into stdout. This should be configurable
+   and (if enabled) written through the log manager.
 
 [2012-12-17]
  - [DONE 2012-12-18]
@@ -249,7 +257,58 @@ method.
     - Check if 'upload_tmp_dir' is set (to your system's tempfiles directory or a temp dir of your 
       choice) [near line ~890].
     - Check if your upload-file size does not exceed 'post_max_size'.
-  
+
+
+
+How to add custom file handlers
+===============================  
+
+There are three basic steps required to add a custom file- or directory handler.
+ (i)   You need to build your own handler class that implements the 
+       ikrs.httpd.FileHandler interface.
+       Optionally you might just want to extend the abstract class 
+       ikrs.httpd.filehandlers.AbstractFileHandler; 
+       in that case you have to override the methods 'boolean requiresExistingFile()' 
+       and 'Resource process(...)'.
+
+       If you are not sure what to do just see the example handler in
+       ikrs.httpd.filehandlers.IkarosExampleHandler.
+
+
+ (ii)  You need to bind your handler into the system and assign an alias name.
+       Do this by editing the {USER_HOME}/.yuccasrv/filehandlers.ini file; add a new
+       line
+		<your_handler_alias> = <your_handler_class> [ <list_of_associated_file_extensions> ]
+		
+       where
+	   - <your_handler_alias>                 can be any name (not including white spaces), but 
+	     					  it should be unique!
+	   - <your_handler_class>                 must be the fully qualified class name of your 
+	     					  handler (with package name!)
+	   - <list_of_associated_file_extensions> Is an optional list of file extensions you want to
+	     					  have associated with you handler BY DEFAULT (global!).
+
+       Example:
+	  IkarosExampleHandler=ikrs.httpd.filehandler.IkarosExampleHandler
+	
+
+ (iii) If you didn't already associate file extensions with your handler you have to do so in the last
+       step. Configure the desired directory(~ies) by the use of htaccess' SetHandler/AddHandler
+       directives.
+         - 'SetHandler <your_handler_alias>' sets your handler for the current directory (and all files
+	   inside and all sub directories).
+	 - AddHandler <your_handler_alias> <list_of_associated_file_extensions>' addy your handler for
+	   the given file extensions).
+
+       Examples:
+	  (a) SetHandler IkarosExampleHandler
+	  (b) AddHandler IkarosExampleHandler .ikrs
+
+
+ Note: file extensions are compared case-insensitive, so '.TXT' would also match '.txt'.
+
+
+
 
 
 Files
@@ -303,4 +362,6 @@ ikrs.httpd.MD5
     testuser:${ikrs.http.MD5}$xSngy8uB$9f8d6ab4029a6f8ce8fcdbdb7e671490
 
  Store the last line printed into your .htpasswd file to add the user to the user list (AuthUserFile).
+
+
    

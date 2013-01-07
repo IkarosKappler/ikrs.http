@@ -1,4 +1,4 @@
 # This directive sets a custom handler class for this directory and all sub directories.
 
-SetHandler MyHandler
+SetHandler IkarosExampleHandler
 

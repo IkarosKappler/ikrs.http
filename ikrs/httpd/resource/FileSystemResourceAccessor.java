@@ -1,6 +1,10 @@
 package ikrs.httpd.resource;
 
 /**
+ * The FileSystemResourceAccessor is the default implementation of ResourceAccessor that handles
+ * requests to the document root respective to the file system (the document root is part of the
+ * file system).
+ *
  * @autor Ikaros Kappler
  * @date 2012-07-23
  * @version 1.0.0
@@ -126,6 +130,9 @@ public class FileSystemResourceAccessor
 	String path = uri.getPath();	
 	File requestedFile = new File( this.getHTTPHandler().getDocumentRoot(), path );
 
+	// The request URI might be handled by a customized handler, so the file
+	// does not nesessarily exist! (imagine a virtual access path such as in RAILS)
+	/*
 	if( !requestedFile.exists() ) {
 
 	    throw new MissingResourceException( "File '"+path+"' not found.",
@@ -133,14 +140,16 @@ public class FileSystemResourceAccessor
 						path 
 						);
 
-	}
+						}*/
+	
 
 	// String extension = CustomUtil.getFileExtension( requestedFile ); 
 
 	HypertextAccessFile htaccess = null;
 	try {
 
-	    htaccess = loadHypertextAccessFile( requestedFile, uri, session );
+	    htaccess = this.loadHypertextAccessFile( requestedFile, uri, session );
+
 
 	    if( htaccess != null && optionalReturnSettings != null ) {
 
@@ -179,7 +188,8 @@ public class FileSystemResourceAccessor
 	// This MUST NOT happen if the htaccess disabled the directory listing using
 	// the option:
 	// Option -Indexes
-	if( requestedFile.isDirectory() 
+	if( requestedFile.exists() 
+	    && requestedFile.isDirectory() 
 	    && !this.htaccess_checkDirectoryListingAllowed(requestedFile,htaccess) ) {
 
 	    // This will cause a 403 (Forbidden) status in the ResponseBuilder.
@@ -197,9 +207,21 @@ public class FileSystemResourceAccessor
 								    requestedFile, 
 								    extension, 
 								    htaccess ); // this.getHTTPHandler().getFileHandler( extension );
+
 	this.getHTTPHandler().getLogger().log( Level.INFO,
 					       getClass().getName() + ".locate(...)",
 					       "Resolved file handler for requested file? fileHandler=" + fileHandler );  // may be null
+
+	if( fileHandler != null 
+	    && fileHandler.requiresExistingFile() 
+	    && !requestedFile.exists() ) {
+
+	    throw new MissingResourceException( "File '"+path+"' not found.",
+						requestedFile.getClass().getName(),
+						path 
+						);
+
+	}
 
 
 
@@ -219,6 +241,29 @@ public class FileSystemResourceAccessor
 	    this.mapFileReAccessRequirements( htaccess, uri, requestedFile, optionalReturnSettings, session, authType );
 
 	    throw new AuthorizationException( AuthorizationException.AUTHORIZATION_REQUIRED, authType + " authorization required." );
+
+	} else if( fileHandler != null ) { // extension != null && fileHandler != null ) { 
+
+	    // Note: there might be a file handler defined by the use of htaccess/SetHandler
+	   	   
+										      
+	    Resource resource = fileHandler.process( sessionID,
+						     headers,
+						     postData,
+						     requestedFile,
+						     uri );
+
+	    // Determine the MIME type from the generated PHP headers
+	    // ... !!! ???
+	    MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
+	    resource.getMetaData().setMIMEType( mimeType );
+	    
+	    
+
+	    // ... is this all ???
+
+	    return resource; 
+	
 	    
 	} else if( !requestedFile.exists() ) {
 
@@ -227,6 +272,7 @@ public class FileSystemResourceAccessor
 						requestedFile.getClass().getName(),
 						path 
 						);
+
 	} else if( requestedFile.isDirectory() ) {
 
 
@@ -249,7 +295,7 @@ public class FileSystemResourceAccessor
 	    /*
 	     // This was a try of generating the directory listing via PHP script, but this is a bad idea
 	     //  - due to security reasons (any external code might be executed!).
-	     //  - xdue to the fact that PHP is not necesarily installed on all systems.
+	     //  - due to the fact that PHP is not necesarily installed on all systems.
 	    ikrs.http.filehandler.PHPDirectoryResource resource = new ikrs.http.filehandler.PHPDirectoryResource( this.getHTTPHandler(),
 														  this.getHTTPHandler().getLogger(),
 														  this.getHTTPHandler().getFileFilter(),
@@ -266,15 +312,16 @@ public class FileSystemResourceAccessor
 	    return resource;
 
 
-	} else if( extension != null && fileHandler != null ) { // extension.equalsIgnoreCase("PHP") ) {
-	    
+	    //else if( extension != null && fileHandler != null ) { 
+	    /*} else if( fileHandler != null ) {
+		
 	    // THIS IS TRICKY ...
 	    // ... think about this one more time ...
 
 	    // !!! FETCH THIS FROM A GLOBAL MAP LATER !!!
-	    /*ikrs.http.FileHandler fileHandler = new ikrs.http.filehandler.PHPHandler( this.getHTTPHandler(),
-										      this.getLogger() );
-	    */
+	    //ikrs.http.FileHandler fileHandler = new ikrs.http.filehandler.PHPHandler( this.getHTTPHandler(),
+	    //									      this.getLogger() );
+	    
 	   
 										      
 	    Resource resource = fileHandler.process( sessionID,
@@ -293,7 +340,7 @@ public class FileSystemResourceAccessor
 	    // ... is this all ???
 
 	    return resource;
-
+	    */
 
 	} else {
 
@@ -338,14 +385,22 @@ public class FileSystemResourceAccessor
 
 
     /**
-     * This method should implement a filename filter in future versions.
+     * This method checks if the given file is accessible by matching it by the use of the
+     * global file filter.
      **/
     public boolean isAccessible( File file,
 				 URI requestURI ) {
 
 	// If a file is accessible depends on the file filter.
-	return this.getHTTPHandler().getFileFilter().acceptAccess( file );
-
+	/*if( fileHandler == null
+	    ||
+	    ( fileHandler != null && fileHandler.requiresExistingFile() && file.exists() ) )
+	    return this.getHTTPHandler().getFileFilter().acceptAccess( file );
+	else
+	    return true;
+	*/
+	return !file.exists() 
+	    || ( file.exists() && this.getHTTPHandler().getFileFilter().acceptAccess( file ) );
     }
 				 
 
@@ -417,7 +472,7 @@ public class FileSystemResourceAccessor
 	       AuthorizationException,
 	       ConfigurationException {
 
-
+	
 	// Does the .htaccess have an AuthType directive at all?
 	// (there are also .htaccess file for basic configuration purposes)
 	if( htaccess.getAuthType() == null )
@@ -452,6 +507,8 @@ public class FileSystemResourceAccessor
 
     }
 
+
+    /*
     private HypertextAccessFile loadHypertextAccessFile( File file,
 							 URI requestURI,
 							 Environment<String,BasicType> session ) 
@@ -501,8 +558,80 @@ public class FileSystemResourceAccessor
 	return null;
 
     }
+    */
+
+    
+    private HypertextAccessFile loadHypertextAccessFile( File file,
+							 URI requestURI,
+							 Environment<String,BasicType> session ) 
+    	throws IOException,
+	       ConfigurationException,
+	       ParseException {
+
+	// Check if the passed file/uri is accessible
+	File uriFile = new File( requestURI.getPath() );
+
+	
+	return loadHypertextAccessFile( file, uriFile, session );
+    }
+
+    private HypertextAccessFile loadHypertextAccessFile( File fsFile,
+							 File uriFile,
+							 Environment<String,BasicType> session ) 
+    	throws IOException,
+	       ConfigurationException,
+	       ParseException {
+
+	
+	// Document root reached? (end of recursion)
+	//if( uriFile == null || fsFile.equals(this.getHTTPHandler().getDocumentRoot().getParent()) ) 
+	if( uriFile == null || fsFile == null || !this.getHTTPHandler().isInsideDocumentRoot(fsFile) )
+	    return null;
+	
+
+	HypertextAccessFile parentHTA = loadHypertextAccessFile( fsFile.getParentFile(),
+								 uriFile.getParentFile(),
+								 session 
+								 );
+
+	// Only look at directories (the last item in the path might be a normal file)
+	if( fsFile.isDirectory() ) {
 
 
+	    // Check if there is a .httaccess file
+	    File htaccessFile = new File( fsFile, // is a directory!
+					  ".htaccess"
+					  );
+	    if( htaccessFile.exists() ) { // && htaccessFile.isFile() ) {
+
+		// We found a htaccess file! -> Load and return
+
+
+		// The user must re-authorize IF the session timed out.
+		// (if the child env already exists, the method just returns it)
+		// Environment<String,BasicType> fsAccessEnv = session.createChild( Constants.EKEY_FILESYSTEMPRIVILEGUES );
+		    
+
+		HypertextAccessFile localHTA = HypertextAccessFile.read( htaccessFile, 
+									 this.hypertextAccessHandler.isStrictMode() );
+
+		// Override settings inside the parent htaccess file?
+		if( parentHTA != null )
+		    parentHTA.merge( localHTA );
+		else
+		    parentHTA = localHTA;
+		    
+	    }
+
+	}
+
+	// The parent might not exist -> returns null
+	//uriFile = uriFile.getParentFile();
+	//file = file.getParentFile();
+	
+	return parentHTA;
+
+    }
 
     /**
      * If the htaccess driven authentication fails the HTTP request distributor might require some configuration

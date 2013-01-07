@@ -1,4 +1,17 @@
 
+[2013-01-07]
+ - Some tests with customized file/directory handlers (htaccess, SetHandler) exposed a flaw inside the
+   system when using non-existing files; it is now possible to configure FileHandlers by overriding the
+   'requiresExistingFile()' method and mock the ResourceAccessor this way: you can now also pass virtual 
+   URIs, if you want to.
+   See the ikrs.httpd.filehandlers.IkarosExampleHandler for details.
+   A configured example directory is located in the default document root at /custom_directory_handler.
+   Try to request a non existing file or sub directory, such like /custom_directory_handler/not_existing
+   and see what happens :)
+ - The hexdump output of requested files during transfer is now restricted up to 10KB of data. Then the 
+   output on stdout stops to avoid flooding.
+ - ikrs.httpd.HTTPHeaders.read(...) still wrote debug data into stdout. The debug/info output was moved
+   to ikrs.httpd.HTTPRequestDistributor.run().
 
 [2013-01-05]
  - Built a nested htaccess evaluation. Before the application just searched up the document

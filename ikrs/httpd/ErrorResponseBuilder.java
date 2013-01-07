@@ -165,7 +165,7 @@ public class ErrorResponseBuilder
 
 	    // Which resource to send: system file or raw text message?
 	    Resource resource = null;
-	    String errorFilePath = "/system/errors/Error." + statusCode + ".html";
+	    String errorFilePath = "/system/errors/Error." + Integer.toString(statusCode) + ".html";
 
 	    try {
 		// File exists?
@@ -211,7 +211,6 @@ public class ErrorResponseBuilder
 		//    The method specified in the Request-Line is not allowed for the resource identified by the Request-URI. 
 		//    The response MUST include an Allow header containing a list of valid methods for the requested resource."
 
-		//String[] supportedMethods = this.getHTTPHandler().getSupportedMethods();
 		List<String> supportedMethods = this.getHTTPHandler().getSupportedMethods();
 		String allowValue             = CustomUtil.implode( supportedMethods, ", " );
 		response.addResponseHeader( HTTPHeaders.NAME_ALLOW, allowValue );
@@ -227,7 +226,7 @@ public class ErrorResponseBuilder
 		BasicType realmName = additionalSettings.get( Constants.KEY_HTACCESS_AUTHNAME );
 		BasicType authType  = additionalSettings.get( Constants.KEY_HTACCESS_AUTHTYPE );
 		if( realmName == null )  // Use default realm name (no specified)
-		    realmName = new BasicStringType("MyNiceRealmName");
+		    realmName = new BasicStringType("DefaultRealm");
 
 		if( authType == null ) // Use default auth method: Basic authentication
 		    authType = new BasicStringType("Basic");

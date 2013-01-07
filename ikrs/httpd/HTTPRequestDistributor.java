@@ -133,6 +133,13 @@ public class HTTPRequestDistributor
 	    // Init HTTP connection ... 
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
 
+	    // Print a dump to the logger
+	    for( int i = 0; i < headers.size(); i++ ) {
+		this.logger.log( Level.INFO, 
+				 getClass().getName() + ".run()",
+				 "   HTTPHeaders read. header line [" + i + "]: " + headers.get(i) );
+	    }
+
 
 	    PostDataWrapper postData = null;
 	    if( headers.isPOSTRequest() ) {
@@ -161,7 +168,7 @@ public class HTTPRequestDistributor
 		// Wrap the trailing data into a PostDataWrapper
 		postData = new DefaultPostDataWrapper( this.logger,
 						       headers,
-						       postDataInputStream // this.socket.getInputStream() 
+						       postDataInputStream 
 						       );
 
 	    } // END if [is POST request]

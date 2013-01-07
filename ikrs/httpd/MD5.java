@@ -184,7 +184,18 @@ public class MD5 {
 
 	}
 
-	if( realm == null || user == null ) {
+	if( realm == null ) {
+
+	    //user == null ) {
+	    System.err.println( "Missing realm!" );
+	    printUsage();
+	    System.exit(1);
+	}
+
+	if( user == null ) {
+
+	    //user == null ) {
+	    System.err.println( "Missing user!" );
 	    printUsage();
 	    System.exit(1);
 	}
@@ -195,7 +206,9 @@ public class MD5 {
 	}
 
 	if( salt == null ) {
-	    
+
+	    System.out.println( "Generating random salt ... " );
+
 	    // Make a random Base64 representation for later compatibility.
 	    // (8 chars represent 6 bytes, to there are no fill-bits required)
 	    String seed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -246,7 +259,7 @@ public class MD5 {
     }
 
     private static void printUsage() {
-	System.out.println( "Usage: java ikrs.http.MD5 -r <realm> [-s <salt>] -u <user> [-p <password>]" );
+	System.out.println( "Usage: java ikrs.httpd.MD5 -r <realm> [-s <salt>] -u <user> [-p <password>]" );
 	System.out.println( " - salt must be 8 characters long." );
     }
 

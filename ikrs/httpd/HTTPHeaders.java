@@ -758,7 +758,7 @@ public class HTTPHeaders {
 	// Read line by line; the first occurence of an empty line indicates the end-of-headers, which means
 	// the HTTPHeaderLine.read(...) returns null.
 	while( (header = HTTPHeaderLine.read(in)) != null ) {
-	    System.out.println( "   HTTPHeaders.read(..) header line: " + header );
+	    //System.out.println( "   HTTPHeaders.read(..) header line: " + header );
 	    
 	    if( header.getKey() != null )
 		headers.add( header );

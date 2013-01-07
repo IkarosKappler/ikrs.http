@@ -29,8 +29,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 
 import ikrs.httpd.CustomUtil;
-//import ikrs.http.DataFormatException;
-//import ikrs.http.HeaderFormatException;
 import ikrs.httpd.HTTPFileFilter;
 import ikrs.httpd.HTTPHandler;
 import ikrs.httpd.ReadOnlyException;
@@ -107,7 +105,7 @@ public class DefaultDirectoryResource
 		append( "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"  ).
 		append( "<head>\n"  ).
 		append( "<title>Contents of " ).append( this.getRequestURI().getPath() ).append( "</title>\n"  ).
-		append( "<link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\" />\n"  ).
+		append( "<link rel=\"icon\" href=\"/system/favicon.ico\" type=\"image/x-icon\" />\n"  ).
 		append( "<link rel=\"stylesheet\" type=\"text/css\" href=\"" ).append( cssPath ).append( "\" />" ).
 		append( "</head>\n"  ).
 		append( "\n"  ).

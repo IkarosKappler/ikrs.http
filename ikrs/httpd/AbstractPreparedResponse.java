@@ -346,7 +346,7 @@ public abstract class AbstractPreparedResponse
 		
 		this.getHTTPHandler().getLogger().log( Level.INFO,
 						       getClass().getName() + ".execute()",
-						       "Sending data ... [also also printing a hex dump to stdout]" );
+						       "Sending data ... [also also printing a hex dump of the first 10KB to stdout]" );
 		
 		byte[] buffer = new byte[ 1024 ];
 		int len = -1;
@@ -360,17 +360,22 @@ public abstract class AbstractPreparedResponse
 								  8, 8, 
 								  0,     // one separator column
 								  8, 8 });
+		long maxHexOutput = 1024*10;  // 10 KB
 		// Read the resource's data chunk by chunk
+		long totalLength = 0L;
 		while( (len = resourceIn.read(buffer)) > 0 ) {
 
 		    // Print the data on stdout?
-		    for( int i = 0; i < len; i++ )
-			hexOut.write( buffer[i] );
-		    hexOut.flush();
+		    if( totalLength < maxHexOutput ) {
+			for( int i = 0; i < len; i++ )
+			    hexOut.write( buffer[i] );
+			hexOut.flush();
+		    }
 		    
 		    // And write each chunck into the socket's output stream
 		    out.write( buffer, 0, len );
-		    
+
+		    totalLength += len;		    
 		}
 		
 		// And flush data

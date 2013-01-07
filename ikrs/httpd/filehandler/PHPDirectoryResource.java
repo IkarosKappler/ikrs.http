@@ -1,6 +1,9 @@
 package ikrs.httpd.filehandler; 
 
 /**
+ * This class is DEPRECATED and should not be used any more (security issues).
+ *
+ *
  * This class is a mixture of ikrs.http.resource.DirectoryResource and ikrs.http.FileHandler.
  *
  * Due to security reasons it is not recommended to use this class any more:
@@ -13,6 +16,8 @@ package ikrs.httpd.filehandler;
  * @author  Ikaros Kappler
  * @date    2012-10-23
  * @version 1.0.0
+ *
+ * @deprecated
  **/
 
 import java.io.ByteArrayInputStream;

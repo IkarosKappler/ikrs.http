@@ -15,6 +15,7 @@ package ikrs.httpd;
  *
  * @author Ikaros Kappler
  * @date 2012-09-29
+ * @modified 2013-01-07 [new method: requiresExistingFile()]
  * @version 1.0.0
  **/
 
@@ -68,6 +69,28 @@ public interface FileHandler {
      **/
     public void setLogger( CustomLogger logger )
 	throws NullPointerException;
+
+
+    /**
+     * Most file handlers operate on existing files that are located inside the local file 
+     * system (such as the default handler does for simple file delivery).
+     *
+     * Some file handlers operate on virtual file systems, which means that the request URI does
+     * not necessarily address an existing file but a symbol only the handler may know. 
+     *
+     * The global HTTP handler needs to know if to throw a MissingResourceException (resulting
+     * in a 404) if a requested file does not exists --- or if to ignore that fact and simply 
+     * continue.
+     *
+     * This method tells how to proceed.
+     *
+     * If your implementation returns true this handler will not be called at all; the request
+     * processing will directly stop raising an HTTP status 404.
+     *
+     * @return true if this file handler definitely requires existing files. The process(...) 
+     *              method will never be called if the requested file does not exist in that case.
+     **/
+    public boolean requiresExistingFile();
 
 
     /**

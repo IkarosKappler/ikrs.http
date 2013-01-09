@@ -3,6 +3,8 @@
 
 
 TO DO:
+[2013-01-09]
+ - The session timeout must be configurable. It is currently hard coded to 300 seconds (5 minutes).
 
 [2013-01-05]
  - Run some tests to check whether rejected requests really result into an 503 Server Error.

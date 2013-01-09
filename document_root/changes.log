@@ -1,4 +1,10 @@
 
+[2013-01-08]
+ - There was an issue with the session timeout handling and it is fixed now. 
+   Additionally I created a nested SESSION.INTERNAL child now holding the environment data used in the
+   CGIHandler.
+ - The file handler example now also shows how to use sessions.
+
 [2013-01-07]
  - Some tests with customized file/directory handlers (htaccess, SetHandler) exposed a flaw inside the
    system when using non-existing files; it is now possible to configure FileHandlers by overriding the

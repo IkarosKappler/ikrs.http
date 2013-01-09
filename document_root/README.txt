@@ -141,7 +141,8 @@ TO DO:
 [2012-10-04]
  - Check if with 'Content-Type: application/x-www-form-urlencoded' really the correct charset from the  
   'Accept-Charset' header is used! (default is ISO-8859-1 --- is that really the correct default value?).
- - The session handling needs to be built (internal SESSION.START and SESSION.END).
+ - [DONE 2013-01-08; there is a nested SESSION.INTERNAL child now holding the environment data]
+   The session handling needs to be built (internal SESSION.START and SESSION.END).
 
 [2012-10-01]
  - [DONE 2012-10-10; formdata/multipart handler implemented] 
@@ -150,7 +151,8 @@ TO DO:
 [2012-09-29]
  - finish the ikrs.io.BytePositionInputStream implementation (mark() and reset()).
 
- - the FileSystemResourceAccessor has a hard-coded PHP check (replace by global handler-map).
+ - [DONE 2012-09-30]
+   The FileSystemResourceAccessor has a hard-coded PHP check (replace by global handler-map).
 
  - [DONE 2012-09-30] 
    If the PHP execution fails (exitValue != 0) the system still returns a "200 OK" response;

@@ -18,6 +18,11 @@ public class DefaultEnvironmentFactory<K,V>
      **/
     private MapFactory<K,V> mapFactory;
 
+    /**
+     * This flag will be passed to the environments on creation.
+     **/
+    private boolean allowsMultipleChildNames;
+
 
     /**
      * Creates a new DefaultEnvironmentFactory.
@@ -28,13 +33,28 @@ public class DefaultEnvironmentFactory<K,V>
     public DefaultEnvironmentFactory( MapFactory<K,V> mapFactory )
 	throws NullPointerException {
 
+	this( mapFactory, true );
+
+    }
+
+     /**
+     * Creates a new DefaultEnvironmentFactory.
+     *
+     * @param mapFactory The map factory to use to create new internal maps. Must not be null.
+     * @param allowsMultipleChildNames The flag will be passed to the environments on creation.
+     * @throws NullPointerException If mapfactory is null.
+     **/
+    public DefaultEnvironmentFactory( MapFactory<K,V> mapFactory,
+				      boolean allowsMultipleChildNames )
+	throws NullPointerException {
+
 	super();
 
 	if( mapFactory == null )
 	    throw new NullPointerException( "Cannot create a new DefaultEnvironmentFactory with a null-mapFactory." );
 
 	this.mapFactory = mapFactory;
-
+	this.allowsMultipleChildNames = allowsMultipleChildNames;
     }
 
 
@@ -44,7 +64,7 @@ public class DefaultEnvironmentFactory<K,V>
      * @return The new environment.
      **/
     public Environment<K,V> create() {
-	return new DefaultEnvironment<K,V>( this.mapFactory );
+	return new DefaultEnvironment<K,V>( this.mapFactory, this.allowsMultipleChildNames );
     }
 
 

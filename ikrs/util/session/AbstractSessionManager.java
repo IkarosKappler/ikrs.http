@@ -31,6 +31,11 @@ public abstract class AbstractSessionManager<K,V,U>
     private SessionFactory<K,V,U> sessionFactory;
 
     /**
+     * The max age for all sessions (after inactivity).
+     **/
+    private int sessionTimeout_seconds;
+
+    /**
      * A map containing the sessions.
      **/
     private TreeMap<UUID,Session<K,V,U>> sessionIDMap;
@@ -45,7 +50,8 @@ public abstract class AbstractSessionManager<K,V,U>
      * Create a new AbstractSessionManager.
      *
      **/
-    protected AbstractSessionManager( SessionFactory<K,V,U> sessionFactory ) 
+    protected AbstractSessionManager( SessionFactory<K,V,U> sessionFactory,
+				      int sessionTimeout_seconds) 
 	throws NullPointerException {
 
 	super();
@@ -53,11 +59,12 @@ public abstract class AbstractSessionManager<K,V,U>
 	if( sessionFactory == null )
 	    throw new NullPointerException( "Cannot create an AbstractSessionManager with a null-sessionFactory." );
 
-	this.sessionFactory = sessionFactory;
+	this.sessionFactory         = sessionFactory;
+	this.sessionTimeout_seconds = sessionTimeout_seconds;
 
 
-	this.sessionIDMap   = new TreeMap<UUID,Session<K,V,U>>();
-	this.sessionUserMap = new TreeMap<U,Session<K,V,U>>();
+	this.sessionIDMap           = new TreeMap<UUID,Session<K,V,U>>();
+	this.sessionUserMap         = new TreeMap<U,Session<K,V,U>>();
     }
 
     /**
@@ -92,6 +99,30 @@ public abstract class AbstractSessionManager<K,V,U>
      **/
     public SessionFactory<K,V,U> getSessionFactory() {
 	return this.sessionFactory;
+    }
+
+    /**
+     * This method returns the session timeout (seconds) currently set for this manager.
+     *
+     * @return The session timeout (seconds) currently set for this manager.
+     **/
+    public int getSessionTimeout() {
+	return this.sessionTimeout_seconds;
+    }
+
+    /**
+     * This method sets the manager's session timeout to the new value (must be larger than 0).
+     *
+     * @param The number of seconds the manager's session will die after not being accessed.
+     * @throws IllegalArgumentException If the passed timeout is less or equals zero.
+     **/
+    public void setSessionTimeout( int seconds )
+	throws IllegalArgumentException {
+
+	if( seconds <= 0 )
+	    throw new IllegalArgumentException( "Cannot set the session timeout to " + seconds + " second(s)." );
+
+	this.sessionTimeout_seconds = seconds;
     }
 
 

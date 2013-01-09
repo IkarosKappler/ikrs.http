@@ -216,6 +216,17 @@ public class HTTPConfiguration {
 
 	}
 
+	BasicType wrp_sessionTimeout = this.getHandler().getGlobalConfiguration().get( Constants.CKEY_HTTPCONFIG_SESSION_TIMEOUT );
+	if( wrp_sessionTimeout != null ) {
+	    
+	    Integer sessionTimeout = wrp_sessionTimeout.getInt();
+	    this.getLogger().log( Level.INFO, 
+			      getClass().getName() + "loadConfigurationFile(...)",
+			      "Set up SESSION_TIMEOUT to '" + sessionTimeout + "' ..." );
+	    this.getHandler().getSessionManager().setSessionTimeout( sessionTimeout.intValue() );
+
+	}
+
 	// The settings are now already applied :)
 	this.getLogger().log( Level.INFO, 
 			      getClass().getName() + "loadConfigurationFile(...)",

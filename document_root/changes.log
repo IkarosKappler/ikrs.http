@@ -2,6 +2,10 @@
 [2013-01-09]
  - Additional error documents added.
  - Reqest-Line parser method fixed (for the case a fully malformed non-HTTP request was sent).
+ - The session timeout is now configurable using the ikrs.http.conf file:
+   {USER_HOME}/.yuccasrv/ikrs.httpd.conf#SESSION_TIMEOUT
+ - The yucca command line is now extensible and capable to handle advanced httpd commands (none exist
+   so far, though).
 
 [2013-01-08]
  - There was an issue with the session timeout handling and it is fixed now. 

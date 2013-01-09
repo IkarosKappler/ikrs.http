@@ -661,9 +661,11 @@ public class HTTPHeaders {
 
 	// Parse request HTTP-Version
 	String[] split2 = split[2].split("(/)");
-	this.requestVersion = split2[1];	
-	if( split2.length >= 2 )
-	    this.requestProtocol = split2[0];
+	if( split2.length >= 1 ) {
+	    this.requestProtocol = split2[0];	
+	    if( split2.length >= 2 )
+		this.requestVersion = split2[1];
+	}
 
 
 	return true;

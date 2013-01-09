@@ -169,12 +169,11 @@ public class HTTPHandler
 						  "Java/" + System.getProperty("java.version")) 
 			      ); 
 
-	this.initGlobalConfiguration();
+	int sessionMaxAge = 300; // seconds
+	this.initGlobalConfiguration( sessionMaxAge );
 
 
-	// Init the session manager.
-	int sessionMaxAge = 30; // seconds
-
+	// Init the session manager.	
 	this.logger.log( Level.INFO,
 			 getClass().getName(),
 			 "[Init SessionManager] Create a new map factory to use for the environment creation." );
@@ -185,7 +184,9 @@ public class HTTPHandler
 			 getClass().getName(),
 			 "[Init SessionManager] Create a new environment factory to use for the session creation." );
 	EnvironmentFactory<String,BasicType>      
-	    environmentFactory                  = new ikrs.util.DefaultEnvironmentFactory<String,BasicType>( mapFactory );
+	    environmentFactory                  = new ikrs.util.DefaultEnvironmentFactory<String,BasicType>( mapFactory, 
+													     false       // allowsMultipleChildNames
+													     );
 
 	logger.log( Level.INFO,
 		    getClass().getName(),
@@ -401,11 +402,14 @@ public class HTTPHandler
      * Currently the conf is hard coded. It should come from a configuration file soon ...
      *
      **/
-    private void initGlobalConfiguration() {
+    private void initGlobalConfiguration( int sessionTimeout_seconds) {
 	Environment<String,BasicType> gconfig = this.environment.createChild( Constants.EKEY_GLOBALCONFIGURATION );
-	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(10) ); // 300) );
+	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(sessionTimeout_seconds) );
 	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
 	// ...
+
+	if( this.getSessionManager() != null )
+	    this.getSessionManager().setSessionTimeout( sessionTimeout_seconds );
     }
 
     public Environment<String,BasicType> getGlobalConfiguration() {

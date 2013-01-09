@@ -80,7 +80,6 @@ public class IkarosExampleHandler
 	return false;
     }
 
-
     /**
      * The 'process' method is very generic. It depends on the underlying implementation how the passed
      * file should be processed.
@@ -118,6 +117,10 @@ public class IkarosExampleHandler
 				     );
 	*/
 
+
+	Session<String,BasicType,ikrs.httpd.HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );
+	
+
 	String data = 
 	    "This is a test\n" +
 	    "--------------\n" +
@@ -133,10 +136,16 @@ public class IkarosExampleHandler
 	    data += "   " + headers.get(i) + "\n";
 
 	data +=
-	    "Request Method:   " + headers.getRequestMethod() + "\n" +
-	    "Request Version:  " + headers.getRequestVersion() + "\n" +
-	    "Request Protocol: " + headers.getRequestProtocol() + "\n" +
-	    "POST data available: " + (postData!=null) + "\n";
+	    "Request Method:      " + headers.getRequestMethod() + "\n" +
+	    "Request Version:     " + headers.getRequestVersion() + "\n" +
+	    "Request Protocol:    " + headers.getRequestProtocol() + "\n" +
+	    "POST data available: " + (postData!=null) + "\n" +
+	    "\n" +
+	    "Session:             " + session + "\n" +
+	    "Testvalue:           " + session.get("TEST") + "\n";
+
+	session.put( "TEST", new ikrs.typesystem.BasicStringType("123456") );
+
 
 	ByteArrayResource resource = new ByteArrayResource( this.getHTTPHandler(),
 							    this.getLogger(),

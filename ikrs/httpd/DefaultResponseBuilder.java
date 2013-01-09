@@ -97,12 +97,12 @@ public class DefaultResponseBuilder
 	try {
 
 	    // Validate header PROTOCOL
-	    if( !protocol.equals(Constants.HTTP) )
-		throw new MalformedRequestException( "The server only accepts " + Constants.HTTP + " requests. Protocol '" + protocol + "' is not allowed." );
+	    if( protocol == null || !protocol.equals(Constants.HTTP) )
+		throw new UnsupportedVersionException( "The server only accepts " + Constants.HTTP + " requests. Protocol '" + protocol + "' is not allowed." );
 
 
 	    // Validate header VERSION
-	    if( !version.equals("1.0") && !version.equals("1.1") )
+	    if( version == null || (!version.equals("1.0") && !version.equals("1.1")) )
 		throw new UnsupportedVersionException( "The HTTP version '" + version + "' is not supported. Use version 1.0 or 1.1 instead." );
 
 

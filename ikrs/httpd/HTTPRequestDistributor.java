@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import ikrs.io.BytePositionInputStream;
 import ikrs.io.ReadLimitInputStream;
 import ikrs.util.CustomLogger;
+import ikrs.util.Environment;
 import ikrs.util.session.Session;
 import ikrs.typesystem.BasicBooleanType;
 import ikrs.typesystem.BasicNumberType;
@@ -253,64 +254,18 @@ public class HTTPRequestDistributor
 	// Bind the session.
 	// If the sessions already exists, the session manager just returns it without modifying the session map.
 	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().bind( userID );
-	
+
+	// Create the internal session
+	Environment<String,BasicType> internalSession = session.createChild( Constants.SESSION_NAME_INTERNAL );
+ 
 
 	// Store basic connection information in the session. 
 	// Some modules (such as the CGIHandler) require those fields.
+	internalSession.put( Constants.SKEY_REMOTE_ADDRESS, new BasicStringType(this.socket.getInetAddress().getHostAddress()) );
+	internalSession.put( Constants.SKEY_REMOTE_HOST,    new BasicStringType(this.socket.getInetAddress().getHostName()) );
+	internalSession.put( Constants.SKEY_REMOTE_IDENT,   new BasicStringType("") ); 
+	internalSession.put( Constants.SKEY_REMOTE_USER,    new BasicStringType("") );   
 	
-	session.put( Constants.SKEY_REMOTE_ADDRESS, new BasicStringType(this.socket.getInetAddress().getHostAddress()) );
-	session.put( Constants.SKEY_REMOTE_HOST,    new BasicStringType(this.socket.getInetAddress().getHostName()) );
-	// session.put( Constants.SKEY_REMOTE_IDENT,   null ); ??? 
-	// session.put( Constants.SKEY_REMOTE_USER, null );    ???
-	
-	//System.out.println( "session=" + session );
-
-
-
-	this.logger.log( Level.INFO,
-			 getClass().getName(),
-			 "Request handler started (session="+session+")."
-			 );
-
-
-	// Init the session ALIVE value.
-	// This flag will be automatically 'deleted' by the session manager on session timeout (better: the while session becomes invalid).
-
-
-	// Is this the first call (no valid session available)?
-	if( session.get(Constants.SKEY_ISALIVE) == null ) {
-
-	    // Yes. Init session flag?
-	    session.put( Constants.SKEY_ISALIVE,        new BasicBooleanType(true) );
-	    session.put( Constants.SKEY_LASTACCESSTIME, new BasicNumberType(-1L) );
-
-	    // NOOP!?
-
-	} else {
-
-	    // Session timed out?
-	    BasicType wrp_lastAccessTime = session.get( Constants.SKEY_LASTACCESSTIME );
-	    BasicType wrp_sessionTimeout = this.handler.getEnvironment().getChild( Constants.EKEY_GLOBALCONFIGURATION ).get( Constants.KEY_SESSIONTIMEOUT );
-
-	    int sessionTimeout = 300;        // Default (hard coded) session timeout value (if not set)
-	    if( wrp_sessionTimeout != null )
-		sessionTimeout = wrp_sessionTimeout.getInt();
-
-
-	    
-	    if( wrp_lastAccessTime == null || wrp_lastAccessTime.getLong() <= (System.currentTimeMillis() - sessionTimeout) ) {
-
-		// The session died!
-		// All session vars must be invalidated!
-		session.clear();   
-
-		// Also remove (clear?) all children!
-		session.removeAllChildren();
-		
-
-	    }
-	    
-	}
 
 	return session.getSessionID();
     }
@@ -325,19 +280,7 @@ public class HTTPRequestDistributor
     private void handleSession_connectionEnd( UUID sessionID ) {
 	Session<String,BasicType,HTTPConnectionUserID> session = this.handler.getSessionManager().get( sessionID );
 
-	if( session == null ) {
-	    
-	    /*
-	    this.getLogger().log( Level.WARN,
-				  getClass().getName()
-	    return;
-	    */
-
-	}
-
-	// Trace the session access time
-	session.put( Constants.SKEY_LASTACCESSTIME, new BasicNumberType(System.currentTimeMillis()) );
-	session.put( Constants.SKEY_ISALIVE, new BasicBooleanType(true) );
+	// There is nothing to do ...
     }
 
 }

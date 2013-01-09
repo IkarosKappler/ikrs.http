@@ -299,12 +299,14 @@ public abstract class CGIHandler
 								      false,  // don't tryo to remove quotes
 								      ":"     // The separator
 								      );
+	
+	Environment<String,BasicType> internalSession = session.getChild( Constants.SESSION_NAME_INTERNAL );
 
 
-	BasicType wrp_remoteAddr  = session.get( Constants.SKEY_REMOTE_ADDRESS );
-	BasicType wrp_remoteHost  = session.get( Constants.SKEY_REMOTE_HOST );
-	BasicType wrp_remoteIdent = session.get( Constants.SKEY_REMOTE_IDENT );
-	BasicType wrp_remoteUser  = session.get( Constants.SKEY_REMOTE_USER );
+	BasicType wrp_remoteAddr  = internalSession.get( Constants.SKEY_REMOTE_ADDRESS );
+	BasicType wrp_remoteHost  = internalSession.get( Constants.SKEY_REMOTE_HOST );
+	BasicType wrp_remoteIdent = internalSession.get( Constants.SKEY_REMOTE_IDENT );
+	BasicType wrp_remoteUser  = internalSession.get( Constants.SKEY_REMOTE_USER );
 
 
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_AUTH_TYPE,         null );

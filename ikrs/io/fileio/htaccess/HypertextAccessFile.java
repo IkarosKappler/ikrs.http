@@ -5,6 +5,7 @@ package ikrs.io.fileio.htaccess;
  *
  * @author Ikaros Kappler
  * @date 2012-09-12
+ * @modified 2013-01-03 [merge method added].
  * @version 1.0.0
  **/
 
@@ -429,6 +430,68 @@ public class HypertextAccessFile {
 	return this.directoryIndexList;
     }
     
+
+    /**
+     * This method merges all non-empty settings from the passed hypertext access file.
+     *
+     * The settings will be copied from 'mergeFrom' into this object. Existing settings will
+     * be overwritten.
+     *
+     * @param mergeFrom The hypertext access file containing the settings to be merge into
+     *                  this (must not be null).
+     * @throws NullPointerException If mergeFrom param is null.
+     **/
+    public void merge( HypertextAccessFile mergeFrom ) 
+	throws NullPointerException {
+
+	if( mergeFrom == null )
+	    throw new NullPointerException( "Cannot merge null htaccess files." );
+
+	
+	if( mergeFrom.getAuthType() != null )
+	    this.authType = mergeFrom.getAuthType();
+
+	if( mergeFrom.getAuthName() != null )
+	    this.authName = mergeFrom.getAuthName();
+
+	if( mergeFrom.getAuthUserFile() != null )
+	    this.authUserFile = mergeFrom.getAuthUserFile();
+	
+	if( mergeFrom.getAuthGroupFile() != null )
+	    this.authGroupFile = mergeFrom.getAuthGroupFile();
+	
+	if( mergeFrom.getRequiredGroups() != null )
+	    this.requiredGroups.addAll( mergeFrom.getRequiredGroups() );
+
+	if( mergeFrom.getRequiredUsers() != null )
+	    this.requiredUsers.addAll( mergeFrom.getRequiredUsers() );
+
+	// Note: 'Require Valid-User' cannot be unset directly via htaccess.
+	this.requiresValidUser = ( this.requiresValidUser | mergeFrom.requiresValidUser() );
+
+	if( mergeFrom.getAddedTypes() != null )
+	    this.typeMap.putAll( mergeFrom.getAddedTypes() );
+
+	if( mergeFrom.getOptions() != null )
+	    this.optionsMap.putAll( mergeFrom.getOptions() );
+
+	if( mergeFrom.getSetHandler() != null )
+	    this.setHandlers.add( mergeFrom.getSetHandler() ); // only the latest entry has an effect
+	
+	if( mergeFrom.getAddedHandlers() != null )
+	    this.addedHandlers.putAll( mergeFrom.getAddedHandlers() );
+
+	if( mergeFrom.getDefaultCharset() != null )
+	    this.defaultCharset = mergeFrom.getDefaultCharset();
+
+	if( mergeFrom.getAddedCharsets() != null )
+	    this.addedCharsets.putAll( mergeFrom.getAddedCharsets() );
+
+	if( mergeFrom.getDirectoryIndexList() != null )
+	    this.directoryIndexList.addAll( mergeFrom.getDirectoryIndexList() );
+
+    }
+
 
 
     /**
@@ -891,6 +954,7 @@ public class HypertextAccessFile {
 	    append( ", authGroupFile=" ).append( this.authGroupFile ).
 	    append( ", requiredGroups=" ).append( this.requiredGroups ).
 	    append( ", requiredUsers=" ).append( this.requiredUsers ).
+	    append( ", requirsValidUser=" ).append( this.requiresValidUser ).
 	    append( ", typeMap=" ).append( this.typeMap ).
 	    append( ", optionsMap=" ).append( this.optionsMap ).
 	    append( ", setHandlers=" ).append( this.setHandlers ).

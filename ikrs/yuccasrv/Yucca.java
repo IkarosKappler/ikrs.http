@@ -38,6 +38,7 @@ import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicTypeException;
 import ikrs.typesystem.BasicUUIDType;
 import ikrs.util.Command;
+import ikrs.util.AbstractCommandLine;
 import ikrs.util.DefaultCommand;
 import ikrs.util.DefaultCustomLogger;
 import ikrs.util.DefaultEnvironment;
@@ -51,6 +52,7 @@ import ikrs.yuccasrv.util.YuccaLogFormatter;
 
 
 public class Yucca 
+    extends Thread
     implements BindListener {
 
     private BindManager
@@ -188,6 +190,10 @@ public class Yucca
      **/
     public Logger getLogger() {
 	return this.logger;
+    }
+
+    public AbstractCommandLine<Command> getCommandLine() {
+	return this.yuccaLine;
     }
 
     public void performQuit( boolean forceQuit ) {
@@ -786,6 +792,24 @@ public class Yucca
     }
 
 
+    public void run() {
+
+	try {
+	    
+	    System.out.println( "Starting command line ..." );
+	    // The method will block here
+	    this.yuccaLine.runCommandLine();
+
+	
+	} catch( IOException e ) {
+
+	    e.printStackTrace();
+	}
+
+
+    }
+
+
     public static String processCustomizedFilePath( String filePath ) {
 	if( filePath == null )
 	    return null;
@@ -829,7 +853,7 @@ public class Yucca
 	return filesCopied;
     }
 
-    public static void main( String[] argv ) {
+    public static Yucca runYucca( String[] argv ) {
 
 	//Yucca.printWarranty();
 	System.out.println( "    ikrs.yucca Copyright (C) 2012 Ikaros Kappler" );
@@ -983,23 +1007,22 @@ public class Yucca
 	if( serverConfig.get(Constants.KEY_STARTUP_COMMANDLINE) != null 
 	    && serverConfig.get(Constants.KEY_STARTUP_COMMANDLINE).getBoolean(false) ) {
 	    
-	    try {
-		yucca.yuccaLine = new YuccaLine( new YuccaCommandFactory(yucca) );
+	    yucca.yuccaLine = new YuccaLine( new YuccaCommandFactory(yucca) );
 
-		System.out.println( "Starting command line ..." );
-		// The method will block here
-		yucca.yuccaLine.runCommandLine();
 
-	
-	    } catch( IOException e ) {
-
-		e.printStackTrace();
-	    }
+	    Thread t = new Thread( yucca );
+	    t.start();
 	}
 
-
+	
+	return yucca;
 
     }
 
+    public static void main( String[] argv ) {
+
+	runYucca( argv );
+
+    }
 
 }

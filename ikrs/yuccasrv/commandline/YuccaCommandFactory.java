@@ -18,8 +18,8 @@ import ikrs.util.UnknownCommandException;
 import ikrs.yuccasrv.Yucca;
 
 public class YuccaCommandFactory
-    extends AbstractCommandFactory<YuccaCommand>
-    implements CommandFactory<YuccaCommand> {
+    extends AbstractCommandFactory<Command>
+    implements CommandFactory<Command> {
 
     /* The actual yucca server */
     private Yucca
@@ -59,7 +59,7 @@ public class YuccaCommandFactory
      * 
      * @return The new command.
      **/
-    public YuccaCommand make( String name,
+    public Command make( String name,
 			      BasicType[] params )
 	throws UnknownCommandException,
 	CommandStringIncompleteException {
@@ -79,7 +79,9 @@ public class YuccaCommandFactory
 	    cmd = new CommandWarranty();
 	else if( name.equalsIgnoreCase("STATUS") ) 
 	    cmd = new CommandStatus();
-	else 
+	else if( this.getParentFactory() != null ) 
+	    return this.getParentFactory().make( name, params );
+	else
 	    throw new UnknownCommandException( "Unknown command: '"+name+"'.", name );
 
 

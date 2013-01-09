@@ -337,5 +337,22 @@ public abstract class AbstractSession<K,V,U>
 
 	this.lastAccessTime.setTime( curTime );
     }
+
+    public String toString() {
+	return toString( new StringBuffer() ).toString();
+    }
+
+    public StringBuffer toString( StringBuffer b ) {
+	b.append( "{ creationTime=" ).append( this.creationTime ).
+	    append( ", lastModified=" ).append( this.lastModified ).
+	    append( ", lastAccessTime=" ).append( this.lastAccessTime ).
+	    append( ", set=" );
+
+	b.append( super.toString() );
+
+	b.append( " }" );
+
+	return b;
+    }
     
 }

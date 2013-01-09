@@ -63,4 +63,9 @@ public class MapDelegation<K,V>
 	return this.coreMap.remove( key );
     }
     //--- END ------------------------- OVERRIDE/implement AbstractMap implementation ------------------------
+
+    public String toString() {
+	return this.coreMap.toString();
+    }
+
 }

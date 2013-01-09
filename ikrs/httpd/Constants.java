@@ -12,7 +12,7 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "0.9.5";
+    public static final String VERSION                                           = "0.9.7";
     public static final String HTTP                                              = "HTTP";
 
     /* Currently only GET, POST, HEAD, TRACE and OPTIONS are implemented */
@@ -41,6 +41,7 @@ public class Constants {
     /* The ikrs.http config constants */
     public static final String CKEY_HTTPCONFIG_DISABLE_METHOD_BASE               = "DISABLE_METHOD.{HTTP_METHOD}";
     public static final String CKEY_HTTPCONFIG_DOCUMENT_ROOT                     = "DOCUMENT_ROOT";
+    public static final String CKEY_HTTPCONFIG_SESSION_TIMEOUT                   = "SESSION_TIMEOUT";
 
 
     public static final String KEY_AUTHORIZATION_METHOD                          = "Authorization.Method";
@@ -71,16 +72,18 @@ public class Constants {
     //public static final String KEY_SERVERPORT                                    = "SERVER_PORT";
     public static final String KEY_SOFTWARENAME                                  = "SOFTWARE_NAME";
 
+
+    // The session key constants
+    public static final String SKEY_ISALIVE                                      = "IS_ALIVE";
+    public static final String SKEY_LASTACCESSTIME                               = "LAST_ACCESSTIME";
+
     public static final String SKEY_REMOTE_ADDRESS                               = "REMOTE_ADDRESS";
     public static final String SKEY_REMOTE_HOST                                  = "REMOTE_HOST";
     /* The REMOTE_IDENT field is optional. See http://graphcomp.com/info/specs/cgi11.html */
     public static final String SKEY_REMOTE_IDENT                                 = "REMOTE_IDENT";  
     public static final String SKEY_REMOTE_USER                                  = "REMOTE_USER";
 
-
-    // The session key constants
-    public static final String SKEY_ISALIVE                                      = "IS_ALIVE";
-    public static final String SKEY_LASTACCESSTIME                               = "LAST_ACCESSTIME";
+    public static final String SESSION_NAME_INTERNAL                             = "SESSION.INTERNAL";
 
     // The environment name constants
     public static final String EKEY_GLOBALCONFIGURATION                          = "GLOBAL_CONFIGURATION";

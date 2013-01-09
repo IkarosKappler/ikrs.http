@@ -16,10 +16,11 @@ import ikrs.util.CommandFactory;
 import ikrs.util.DefaultCommandFactory;
 
 public class YuccaLine
-    extends AbstractCommandLine<YuccaCommand> 
+    //extends AbstractCommandLine<YuccaCommand> 
+    extends AbstractCommandLine<Command> 
     implements Runnable {
 
-    public YuccaLine( CommandFactory<YuccaCommand> factory ) {
+    public YuccaLine( CommandFactory<Command> factory ) {
 	super( factory, "ycc> " );
     }
 

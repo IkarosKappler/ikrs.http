@@ -55,6 +55,15 @@ public class AbstractCommandLine<C extends Command>
     }
 
     /**
+     * Get the command factory for this command line.
+     *
+     * @return The command factory for this command line.
+     **/
+    public CommandFactory<C> getCommandFactory() {
+	return this.commandFactory;
+    }
+
+    /**
      * @override Thread.run
      **/
     public void run() {

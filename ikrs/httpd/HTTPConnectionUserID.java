@@ -15,7 +15,6 @@ import ikrs.yuccasrv.ConnectionUserID;
 
 public class HTTPConnectionUserID
     implements Comparable {
-    //implements ConnectionUserID<HTTPConnectionUserID> {
 
     private ConnectionUserID<ConnectionUserID> connectionUserID;
 

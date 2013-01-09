@@ -15,8 +15,44 @@ import ikrs.typesystem.BasicType;
 public abstract class AbstractCommandFactory<C extends Command>
     implements CommandFactory<C> {
 
+    /**
+     * The parent factory (is null if not exists).
+     **/
+    private CommandFactory<C> parentFactory;
+
+
+    /**
+     * Create a new command factory.
+     **/
+    public AbstractCommandFactory() {
+	super();
+
+	this.parentFactory = null;
+    }
+    
 
     //---BEGIN----------------------- CommandFactory implementation -----------------------
+    /**
+     * Get the parent factory for this factory.
+     * If there is no parent factory present the method returns null.
+     *
+     * @return The parent factory or null if no such exists.
+     **/
+    public CommandFactory<C> getParentFactory() {
+	return this.parentFactory;
+    }
+
+    /**
+     * Set the parent factory for this factory.
+     * Pass null to clear the parent factory.
+     *
+     * @param The new parent factory or null to clear.
+     **/
+    public void setParentFactory( CommandFactory<C> newParent ) {
+	this.parentFactory = newParent;
+    }
+
+
     /**
      * Make a new Command with the given name and params.
      *
@@ -73,7 +109,7 @@ public abstract class AbstractCommandFactory<C extends Command>
 	ParseException {
 	
 	//throw new UnsupportedOperationException( "Parser not yet implemented." );
-	String params[] = str.split("\\s(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+	String params[] = str.split( "\\s(?=([^\"]*\"[^\"]*\")*[^\"]*$)" );
 	//for( int i = 0; i < params.length; i++ ) 
 	//System.out.println( "--- "+params[i] );
 	

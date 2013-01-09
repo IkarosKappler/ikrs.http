@@ -25,11 +25,6 @@ public class DefaultSessionManager<K,V,U>
     extends AbstractSessionManager<K,V,U> {
 
     /**
-     * The max age for all sessions (after inactivity).
-     **/
-    private int sessionTimeout_seconds;
-
-    /**
      * Create a new DefaultSessionManager.
      *
      * @param sessionFactory The session factory to use to create new sessions.
@@ -43,13 +38,13 @@ public class DefaultSessionManager<K,V,U>
 	throws NullPointerException,
 	       IllegalArgumentException {
 
-	super( sessionFactory );
+	super( sessionFactory, sessionTimeout_seconds );
 
-	if( sessionTimeout_seconds <= 0 )
+	/*if( sessionTimeout_seconds <= 0 )
 	    throw new IllegalArgumentException( "The manager's session timeout must be greater than zero." );
 
 	this.sessionTimeout_seconds = sessionTimeout_seconds;
-
+	*/
     }
     
     //--- BEGIN --------------------------- SessionManager ----------------------------------------
@@ -118,7 +113,7 @@ public class DefaultSessionManager<K,V,U>
     private void removeTimedOutSessions() {
 
 	Iterator<Map.Entry<UUID,Session<K,V,U>>> iter = this.getSessionIDMap().entrySet().iterator();
-	Date minAliveDate = new Date( System.currentTimeMillis() - (this.sessionTimeout_seconds * 1000L) );
+	Date minAliveDate = new Date( System.currentTimeMillis() - (this.getSessionTimeout() * 1000L) );
 	
 	while( iter.hasNext() ) {
 
@@ -129,6 +124,7 @@ public class DefaultSessionManager<K,V,U>
 
 	    
 	    Date lastAccess = session.getLastAccessTime();
+	    
 	    // Session is too old?
 	    if( lastAccess.before(minAliveDate) ) {
 

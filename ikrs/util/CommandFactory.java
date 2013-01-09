@@ -16,6 +16,22 @@ import java.text.ParseException;
 import ikrs.typesystem.BasicType;
 
 public interface CommandFactory<C extends Command> {
+
+    /**
+     * Get the parent factory for this factory.
+     * If there is no parent factory present the method returns null.
+     *
+     * @return The parent factory or null if no such exists.
+     **/
+    public CommandFactory<C> getParentFactory();
+
+    /**
+     * Set the parent factory for this factory.
+     * Pass null to clear the parent factory.
+     *
+     * @param The new parent factory or null to clear.
+     **/
+    public void setParentFactory( CommandFactory<C> newParent );
     
     /**
      * Make a new Command with the given name and params.

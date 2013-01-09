@@ -23,6 +23,22 @@ public interface SessionManager<K,V,U> {
      * @return The manager's internal session factory.
      **/
     public SessionFactory<K,V,U> getSessionFactory();
+
+    /**
+     * This method returns the session timeout (seconds) currently set for this manager.
+     *
+     * @return The session timeout (seconds) currently set for this manager.
+     **/
+    public int getSessionTimeout();
+
+    /**
+     * This method sets the manager's session timeout to the new value (must be larger than 0).
+     *
+     * @param The number of seconds the manager's session will die after not being accessed.
+     * @throws IllegalArgumentException If the passed timeout is less or equals zero.
+     **/
+    public void setSessionTimeout( int seconds )
+	throws IllegalArgumentException;
     
     /**
      * Retrieve the session with the given SID.
@@ -37,7 +53,7 @@ public interface SessionManager<K,V,U> {
     
     
     /**
-     * Thie methos destroys the session with the specified SID. 
+     * This method destroys the session with the specified SID. 
      * That means that all session data will be removed and the session itself becomes invalid. It
      * will not be accessible or retrievable any more using on of this interface's methods.
      *

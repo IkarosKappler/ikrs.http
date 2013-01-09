@@ -37,7 +37,7 @@ public class SynchronizedSessionManagerDelegation<K,V,U>
     public SynchronizedSessionManagerDelegation( SessionManager<K,V,U> coreManager ) 
 	throws NullPointerException {
 
-	super( coreManager.getSessionFactory() );
+	super( coreManager.getSessionFactory(), coreManager.getSessionTimeout() );
 
 	if( coreManager == null )
 	    throw new NullPointerException( "Cannot create a SessionManagerDelegation with a null-core." );

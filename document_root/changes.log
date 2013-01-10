@@ -1,4 +1,23 @@
 
+[2013-01-10]
+ - The CGI PATH_INFO and PATH_TRANSLATED were fixed (contained corrupt values before).
+ - The CGI environment vars DOCUMENT_ROOT, SCRIPT_FILENAME and REQUEST_URI were added.
+ - The internal session now stores REMOTE_ADDRESS, REMOTE_PORT, REMOTE_HOST and also LOCAL_ADDRESS,
+   LOCAL_HOST and LOCAL_PORT.
+ - The ikrs.httpd.filehandler.CGIHandler class has an internal HEADER-to-CGI set now that explicitly
+   allows a specified subset of HTTP headers to be mapped into the GCI environment.
+   By default these headers are:
+      - Accept
+      - Accept-Charset
+      - Accept-Encoding
+      - Accept-Language
+      - Connection
+      - Cookie
+      - Host
+      - Referer
+      - User-Agent
+ - Tested the server wich Drupal-7.15. Worked after some drupal configuration issues :)
+
 [2013-01-09]
  - Additional error documents added.
  - Reqest-Line parser method fixed (for the case a fully malformed non-HTTP request was sent).

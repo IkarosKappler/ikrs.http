@@ -3,6 +3,9 @@
 
 
 TO DO:
+[2013-01-10]
+ - htaccess' ErrorDocument directives are not yet handled.
+
 [2013-01-09]
  - [DONE 2013-01-09]
    The session timeout must be configurable. It is currently hard coded to 300 seconds (5 minutes).

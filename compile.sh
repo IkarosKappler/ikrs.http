@@ -15,7 +15,7 @@
 
 # Compile the utils
 echo "Compile ikrs.util ..."
-javac -Xlint:unchecked ikrs/util/*.java ikrs/util/session/*.java 
+javac -Xlint:unchecked ikrs/util/*.java ikrs/util/session/*.java
 ec="$?"
 if [ "$ec" -ne "0" ]; then
     echo "Sorry, failed to compile ikrs.util. Exit code $ec"

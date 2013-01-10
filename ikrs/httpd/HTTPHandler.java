@@ -169,7 +169,7 @@ public class HTTPHandler
 						  "Java/" + System.getProperty("java.version")) 
 			      ); 
 
-	int sessionMaxAge = 300; // seconds
+	int sessionMaxAge = 300; // seconds (default value; migght be overridden by config)
 	this.initGlobalConfiguration( sessionMaxAge );
 
 
@@ -178,7 +178,7 @@ public class HTTPHandler
 			 getClass().getName(),
 			 "[Init SessionManager] Create a new map factory to use for the environment creation." );
 	ikrs.util.MapFactory<String,BasicType> 
-	    mapFactory                          = new TreeMapFactory<String,BasicType>(); // ModelBasedMapFactory<String,BasicType>( new TreeMap<String,BasicType>() );
+	    mapFactory                          = new TreeMapFactory<String,BasicType>(); 
 	
 	this.logger.log( Level.INFO,
 			 getClass().getName(),

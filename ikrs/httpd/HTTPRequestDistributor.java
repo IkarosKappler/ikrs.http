@@ -134,6 +134,10 @@ public class HTTPRequestDistributor
 	    // Init HTTP connection ... 
 	    HTTPHeaders headers = HTTPHeaders.read( this.socket.getInputStream() );
 
+	    // The CGI handler might use some additional data
+	    this.bindHeaderFieldsToSession( sessionID, headers );
+
+
 	    // Print a dump to the logger
 	    for( int i = 0; i < headers.size(); i++ ) {
 		this.logger.log( Level.INFO, 
@@ -265,9 +269,24 @@ public class HTTPRequestDistributor
 	internalSession.put( Constants.SKEY_REMOTE_HOST,    new BasicStringType(this.socket.getInetAddress().getHostName()) );
 	internalSession.put( Constants.SKEY_REMOTE_IDENT,   new BasicStringType("") ); 
 	internalSession.put( Constants.SKEY_REMOTE_USER,    new BasicStringType("") );   
+
+	// Store additional information
+	internalSession.put( Constants.SKEY_LOCAL_ADDRESS,  new BasicStringType(this.socket.getLocalAddress().getHostAddress()) );
+	internalSession.put( Constants.SKEY_LOCAL_HOST,     new BasicStringType(this.socket.getLocalAddress().getHostName()) );		     
 	
+	internalSession.put( Constants.SKEY_LOCAL_PORT,     new BasicNumberType(this.socket.getLocalPort()) );
+	internalSession.put( Constants.SKEY_REMOTE_PORT,     new BasicNumberType(this.socket.getPort()) );
+
 
 	return session.getSessionID();
+    }
+
+
+    private void bindHeaderFieldsToSession( UUID sessionID,
+					    HTTPHeaders headers ) {
+
+	
+
     }
 
 

@@ -139,10 +139,12 @@ public class IkarosExampleHandler
 	    "Request Method:      " + headers.getRequestMethod() + "\n" +
 	    "Request Version:     " + headers.getRequestVersion() + "\n" +
 	    "Request Protocol:    " + headers.getRequestProtocol() + "\n" +
+	    "Request URI:         " + headers.getRequestURI() + "\n" +
 	    "POST data available: " + (postData!=null) + "\n" +
 	    "\n" +
 	    "Session:             " + session + "\n" +
-	    "Testvalue:           " + session.get("TEST") + "\n";
+	    "Testvalue:           " + session.get("TEST") + "\n" +
+	    "                     (this value is null on first call or if your session expired)\n";
 
 	session.put( "TEST", new ikrs.typesystem.BasicStringType("123456") );
 

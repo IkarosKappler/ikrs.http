@@ -22,6 +22,8 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -40,8 +42,8 @@ import ikrs.httpd.UnsupportedFormatException;
 import ikrs.httpd.resource.InterruptableResource;
 import ikrs.httpd.resource.ProcessableResource;
 import ikrs.httpd.datatype.FormData;
-// import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.io.BytePositionInputStream;
+import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.CustomLogger;
 import ikrs.util.Environment;
 import ikrs.util.KeyValueStringPair;
@@ -56,6 +58,7 @@ public abstract class CGIHandler
     public static final String CGI_ENV_AUTH_TYPE              = "AUTH_TYPE";
     public static final String CGI_ENV_CONTENT_LENGTH         = "CONTENT_LENGTH";
     public static final String CGI_ENV_CONTENT_TYPE           = "CONTENT_TYPE";
+    public static final String CGI_ENV_DOCUMENT_ROOT          = "DOCUMENT_ROOT";
     public static final String CGI_ENV_GATEWAY_INTERFACE      = "GATEWAY_INTERFACE";
     public static final String CGI_ENV_PATH_INFO              = "PATH_INFO";
     public static final String CGI_ENV_PATH_TRANSLATED        = "PATH_TRANSLATED";
@@ -65,6 +68,8 @@ public abstract class CGIHandler
     public static final String CGI_ENV_REMOTE_IDENT           = "REMOTE_IDENT";
     public static final String CGI_ENV_REMOTE_USER            = "REMOTE_USER";
     public static final String CGI_ENV_REQUEST_METHOD         = "REQUEST_METHOD";
+    public static final String CGI_ENV_REQUEST_URI            = "REQUEST_URI";
+    public static final String CGI_ENV_SCRIPT_FILENAME        = "SCRIPT_FILENAME";
     public static final String CGI_ENV_SCRIPT_NAME            = "SCRIPT_NAME";
     public static final String CGI_ENV_SERVER_NAME            = "SERVER_NAME";
     public static final String CGI_ENV_SERVER_PORT            = "SERVER_PORT";
@@ -75,28 +80,54 @@ public abstract class CGIHandler
 
 
 
+    private Set<String> includeHeadersSet;
+
+
     public CGIHandler() 
 	throws NullPointerException {
 
 	super();
 
-	
+	this.includeHeadersSet = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
+
+	// Init the HTTP header set that should be included into the CGI environment by default..
+	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_CHARSET );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_ENCODING );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_LANGUAGE );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_CONNECTION );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_COOKIE );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_HOST );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_REFERER );
+	this.includeHeadersSet.add( HTTPHeaders.NAME_USER_AGENT );
+
     }
 
     /**
-     * Create a new CGIHandler.
-     * 
-     * @param handler The global HTTP handler.
-     * @param logger  A logger to write log messages to (must not be null).
+     * There is a default set of HTTP headers that should be included into the CGI environment. Due to
+     * security reasons not all headers should be included!
+     *
+     * This set contains the headers that are allowed; all others will not be mapped.
+     * By default this set contains:
+     *  - Accept
+     *  - Accept-Charset
+     *  - Accept-Encoding
+     *  - Accept-Language
+     *  - Connection
+     *  - Cookie
+     *  - Host
+     *  - Referer
+     *  - User-Agent
+     *
+     * It's up to your own risk to modify this list. Some application might not be working if some of
+     * these essential headers are missing.
+     *
+     * @return The HTTP-include-into-CGI set with HTTP headers that should be mapped into the CGI environment.
+     *         The returned set is never null.
      **/
-    /*public CGIHandler( HTTPHandler handler, 
-		       CustomLogger logger ) 
-	throws NullPointerException {
-
-	super( handler, logger );
-
-	
-	}*/
+    protected Set<String> getIncludeHeadersSet() {
+	return this.includeHeadersSet;
+    }
     
 
     //--- BEGIN --------- These methods must be implemented by subclasses --------------------------
@@ -291,7 +322,8 @@ public abstract class CGIHandler
 
 	// Bind CGI environment settings
 	// Note: some settings come from the current session.
-	Environment<String,BasicType> session = this.getHTTPHandler().getSessionManager().get( sessionID );
+	Environment<String,BasicType> session         = this.getHTTPHandler().getSessionManager().get( sessionID );
+	Environment<String,BasicType> internalSession = session.getChild( Constants.SESSION_NAME_INTERNAL );
 	
 	// Fetch the 'Host' header field.
 	// Format: host [ ":" port ]
@@ -299,14 +331,14 @@ public abstract class CGIHandler
 								      false,  // don't tryo to remove quotes
 								      ":"     // The separator
 								      );
+
+
+	BasicType wrp_remoteAddr    = internalSession.get( Constants.SKEY_REMOTE_ADDRESS );
+	BasicType wrp_remoteHost    = internalSession.get( Constants.SKEY_REMOTE_HOST );
+	BasicType wrp_remoteIdent   = internalSession.get( Constants.SKEY_REMOTE_IDENT );
+	BasicType wrp_remoteUser    = internalSession.get( Constants.SKEY_REMOTE_USER );
+	// BasicType wrp_documentRoot  = internalSession.get( Constants.SKEY_DOCUMENT_ROOT );
 	
-	Environment<String,BasicType> internalSession = session.getChild( Constants.SESSION_NAME_INTERNAL );
-
-
-	BasicType wrp_remoteAddr  = internalSession.get( Constants.SKEY_REMOTE_ADDRESS );
-	BasicType wrp_remoteHost  = internalSession.get( Constants.SKEY_REMOTE_HOST );
-	BasicType wrp_remoteIdent = internalSession.get( Constants.SKEY_REMOTE_IDENT );
-	BasicType wrp_remoteUser  = internalSession.get( Constants.SKEY_REMOTE_USER );
 
 
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_AUTH_TYPE,         null );
@@ -314,8 +346,12 @@ public abstract class CGIHandler
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_CONTENT_TYPE,      headers.getStringValue(HTTPHeaders.NAME_CONTENT_TYPE) );
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_GATEWAY_INTERFACE, "CGI/1.1" );
 
-	// this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_INFO,         requestURI.getPath() ); // file.getAbsolutePath() );
-	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_TRANSLATED,   file.getAbsolutePath() );  // ??!
+
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_DOCUMENT_ROOT,     this.getHTTPHandler().getDocumentRoot().getAbsolutePath() );
+
+
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_INFO,         requestURI.getPath() ); 
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_PATH_TRANSLATED,   requestURI.getPath() );  // ??!
 
 
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_QUERY_STRING,      requestURI.getRawQuery() ); // url-encoded!
@@ -333,7 +369,14 @@ public abstract class CGIHandler
 
 
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_REQUEST_METHOD,    headers.getRequestMethod() );
-	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SCRIPT_NAME,       requestURI.getPath() ); // file.getAbsolutePath() ); 
+
+	String str_requestURI = requestURI.getPath();
+	if( requestURI.getQuery() != null )
+	    str_requestURI += ("?" + requestURI.getQuery());
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_REQUEST_URI,       str_requestURI );
+
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SCRIPT_FILENAME,   file.getAbsolutePath() );
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SCRIPT_NAME,       requestURI.getPath() );
 
 
 	if( host_port_pair != null && host_port_pair.getKey() != null )
@@ -342,15 +385,26 @@ public abstract class CGIHandler
 	if( host_port_pair != null && host_port_pair.getValue() != null )
 	    this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SERVER_PORT,       host_port_pair.getValue() );
 
-	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SERVER_PROTOCOL,   "HTTP/1.1" );	
+	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SERVER_PROTOCOL,   headers.getRequestProtocol() + "/" + headers.getRequestVersion() ); // "HTTP/1.1" );	
 	this.bindCGIEnvironmentVar( headers, requestURI, pb, CGIHandler.CGI_ENV_SERVER_SOFTWARE,   this.getHTTPHandler().getSoftwareName() );
 	
 
 	// Add some additional header fields beginning with 'CGI_ENV_HTTP_' ...
-	for( int i = 0; i < headers.size(); i++ ) {
+	// Start at i=1: exclude request line
+	for( int i = 1; i < headers.size(); i++ ) {
 
 	    HTTPHeaderLine hl = headers.get(i);
 	    String key        = hl.getKey();
+	    String value      = hl.getValue();
+
+	    // Not key nor value must be null
+	    if( key == null || value == null )
+		continue;
+
+	    // The header must be explicitly allowed to be included into the CGI environment! (security reason)
+	    if( !this.includeHeadersSet.contains(key) )
+		continue;
+
 	    key               = key.toUpperCase();
 	    key               = key.replaceAll( "-", "_" );
 	    key               = CGIHandler.CGI_ENV_HTTP_ + key;
@@ -359,7 +413,7 @@ public abstract class CGIHandler
 					requestURI, 
 					pb, 
 					key, 
-					hl.getValue() );
+					value );
 
 	}
 

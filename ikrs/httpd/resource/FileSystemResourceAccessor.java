@@ -424,15 +424,17 @@ public class FileSystemResourceAccessor
 
 
 	// MUST NOT be null
+	/*
 	boolean sessionIsAlive = CustomUtil.getBoolean( this.getHTTPHandler().getLogger(),
 							session.get(Constants.SKEY_ISALIVE),
 							false 
 							);
+	*/
 
 	
 	this.getHTTPHandler().getLogger().log( Level.INFO,
 					       getClass().getName() + ".accessGranted(...)",
-					       "Going to check whether the user is authorized to access '" + requestURI.getPath() + "' (session.isAlive="+sessionIsAlive+")." );
+					       "Going to check whether the user is authorized to access '" + requestURI.getPath() + "'." );
 	
 
 	// If no .htaccess given at all

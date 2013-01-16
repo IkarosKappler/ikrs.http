@@ -3,8 +3,12 @@
 
 
 TO DO:
+[2013-01-16]
+ - The HTTP handlers internal default-error-document-map should be configurable.
+
 [2013-01-10]
- - htaccess' ErrorDocument directives are not yet handled.
+ - [DONE 2013-01-16; the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)']
+   htaccess' ErrorDocument directives are not yet handled.
 
 [2013-01-09]
  - [DONE 2013-01-09]

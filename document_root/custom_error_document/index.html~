@@ -1,0 +1,15 @@
+<html>
+<head>
+  <title>index.html</title>
+
+</head>
+
+<body>
+
+  This is a test to show how htaccess' ErrorDocument works.<br/>
+  <br/>
+  Click onto this link to a non-existent file an see what happens:<br/>
+  <a href="non_existent_file">non_existent_file</a><br/>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+# This is a basic .htaccess file making all index files in the root 
+# directory and all sub directories the default index files.
+#
+# If a user requests a directory, the system will check if there is 
+# any of these index files and deliver it by default - in the order
+# denoted occurence.
+#
+#
+# @date 2013-01-12
+# @author Ikaros Kappler
+
+
+DirectoryIndex index.html index.html index.php index.php4 index.php5

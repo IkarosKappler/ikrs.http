@@ -144,7 +144,9 @@ public class IkarosExampleHandler
 	    "\n" +
 	    "Session:             " + session + "\n" +
 	    "Testvalue:           " + session.get("TEST") + "\n" +
-	    "                     (this value is null on first call or if your session expired)\n";
+	    "                     (this value is null on first call or if your session expired)\n" +
+	    "\n" +
+	    "\n";
 
 	session.put( "TEST", new ikrs.typesystem.BasicStringType("123456") );
 

@@ -24,7 +24,6 @@ import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicTypeException;
 
 import ikrs.util.MIMEType;
-//import ikrs.yuccasrv.ConnectionUserID;
 
 
 public class ErrorResponseBuilder
@@ -62,7 +61,7 @@ public class ErrorResponseBuilder
 					PostDataWrapper postData,
 					UUID socketID,
 					Socket socket,
-					UUID sessionID,   // ConnectionUserID userID,
+					UUID sessionID, 
 					Map<String,BasicType> additionals
 					) {
 
@@ -165,17 +164,93 @@ public class ErrorResponseBuilder
 
 	    // Which resource to send: system file or raw text message?
 	    Resource resource = null;
-	    String errorFilePath = "/system/errors/Error." + Integer.toString(statusCode) + ".html";
+	    //String errorFilePath = "/system/errors/Error." + Integer.toString(statusCode) + ".html";
+	    URI uri = null;
+	    MIMEType errorDocumentMIMEType = null;
 
+
+
+	    // Try to create error document resource
 	    try {
+
+		// There are two possible error documents:
+		//  - the one from the htaccess
+		//  - the default from the configured handler
+		
+		String errorDocumentKey = Constants.AKEY_HTACCESS_ERROR_DOCUMENT_BASE.replaceAll( "\\{STATUS_CODE\\}",
+												  Integer.toString(statusCode)
+												  );
+		BasicType wrp_htaccessErrorContents = additionalSettings.get( errorDocumentKey );
+		String htaccessErrorContents = null;
+		if( wrp_htaccessErrorContents != null && 
+		    (htaccessErrorContents = wrp_htaccessErrorContents.getString("")).length() != 0 ) {
+
+
+		    // First case matches: htaccess error resource defined.		    
+		    this.getHTTPHandler().getLogger().log( Level.INFO,
+							   getClass().getName() + ".buildPreparedErrorResponse(...)",
+							   "The direcorie's htaccess file seems to have a custom error document for status '" + statusCode + "': " + htaccessErrorContents );
+
+
+		    // THIS IS A BIT TRICKY!
+		    // IT IS ALLOWED TO DENOTE TWO DIFFERENT htaccessErrorContent TYPES:
+		    //  (a) A URI starting with '/'
+		    //  (b) An error text (which might even be a full HTML document!)
+
+		    if( htaccessErrorContents.startsWith("/") ) 
+			uri = new URI(htaccessErrorContents);  // might throw an URISyntaxException
+		    else
+			errorMessage = htaccessErrorContents;
+			
+
+		
+		    // If configured through htaccess this must definitely be text/html content
+		    errorDocumentMIMEType = new MIMEType("text/html");
+			
+		
+
+		} else {
+
+		    // Second case matches: no htaccess error defined -> use default system setting (if exists)
+
+		    // Fetch default error document from handler
+		    uri = this.getHTTPHandler().getDefaultErrorDocumentURI( new Integer(statusCode) );
+		    
+
+		    if( uri == null ) {
+			
+			this.getHTTPHandler().getLogger().log( Level.WARNING,
+							       getClass().getName() + ".buildPreparedErrorResponse(...)",
+							       "The direcorie's htaccess file has NO custom error document for status '" + statusCode + "' nor has the handler a default document set. Continuing with raw error message." );
+			// The plain error message will be sent   
+			errorDocumentMIMEType = new MIMEType("text/plain");  
+
+		    } else {
+			
+			this.getHTTPHandler().getLogger().log( Level.WARNING,
+							       getClass().getName() + ".buildPreparedErrorResponse(...)",
+							       "Using default configured error document for status '" + statusCode + "': " + uri.toString() );
+			errorDocumentMIMEType = new MIMEType("text/html");
+
+		    }
+
+		}
+		    
+
+
 		// File exists?
+		if( uri == null )
+		    throw new MissingResourceException( "No error document " + statusCode + " defined.",
+							getClass().getName() + ".buildPreparedErrorResponse(...)",
+							Integer.toString(statusCode) );
+
  
 		this.getHTTPHandler().getLogger().log( Level.FINE,
 						       getClass().getName() + ".buildPreparedErrorResponse(...)",
-						       "Trying to get error file resource '"+errorFilePath+"' from resource accessor."
+						       "Trying to get error file resource '" + uri.getPath() + "' from resource accessor."
 						       );
 
-		URI uri = new URI( errorFilePath );
+		//URI uri = new URI( errorFilePath );
 		resource = this.getHTTPHandler().getResourceAccessor().locate( uri,
 									       headers,
 									       null,  // postData
@@ -190,7 +265,7 @@ public class ErrorResponseBuilder
 		// File not found -> use raw message
 		this.getHTTPHandler().getLogger().log( Level.FINE,
 						       getClass().getName() + ".buildPreparedErrorResponse(...)",
-						       "Error file resource '"+errorFilePath+"' not found; using raw message."
+						       "Error file resource '" + uri.getPath() + "' not found; using raw message."
 						       );		
 		resource = new ByteArrayResource( this.getHTTPHandler(),
 						  this.getHTTPHandler().getLogger(),
@@ -198,7 +273,7 @@ public class ErrorResponseBuilder
 						  true // useFairLocks?
 						  );
 		// Overwrite the MIME type (the resource think's it is raw binary data)
-		resource.getMetaData().setMIMEType( new MIMEType("text/plain") );
+		resource.getMetaData().setMIMEType( errorDocumentMIMEType );   // new MIMEType("text/plain") );
 	    }
 
 

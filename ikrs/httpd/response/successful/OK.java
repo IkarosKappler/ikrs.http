@@ -210,7 +210,7 @@ public class OK
 										    );
 	    this.getHTTPHandler().getLogger().log( Level.INFO,
 						   getClass().getName() + ".prepare(...)",
-						   "Resource accessor granted access to the file '" + uri.getPath() + "'. optionalReuturnSettings=" + optionalReturnSettings );
+						   "Resource accessor granted access to the file '" + uri.getPath() + "'. optionalReturnSettings=" + optionalReturnSettings );
 
 
 	    resource.getReadLock().lock();

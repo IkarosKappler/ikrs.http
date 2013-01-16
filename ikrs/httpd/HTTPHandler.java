@@ -34,8 +34,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.DatagramSocket;
+import java.net.URI;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,11 @@ public class HTTPHandler
     private Map<String,FileHandler> fileHandlerNameMap;
 
 
+    /**
+     * A map containing pre-defined error document URIs (mapped to their HTTP status codes).
+     **/
+    private Map<Integer,URI> errorDocumentMap;
+
 
     public HTTPHandler() {
 	super();
@@ -226,13 +232,32 @@ public class HTTPHandler
 	this.responseBuilder    = new DefaultResponseBuilder( this );
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
 	
+	this.errorDocumentMap   = new TreeMap<Integer,URI>();
 	
+	try {
+	    this.errorDocumentMap.put( new Integer(400), new URI("/system/errors/Error.400.html") );
+	    this.errorDocumentMap.put( new Integer(401), new URI("/system/errors/Error.401.html") );
+	    this.errorDocumentMap.put( new Integer(402), new URI("/system/errors/Error.402.html") );
+	    this.errorDocumentMap.put( new Integer(403), new URI("/system/errors/Error.403.html") );
+	    this.errorDocumentMap.put( new Integer(404), new URI("/system/errors/Error.404.html") );
+	    this.errorDocumentMap.put( new Integer(405), new URI("/system/errors/Error.405.html") );
+
+	    this.errorDocumentMap.put( new Integer(500), new URI("/system/errors/Error.500.html") );
+	    this.errorDocumentMap.put( new Integer(501), new URI("/system/errors/Error.501.html") );
+	    this.errorDocumentMap.put( new Integer(505), new URI("/system/errors/Error.505.html") );
+	} catch( java.net.URISyntaxException e ) {
+
+	    logger.log( Level.SEVERE,
+			getClass().getName() + "{init}",
+			"[URISyntaxException] Failed to init default error document map: " + e.getMessage() );
+
+	}
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
 
 	logger.log( Level.INFO,
-		    getClass().getName(),
+		    getClass().getName() + "{init}",
 		    "Initialization done. System ready.");
     }
 
@@ -567,6 +592,21 @@ public class HTTPHandler
 	//System.out.println( "Locating file handler by name '" + handlerName + "'. handlerExtensionMap=" + this.fileHandlerExtensionMap.toString() );
 
 	return this.fileHandlerNameMap.get( handlerName );
+    }
+
+    /**
+     * Get the default configured error document (URI relative to document root) by the given 
+     * status code.
+     *
+     * It is possible that not all error documents are defined; the method will return null
+     * in this case.
+     *
+     * @param statusCode The error code (usually a 30*, 40* or 50* status) you want to get
+     *                   the error document for.
+     * @return The error document (URI) for the passed error code.
+     **/
+    public URI getDefaultErrorDocumentURI( Integer statusCode ) {
+	return this.errorDocumentMap.get( statusCode );
     }
     
 

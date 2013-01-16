@@ -6,6 +6,7 @@ package ikrs.io.fileio.htaccess;
  * @author Ikaros Kappler
  * @date 2012-09-12
  * @modified 2013-01-03 [merge method added].
+ * @modified 2013-01-15 [ErrorDocument map added].
  * @version 1.0.0
  **/
 
@@ -111,6 +112,9 @@ public class HypertextAccessFile {
      **/
     private List<String> directoryIndexList;
 
+
+    private Map<Integer,String> errorDocumentMap;
+
     
     /**
      * This class cannot be instantiated directly; it's only meant for reading files.
@@ -131,6 +135,7 @@ public class HypertextAccessFile {
 	this.addedHandlers       = new TreeMap<String,List<String>>( CaseInsensitiveComparator.sharedInstance );
 	this.addedCharsets       = new TreeMap<String,String>( CaseInsensitiveComparator.sharedInstance );
 	this.directoryIndexList  = new ArrayList<String>(1);
+	this.errorDocumentMap    = new TreeMap<Integer,String>();
     }
 
 
@@ -269,6 +274,10 @@ public class HypertextAccessFile {
 	    } else if( keyword.equalsIgnoreCase("DirectoryIndex") ) {
 
 		htaccess.parse_directoryIndex( line, keyword, split, lnr.getLineNumber(), strictMode );	
+
+	    } else if( keyword.equalsIgnoreCase("ErrorDocument") ) {
+
+		htaccess.parse_errorDocument( line, keyword, split, lnr.getLineNumber(), strictMode );		
 	    
 	    } else if( strictMode ) {
 
@@ -429,6 +438,16 @@ public class HypertextAccessFile {
     public List<String> getDirectoryIndexList() {
 	return this.directoryIndexList;
     }
+
+    
+    /**
+     * This method returns the status code/error document map defined by all "ErrorDocument" directive(s). 
+     * 
+     * @return The status code/error document map defined by all "ErrorDocument" directive(s).
+     **/
+    public Map<Integer,String> getErrorDocumentMap() {
+	return this.errorDocumentMap;
+    }
     
 
     /**
@@ -489,6 +508,9 @@ public class HypertextAccessFile {
 
 	if( mergeFrom.getDirectoryIndexList() != null )
 	    this.directoryIndexList.addAll( mergeFrom.getDirectoryIndexList() );
+
+	if( mergeFrom.getErrorDocumentMap() != null )
+	    this.errorDocumentMap.putAll( mergeFrom.getErrorDocumentMap() );
 
     }
 
@@ -881,6 +903,41 @@ public class HypertextAccessFile {
 	String handlerName = split[1];
 
 	addToList( this.directoryIndexList, split, 1 );
+    }
+
+
+    /**
+     * This method parses the "ErrorDocument" directive.
+     **/
+    private void parse_errorDocument( String line,
+				      String keyword,
+				      String[] split,
+				      int lineNumber,
+				      boolean strictMode ) 
+	throws ParseException {
+
+	// Line has the format:
+	// "ErrorDocument" <StatusCode> <ErrorDocumentURI>
+	if( split.length < 3 ) {
+	    throw new ParseException( "Invalid '"+keyword+"' declaration at line " + lineNumber + ". Expected at least 3 arguments, found " + (split.length-1) + ". Line=" + line,
+				      lineNumber );
+	}
+
+	String str_statusCode   = split[1];
+	String errorDocumentURI = split[2];
+	try {
+
+	    this.errorDocumentMap.put( Integer.parseInt( str_statusCode ),
+				       errorDocumentURI );
+
+	} catch( NumberFormatException e ) {
+
+	    if( strictMode ) {
+		throw new ParseException( "Invalid status code '" + str_statusCode + "' for '" + keyword + "' directive. Line=" + line,
+					  lineNumber );
+	    }
+	    
+	}
     }
 
     private void addToList( List<String> list,

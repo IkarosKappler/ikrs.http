@@ -90,7 +90,7 @@ public abstract class CGIHandler
 
 	this.includeHeadersSet = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
 
-	// Init the HTTP header set that should be included into the CGI environment by default..
+	// Init the HTTP header set that should be included into the CGI environment by default.
 	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT );
 	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_CHARSET );
 	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_ENCODING );
@@ -337,7 +337,6 @@ public abstract class CGIHandler
 	BasicType wrp_remoteHost    = internalSession.get( Constants.SKEY_REMOTE_HOST );
 	BasicType wrp_remoteIdent   = internalSession.get( Constants.SKEY_REMOTE_IDENT );
 	BasicType wrp_remoteUser    = internalSession.get( Constants.SKEY_REMOTE_USER );
-	// BasicType wrp_documentRoot  = internalSession.get( Constants.SKEY_DOCUMENT_ROOT );
 	
 
 

@@ -647,6 +647,7 @@ public class FileSystemResourceAccessor
      **/
     private void mapHypertextAccessRequirements( HypertextAccessFile htaccess,
 						 File requestedFile,
+						 // Map<String,BasicType> additionalSettings,
 						 Map<String,BasicType> optionalReturnSettings ) {
 
 	
@@ -704,6 +705,23 @@ public class FileSystemResourceAccessor
 	    else
 		; // NOOP (none available)
 
+	}
+
+
+
+	// Map error codes?
+	if( optionalReturnSettings != null ) {
+	    Iterator<Map.Entry<Integer,String>> errorDocIter = htaccess.getErrorDocumentMap().entrySet().iterator();
+	    while( errorDocIter.hasNext() ) {
+		
+		Map.Entry<Integer,String> entry = errorDocIter.next();
+		String errorDocKey = Constants.AKEY_HTACCESS_ERROR_DOCUMENT_BASE.replaceAll( "\\{STATUS_CODE\\}",
+											     entry.getKey().toString() );
+		optionalReturnSettings.put( errorDocKey,
+					    new BasicStringType( entry.getValue() ) 
+					);
+		    
+	    }
 	}
     }
 

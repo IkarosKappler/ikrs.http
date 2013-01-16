@@ -38,6 +38,10 @@ public class Constants {
     public static final String KEY_HTTPCONFIG_FILEHANDLERS_FILE                  = "configFile";
 
     
+    /* Keys for the additional-settings during resource processing */
+    public static final String AKEY_HTACCESS_ERROR_DOCUMENT_BASE                 = "HTACCESS.ERROR_DOCUMENT.{STATUS_CODE}";
+
+    
     /* The ikrs.http config constants */
     public static final String CKEY_HTTPCONFIG_DISABLE_METHOD_BASE               = "DISABLE_METHOD.{HTTP_METHOD}";
     public static final String CKEY_HTTPCONFIG_DOCUMENT_ROOT                     = "DOCUMENT_ROOT";

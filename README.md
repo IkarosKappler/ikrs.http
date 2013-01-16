@@ -9,6 +9,12 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-01-16]
+  - The HypertextAccessFile class now recoginzes the 'ErrorDocument' directive.
+    Additionally the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)'].
+    Result: htaccess' ErrorDocument directives are now handled (though the default error document
+    	    set is not yet configurable).
+
 [2013-01-10]
  - The CGI PATH_INFO and PATH_TRANSLATED were fixed (contained corrupt values before).
  - The CGI environment vars DOCUMENT_ROOT, SCRIPT_FILENAME and REQUEST_URI were added.
@@ -26,7 +32,7 @@ Changes
       - Host
       - Referer
       - User-Agent
- - Tested the server wich Drupal-7.15. Worked after some drupal configuration issues :)
+ - Tested the server with Drupal-7.15. Worked after some drupal configuration issues :)
 
 [2013-01-09]
  - Additional error documents added.

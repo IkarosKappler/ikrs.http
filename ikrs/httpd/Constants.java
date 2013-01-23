@@ -12,7 +12,7 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "0.9.8";
+    public static final String VERSION                                           = "0.9.9";
     public static final String HTTP                                              = "HTTP";
     public static final String SUPPORTED_HTTP_VERSION                            = "1.1";
 

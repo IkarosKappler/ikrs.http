@@ -12,7 +12,10 @@ package ikrs.httpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Comparator;
+//import java.util.Iterator;
+//import java.util.Map;
 import java.util.logging.Level;
 
 import ikrs.io.fileio.inifile.IniFile;
@@ -204,7 +207,23 @@ public class HTTPConfiguration {
 		      this.getHandler().getGlobalConfiguration()   // Read directly into globals
 		      );
 
-	// Afterwarts try to apply new document root
+	this.configureDocumentRoot();
+	this.configureSessionTimeout();
+	this.configureErrorDocuments();
+
+	// The settings are now already applied :)
+	this.getLogger().log( Level.INFO, 
+			      getClass().getName() + "loadConfigurationFile(...)",
+			      "Config file loaded." );
+
+	
+
+    }
+
+
+    private void configureDocumentRoot() {
+
+	// Afterwards try to apply new document root
 	BasicType wrp_documentRoot = this.getHandler().getGlobalConfiguration().get( Constants.CKEY_HTTPCONFIG_DOCUMENT_ROOT );
 	if( wrp_documentRoot != null ) {
 
@@ -215,6 +234,9 @@ public class HTTPConfiguration {
 	    this.getHandler().setDocumentRoot( new File(documentRoot) );
 
 	}
+    }
+
+    private void configureSessionTimeout() {
 
 	BasicType wrp_sessionTimeout = this.getHandler().getGlobalConfiguration().get( Constants.CKEY_HTTPCONFIG_SESSION_TIMEOUT );
 	if( wrp_sessionTimeout != null ) {
@@ -227,12 +249,63 @@ public class HTTPConfiguration {
 
 	}
 
-	// The settings are now already applied :)
-	this.getLogger().log( Level.INFO, 
-			      getClass().getName() + "loadConfigurationFile(...)",
-			      "Config file loaded." );
+    }
 
-	
+    private void configureErrorDocuments() {
+
+	// Find default ERROR_DOCUMENT settings
+	/*
+	Iterator<Map.Entry<String,BasicType>> configIter = this.getHandler().getGlobalConfiguration().entrySet().iterator();
+	while( configIter.hasNext() ) {
+
+	    Map.Entry<String,BasicType> entry = configIter.next();
+	    String key = entry.getKey();
+	    if( key == null ) {
+		// This should not happen
+		continue;
+	    }
+
+
+	    if( key.toUpperCase().startsWith(Constants.
+
+	}
+	*/
+
+	for( int statusCode = 300; statusCode < 599; statusCode++ ) {
+
+	    // Build key.
+	    String ckey = Constants.CKEY_HTTPCONFIG_ERROR_DOCUMENT_BASE.replaceAll( "\\{STATUS_CODE\\}", 
+										    Integer.toString(statusCode) );
+
+	    // Try to locate key
+	    BasicType wrp_errorDocumentURI = this.getHandler().getGlobalConfiguration().get( ckey );
+	    if( wrp_errorDocumentURI == null )
+		continue;
+
+	    try {
+		
+		String strURI = wrp_errorDocumentURI.getString(null);
+		if( strURI == null ) {
+		    this.getHandler().getLogger().log( Level.SEVERE,
+						       getClass().getName() + ".configureErrorDocuments(...)",
+						       "Failed to init default error document map for key " + ckey + ": value is null." ); 
+		} else {
+		    this.getHandler().getErrorDocumentMap().put( new Integer(statusCode),
+								 new URI(strURI) );
+		    this.getHandler().getLogger().log( Level.INFO,
+						       getClass().getName() + ".configureErrorDocuments(...)",
+						       "Error document for " + statusCode + " set to " + strURI ); 
+		}
+
+	    } catch( java.net.URISyntaxException e ) {
+
+		this.getHandler().getLogger().log( Level.SEVERE,
+						   getClass().getName() + ".configureErrorDocuments(...)",
+						   "[URISyntaxException] Failed to init default error document map for key " + ckey + " '" + wrp_errorDocumentURI.getString() + "': " + e.getMessage() );
+
+	    }
+
+	}
 
     }
 

@@ -40,6 +40,7 @@ public class Constants {
 
     
     /* Keys for the additional-settings during resource processing */
+    /* (will be temp-stored in the 'additionSettings' map) */
     public static final String AKEY_HTACCESS_ERROR_DOCUMENT_BASE                 = "HTACCESS.ERROR_DOCUMENT.{STATUS_CODE}";
 
     
@@ -47,6 +48,7 @@ public class Constants {
     public static final String CKEY_HTTPCONFIG_DISABLE_METHOD_BASE               = "DISABLE_METHOD.{HTTP_METHOD}";
     public static final String CKEY_HTTPCONFIG_DOCUMENT_ROOT                     = "DOCUMENT_ROOT";
     public static final String CKEY_HTTPCONFIG_SESSION_TIMEOUT                   = "SESSION_TIMEOUT";
+    public static final String CKEY_HTTPCONFIG_ERROR_DOCUMENT_BASE               = "ERROR_DOCUMENT.{STATUS_CODE}";
 
 
     public static final String KEY_AUTHORIZATION_METHOD                          = "Authorization.Method";

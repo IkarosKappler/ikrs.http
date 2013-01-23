@@ -234,7 +234,8 @@ public class HTTPHandler
 	
 	this.errorDocumentMap   = new TreeMap<Integer,URI>();
 	
-	try {
+	/*
+	try { 
 	    this.errorDocumentMap.put( new Integer(400), new URI("/system/errors/Error.400.html") );
 	    this.errorDocumentMap.put( new Integer(401), new URI("/system/errors/Error.401.html") );
 	    this.errorDocumentMap.put( new Integer(402), new URI("/system/errors/Error.402.html") );
@@ -252,6 +253,7 @@ public class HTTPHandler
 			"[URISyntaxException] Failed to init default error document map: " + e.getMessage() );
 
 	}
+	*/
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
@@ -609,6 +611,16 @@ public class HTTPHandler
 	return this.errorDocumentMap.get( statusCode );
     }
     
+
+    /**
+     * This method returns the internal error document map which will be configured by
+     * the HTTPConfigurator.
+     *
+     * The returned map is never null.
+     **/
+    protected Map<Integer,URI> getErrorDocumentMap() {
+	return this.errorDocumentMap;
+    }
 
     //---BEGIN-------------------- RejectedExcecutionHandler Implementation -------------------------
     /**

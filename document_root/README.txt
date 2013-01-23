@@ -3,6 +3,10 @@
 
 
 TO DO:
+[2013-01-21]
+ - [DONE 2013-01-23; in AbstractPreparedResponse.execute() fixed]
+   Even if the request was HTTP version 1.0 the reply always comes in version 1.1; this is wrong.
+
 [2013-01-16]
  - The HTTP handlers internal default-error-document-map should be configurable.
 

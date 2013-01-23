@@ -14,6 +14,7 @@ public class Constants {
 
     public static final String VERSION                                           = "0.9.8";
     public static final String HTTP                                              = "HTTP";
+    public static final String SUPPORTED_HTTP_VERSION                            = "1.1";
 
     /* Currently only GET, POST, HEAD, TRACE and OPTIONS are implemented */
     public static final String HTTP_METHOD_GET                                   = "GET";

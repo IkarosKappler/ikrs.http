@@ -293,8 +293,14 @@ public abstract class AbstractPreparedResponse
 
 	    // Send auto-generated status line
 	    // (The STATUS CODE and REASON PHRASE must be set here!)
-	    
-	    HTTPHeaderLine statusLine = new HTTPHeaderLine( "HTTP/1.1 "+this.getStatusCode()+" " + this.getReasonPhrase(), null );
+	    // ... and don't forget to use the same HTTP version as in the request.
+	    String responseHTTPVersion = this.getResponseHeaders().getRequestVersion();
+	    if( responseHTTPVersion == null )
+		responseHTTPVersion = this.getRequestHeaders().getRequestVersion();
+	    if( responseHTTPVersion == null )
+		responseHTTPVersion = Constants.SUPPORTED_HTTP_VERSION;
+
+	    HTTPHeaderLine statusLine = new HTTPHeaderLine( "HTTP/" + responseHTTPVersion + " "+this.getStatusCode()+" " + this.getReasonPhrase(), null );
 	    this.getHTTPHandler().getLogger().log( Level.INFO,
 						   getClass().getName() + ".execute()",
 						   "Sending hard coded status line (none in the headers present): " + statusLine.toString() );

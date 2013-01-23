@@ -1,4 +1,9 @@
 
+[2013-01-23
+  - The AbstractPreparedResponse now uses the same HTTP version such as in the request headers.
+    This causes the server to send HTTP/1.0 replies when the request is version 1.0 (response was
+    always sent in version 1.1 before).
+
 [2013-01-16]
   - The HypertextAccessFile class now recoginzes the 'ErrorDocument' directive.
     Additionally the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)'].

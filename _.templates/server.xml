@@ -2,7 +2,7 @@
 
 <yuccasrv version="1.0.0">
   <comment>This is a yucca configuration example</comment>
-  <server name="My HTTP Server" handlerClass="ikrs.httpd.HTTPHandler">
+  <server name="My HTTP Server" handlerClass="ikrs.httpd.HTTPHandler" sharedHandlerInstance="true" >
     <httpConfig>
       <httpSettings configFile="{USER_HOME}/.yuccasrv/ikrs.httpd.conf" />
       <fileHandlers configFile="{USER_HOME}/.yuccasrv/filehandlers.ini" />

@@ -9,6 +9,26 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-02-05]
+  - Yucca's ConnectionHandler (TCP) instance can now be re-used (shared 
+    instance). 
+    This is set by the flag 'sharedHandlerInstance' in the server.xml 
+    file.
+  - The the directory list generator still used an old (not valid any 
+    more) favicon URL. This is fixed.
+  - Cleaned up document_root directory: moved all tests into the sub 
+    directory 'tests_and_examples'.
+  - Replaced the HTTPHandler internal maps by threadsafe versions (from 
+    java's util.Collections class).!
+
+[2013-01-23]
+  - The AbstractPreparedResponse now uses the same HTTP version such as 
+    in the request headers.
+    This causes the server to send HTTP/1.0 replies when the request is 
+    version 1.0 (response was always sent in version 1.1 before).
+  - The default error document map is now configurable by 
+    {USER_HOME}/.yuccasrv/ikrs.httpd.conf#ERROR_DOCUMENT.{STATUS_CODE}
+
 [2013-01-16]
   - The HypertextAccessFile class now recoginzes the 'ErrorDocument' directive.
     Additionally the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)'].

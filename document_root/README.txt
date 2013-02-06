@@ -3,12 +3,27 @@
 
 
 TO DO:
+[2013-02-05]
+ - There is an issue with the FileSystemResourceLocator if the processed resource comes from
+   a FileHandler (such as the PHPHandler): the eventually generated HTTP header containing the
+   Content-Type is not yet applied to the returned resource's meta data!
+
+[2013-01-31]
+ - [DONE 2013-01-05]
+   Replace the internal maps by threadsafe versions!
+ - [DONE 2013-01-05]
+   The the directory list generator still uses the old (not valid any more) favicon URL.
+ - [DONE 2013-02-05]
+   Clean up document_root directory: move all tests into a sub directory.
+
 [2013-01-21]
  - [DONE 2013-01-23; in AbstractPreparedResponse.execute() fixed]
    Even if the request was HTTP version 1.0 the reply always comes in version 1.1; this is wrong.
 
 [2013-01-16]
- - The HTTP handlers internal default-error-document-map should be configurable.
+ - [DONE 2013-01-23; the error document map is now configurable by 
+   	 	     {USER_HOME}/.yuccasrv/ikrs.httpd.conf#ERROR_DOCUMENT.{STATUS_CODE}]
+   The HTTP handlers internal default-error-document-map should be configurable.
 
 [2013-01-10]
  - [DONE 2013-01-16; the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)']

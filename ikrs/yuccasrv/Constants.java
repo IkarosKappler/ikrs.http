@@ -30,6 +30,7 @@ public class Constants {
     public static final String CONFIG_SERVER_BACKLOG                 = "backlog";
     public static final String CONFIG_SERVER_AUTOBIND                = "autobind";
     public static final String CONFIG_SERVER_SSL                     = "ssl";
+    public static final String CONFIG_SERVER_SHAREDHANDLERINSTANCE   = "sharedHandlerInstance";
 
     public static final String CONFIG_SERVER_LISTEN_PROPERTY         = "property";
     public static final String CONFIG_SERVER_LISTEN_PROPERTY_NAME    = "name";

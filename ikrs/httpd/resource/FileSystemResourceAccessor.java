@@ -68,7 +68,7 @@ public class FileSystemResourceAccessor
 	super( handler );
 	
 	
-	this.hypertextAccessHandler = new HypertextAccessHandler( logger, // ? handler.getLogger(),
+	this.hypertextAccessHandler = new HypertextAccessHandler( logger, 
 								  false    // strictMode
 								  );
 	this.logger = logger;

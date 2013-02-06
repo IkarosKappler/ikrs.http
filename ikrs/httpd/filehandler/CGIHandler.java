@@ -273,40 +273,63 @@ public abstract class CGIHandler
                UnsupportedFormatException {
 	    
 
-	getLogger().log( Level.INFO,
-			 getClass().getName() + ".process(...)",
-			 "Processing. requestURI=" + requestURI + ". file=" + file.getAbsolutePath() );
-	
 	// Fetch the system command (specified and constructed in the sub-class).
 	List<String> command =  this.buildCGISystemCommand( headers, postData, file, requestURI );
-	ProcessBuilder pb = new ProcessBuilder( command );
+
+	try {
+	    getLogger().log( Level.INFO,
+			     getClass().getName() + ".process(...)",
+			     "Processing. requestURI=" + requestURI + ". file=" + file.getAbsolutePath() );	
+	   
+	    ProcessBuilder pb = new ProcessBuilder( command );
 	
-	this.buildCGIEnvironment( pb, headers, file, requestURI, sessionID );
+	    this.buildCGIEnvironment( pb, headers, file, requestURI, sessionID );
 
-	Map<String,String> environment = pb.environment();
-	this.buildAdditionalCGIEnvironmentVars( headers, file, requestURI, environment );
+	    Map<String,String> environment = pb.environment();
+	    this.buildAdditionalCGIEnvironmentVars( headers, file, requestURI, environment );
 
 
 
-	getLogger().log( Level.INFO,
-			 getClass().getName() + ".process(...)",
-			 "Creating a processable resource using the CGI file '" + file.getPath() + "'. System command: " + command.toString() );
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".process(...)",
+				  "Creating a processable resource using the CGI file '" + file.getPath() + "'. System command: " + command.toString() );
 	
-	ProcessableResource cgiOutput = 
-	    new ProcessableResource( getHTTPHandler(),
-				     getLogger(),
-				     pb,
-				     postData,  // Should be null if HTTP method is not POST
-				     false      // useFairLocks not necessary here; there will be one more resource wrapper
-				     );
+	    ProcessableResource cgiOutput = 
+		new ProcessableResource( getHTTPHandler(),
+					 getLogger(),
+					 pb,
+					 postData,  // Should be null if HTTP method is not POST
+					 false      // useFairLocks not necessary here; there will be one more resource wrapper
+					 );
+
+	    // Did the system command terminate with an error code?
+	    if( cgiOutput.getExitValue() != 0 ) {
+
+		this.getLogger().log( Level.WARNING,
+				      getClass().getName() + ".process(...)",
+				      "The execution of the processable resource using the CGI file '" + file.getPath() + "' with the system command: " + command.toString() + " failed (exit code " + cgiOutput.getExitValue() + "). Continue though." );
+
+	    }
 
 
-	return this.handleCGIOutput( headers,
-				     file,
-				     requestURI,
-				     postData,
+	    return this.handleCGIOutput( headers,
+					 file,
+					 requestURI,
+					 postData,
 				     
-				     cgiOutput );
+					 cgiOutput );
+
+	} catch( IOException e ) {
+
+	    // This class is an interface between the software and the system it is running on.
+	    // If the system is misconfigured here might occur some IO errors.
+	    // Better log a SEVERE error here.
+	    this.getLogger().log( Level.SEVERE,
+				  getClass().getName() + ".process(...)",
+				  "Failed to execute system command: " + command.toString() );
+
+	    throw e;
+	}
 		
     }
 

@@ -629,6 +629,10 @@ public class Yucca
 	// The passed environment represents a <server> tag from the XML file
 	// -> get <listen> children
 	List<Environment<String,BasicType>> listenList = server.getChildren( "LISTEN" );
+	
+	// For the case the server uses the same handler instance (!) for each
+	// listening socket: prepare a map handlerName -> handlerObject
+	Map<String,ConnectionHandler> sharedConnectionHandlers = new TreeMap<String,ConnectionHandler>();
 	//System.out.println( "LISTEN entries found: "+listenList.size() );
 	for( int i = 0; i < listenList.size(); i++ ) {
 	    
@@ -642,7 +646,8 @@ public class Yucca
 				      "Binding server '" + server.get("name") + "' ..." 
 				      );
 		performAutoBind( server, 
-				 listen );
+				 listen,
+				 sharedConnectionHandlers );
 	    }
 	    
 	    
@@ -651,19 +656,25 @@ public class Yucca
     }
 
     protected boolean performAutoBind( Environment<String,BasicType> server,
-				       Environment<String,BasicType> listen 
+				       Environment<String,BasicType> listen,
+				       Map<String,ConnectionHandler> sharedConnectionHandlers
 				    ) {
 	this.getLogger().info( "      binding  " + listen.get("HOST") + ":" + listen.get("PORT") + "/" + listen.get("PROTOCOL") + " ..." );	
 	
 	/* Retrieve the handlerClasse attribute */
-	BasicType handlerClassName = server.get( Constants.CONFIG_SERVER_HANDLERCLASS );
-	if( handlerClassName == null || handlerClassName.equals("") ) {
+	BasicType wrp_handlerClassName = server.get( Constants.CONFIG_SERVER_HANDLERCLASS );
+	if( wrp_handlerClassName == null || wrp_handlerClassName.equals("") ) {
 
 	    this.getLogger().severe( "Failed to bind server '" + server.get(Constants.CONFIG_SERVER_NAME) + "': no "+Constants.CONFIG_SERVER_HANDLERCLASS+" defined!" );
 	    return false;
 
 	} 
   
+
+	/* Check if the instance should be re-used */
+	BasicType wrp_sharedHandlerInstance = server.get( Constants.CONFIG_SERVER_SHAREDHANDLERINSTANCE );
+	boolean useSharedHandlerInstance    = wrp_sharedHandlerInstance.getBoolean();
+	String handlerClassName             = wrp_handlerClassName.getString();
 
 
 	/* Retrieve network address */
@@ -674,9 +685,23 @@ public class Yucca
 	try {
 
 	    /* Handler classname is set -> locate class */
-	    Class<?> handlerClass = Class.forName( handlerClassName.getString() );
-	    /* Create a new handler instance */
-	    ConnectionHandler handler = (ConnectionHandler)handlerClass.newInstance();
+	    
+	    Class<?> handlerClass     = null;
+	    ConnectionHandler handler = null;
+	    
+	    // Re-use last handler (if exists)? 
+	    if( !useSharedHandlerInstance 
+		|| (handler = sharedConnectionHandlers.get(handlerClassName)) == null ) {
+
+		/* Create a new handler instance */
+		handlerClass = Class.forName( handlerClassName );
+		handler = (ConnectionHandler)handlerClass.newInstance();
+		sharedConnectionHandlers.put( handlerClassName, handler );
+
+	    } else {
+		
+		// NOOP 
+	    }
 
 
 	    /* Apply the config file (if present) to the connection handler */

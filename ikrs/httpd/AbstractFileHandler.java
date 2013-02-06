@@ -29,6 +29,12 @@ public abstract class AbstractFileHandler
     private CustomLogger logger;
 
 
+    /**
+     * The file handler class usually is instantiated using the Class.newInstance()
+     * method.
+     *
+     * So no params are required here.
+     **/
     public AbstractFileHandler() 
 	throws NullPointerException {
 

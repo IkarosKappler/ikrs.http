@@ -38,6 +38,7 @@ import java.net.DatagramSocket;
 import java.net.URI;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -76,6 +77,9 @@ import ikrs.util.session.*;
 public class HTTPHandler 
     extends TCPAdapter 
     implements RejectedExecutionHandler {
+
+    //    private boolean inited = false;
+
 
     protected static final String[] SUPPORTED_METHODS = new String[] {
 	Constants.HTTP_METHOD_GET,
@@ -143,8 +147,10 @@ public class HTTPHandler
 
     /**
      * A map for the file handlers (by file extension).
+     * 
+     * This will be an instance of FileExtensionKeyMap<FileHandler>.
      **/
-    private FileExtensionKeyMap<FileHandler> fileHandlerExtensionMap;
+    private Map<String,FileHandler> fileHandlerExtensionMap;
 
     /**
      * A map for the file handler names.
@@ -163,8 +169,6 @@ public class HTTPHandler
 	
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
 	this.logger.setLevel( Level.ALL );
-
-	// this.setDocumentRoot();
 
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
 								      true   // allowsMultipleChildNames
@@ -232,28 +236,8 @@ public class HTTPHandler
 	this.responseBuilder    = new DefaultResponseBuilder( this );
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
 	
-	this.errorDocumentMap   = new TreeMap<Integer,URI>();
+	this.errorDocumentMap   = Collections.synchronizedMap( new TreeMap<Integer,URI>() );
 	
-	/*
-	try { 
-	    this.errorDocumentMap.put( new Integer(400), new URI("/system/errors/Error.400.html") );
-	    this.errorDocumentMap.put( new Integer(401), new URI("/system/errors/Error.401.html") );
-	    this.errorDocumentMap.put( new Integer(402), new URI("/system/errors/Error.402.html") );
-	    this.errorDocumentMap.put( new Integer(403), new URI("/system/errors/Error.403.html") );
-	    this.errorDocumentMap.put( new Integer(404), new URI("/system/errors/Error.404.html") );
-	    this.errorDocumentMap.put( new Integer(405), new URI("/system/errors/Error.405.html") );
-
-	    this.errorDocumentMap.put( new Integer(500), new URI("/system/errors/Error.500.html") );
-	    this.errorDocumentMap.put( new Integer(501), new URI("/system/errors/Error.501.html") );
-	    this.errorDocumentMap.put( new Integer(505), new URI("/system/errors/Error.505.html") );
-	} catch( java.net.URISyntaxException e ) {
-
-	    logger.log( Level.SEVERE,
-			getClass().getName() + "{init}",
-			"[URISyntaxException] Failed to init default error document map: " + e.getMessage() );
-
-	}
-	*/
 
 	// Pre start core thread?
 	// this.executorService.prestartCoreThread();
@@ -322,8 +306,8 @@ public class HTTPHandler
      **/
     protected void initFileHandlers( File fileHandlersFile ) {
 
-	this.fileHandlerExtensionMap = new FileExtensionKeyMap<FileHandler>();
-	this.fileHandlerNameMap = new TreeMap<String,FileHandler>();
+	this.fileHandlerExtensionMap = Collections.synchronizedMap( new FileExtensionKeyMap<FileHandler>() );
+	this.fileHandlerNameMap      = Collections.synchronizedMap( new TreeMap<String,FileHandler>() );
 
 	//String fileHandlersFileName = "filehandlers.ini";
 	String handlerClassName = null; // "ikrs.http.filehandler.PHPHandler";
@@ -710,32 +694,44 @@ public class HTTPHandler
 		      Environment<String,BasicType> optionalReturnValues  )
 	throws InstantiationException {
 	
+
+	synchronized( this ) {
+
+	    // Since version 0.9.9 it is possible to re-use the handler instance ('sharedHandlerInstance' in
+	    // the server config). So yucca might try to initialize the handler multiple times. 
+	    // Avoid this here:
 	
-	HTTPConfiguration config = new HTTPConfiguration( this, this.getLogger() );
+	    if( this.documentRoot != null ) 
+		return; // Already initialized
+
 	
-	try {
+	    HTTPConfiguration config = new HTTPConfiguration( this, this.getLogger() );
+	
+	    try {
 
-	    config.applyConfiguration( additionalSettings );
+		config.applyConfiguration( additionalSettings );
 
-	    // After all verify the configuration so all essentials are present
-	    if( this.documentRoot == null ) 
-		this.initDefaultDocumentRoot();
+		// After all verify the configuration so all essentials are present
+		if( this.documentRoot == null ) 
+		    this.initDefaultDocumentRoot();
 	    
 
-	} catch( IOException e ) {   
+	    } catch( IOException e ) {   
 	    
-	    this.getLogger().log( Level.SEVERE,
-				  getClass().getName() + ".init(...)",
-				  "[IOException] " + e.getMessage() );
-	    throw new InstantiationException( "[IOException] " + e.getMessage() );
+		this.getLogger().log( Level.SEVERE,
+				      getClass().getName() + ".init(...)",
+				      "[IOException] " + e.getMessage() );
+		throw new InstantiationException( "[IOException] " + e.getMessage() );
 	    
-	} catch( ConfigurationException e ) {
+	    } catch( ConfigurationException e ) {
 	    
-	    this.getLogger().log( Level.SEVERE,
-				  getClass().getName() + ".init(...)",
-				  "[ConfigurationException] " + e.getMessage() );
-	    throw new InstantiationException( "[ConfigurationException] " + e.getMessage() );
-	}
+		this.getLogger().log( Level.SEVERE,
+				      getClass().getName() + ".init(...)",
+				      "[ConfigurationException] " + e.getMessage() );
+		throw new InstantiationException( "[ConfigurationException] " + e.getMessage() );
+	    }
+
+	} // END synchronized
 
     }
 

@@ -253,10 +253,11 @@ public class FileSystemResourceAccessor
 						     requestedFile,
 						     uri );
 
-	    // Determine the MIME type from the generated PHP headers
-	    // ... !!! ???
-	    MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
-	    resource.getMetaData().setMIMEType( mimeType );
+	    // Resource has already a generated Content-Type header?
+	    if( resource.getMetaData().getMIMEType() == null ) {
+		MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
+		resource.getMetaData().setMIMEType( mimeType );
+	    }
 	    
 	    
 

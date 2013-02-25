@@ -3,8 +3,14 @@
 
 
 TO DO:
+[2013-02-25]
+ - Build a customized ikrs.httpd-help command.
+ - [DONE 2013-02-25]
+   Move the favicon back to the document_root (pseudo convention in many browsers).
+
 [2013-02-05]
- - There is an issue with the FileSystemResourceLocator if the processed resource comes from
+ - [DONE 2013-02-25]
+   There is an issue with the FileSystemResourceLocator if the processed resource comes from
    a FileHandler (such as the PHPHandler): the eventually generated HTTP header containing the
    Content-Type is not yet applied to the returned resource's meta data!
 

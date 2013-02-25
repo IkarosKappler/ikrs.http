@@ -9,6 +9,20 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-02-25]
+  - Bug fixed in the ProcessableResource class: the open(boolean) method
+    blocked on the system process's internal output buffer overflow.
+    The output data is now being read while (!) the process is running.
+  - New test script added to check if binary data (such as images) is
+    correctly handled and displayed:
+      {DOCUMENT_ROOT}/tests_and_examples/binary_test/load_image.php
+  - The 'Status' header handled by the PHPHandler now applies the 
+    original HTTP version number (from the request headers; was always
+    1.1 before).
+  - The PHPHandler now applies the generated MIME type (from the PHP 
+    output headers) to the resource's meta data (default was text/plain
+    before).
+
 [2013-02-05]
   - Yucca's ConnectionHandler (TCP) instance can now be re-used (shared 
     instance). 

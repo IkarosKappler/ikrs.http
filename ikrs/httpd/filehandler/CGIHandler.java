@@ -302,7 +302,8 @@ public abstract class CGIHandler
 					 false      // useFairLocks not necessary here; there will be one more resource wrapper
 					 );
 
-	    // Did the system command terminate with an error code?
+	    // The system command was NOT executed yet!
+	    /*
 	    if( cgiOutput.getExitValue() != 0 ) {
 
 		this.getLogger().log( Level.WARNING,
@@ -310,7 +311,7 @@ public abstract class CGIHandler
 				      "The execution of the processable resource using the CGI file '" + file.getPath() + "' with the system command: " + command.toString() + " failed (exit code " + cgiOutput.getExitValue() + "). Continue though." );
 
 	    }
-
+	    */
 
 	    return this.handleCGIOutput( headers,
 					 file,

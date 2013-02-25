@@ -25,6 +25,10 @@ package ikrs.httpd.resource;
  * @version 1.0.0
  **/
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -109,12 +113,17 @@ public class ProcessableResource
 	throws ReadOnlyException,
 	       IOException {
 
-	// Resource cann be double-opened!
+	// Resource cannot be double-opened!
 	if( this.isOpen() ) 
 	    throw new IOException( "Processable resources cannot be double opened." );
 
 	if( !readOnly ) 
 	    throw new IOException( "ProccessableResources can only be opened in read-only mode." );
+
+
+	this.getLogger().log( Level.INFO,
+			      getClass().getName() + ".open(...)",
+			      "Starting the internal process builder." );
 
 	// Might throw IOException or a SecurityException. 
 	Process process = this.processBuilder.start();
@@ -138,10 +147,32 @@ public class ProcessableResource
 	}
 
 
+	// Read the generated output DURING the process is running!
+	// Otherwise it may block when the process's internal output buffer is full!
+	int bufferSize = 256;
+	BufferedInputStream bufferedInputStream = new BufferedInputStream( process.getInputStream(), bufferSize );
+	ByteArrayOutputStream bufferedOutputStream = new ByteArrayOutputStream( bufferSize );
+	byte[] buffer = new byte[ bufferSize ];
+	int len;
+	while( (len = bufferedInputStream.read(buffer,0,bufferSize)) != -1 ) {
+
+	    if( len > 0 )
+		bufferedOutputStream.write(buffer,0,len);
+
+	}
+
 	// Call process.waitFor() at this point ??? !!!
 	try {
+
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".open(...)",
+				  "Waiting the system process to terminate ..." );
 	    process.waitFor();
 	    this.exitValue = process.exitValue();
+
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".open(...)",
+				  "... process terminated (exitValue=" + this.exitValue + ")." );
 
 	} catch( InterruptedException e ) {
 	    
@@ -162,7 +193,7 @@ public class ProcessableResource
 				  getClass().getName(),
 				  "The system process was successfully executed (exitValue="+this.exitValue+"). Using stdout to retrieve generated data." 
 				  );
-	    in = process.getInputStream();
+	    in = new BufferedInputStream( new ByteArrayInputStream(bufferedOutputStream.toByteArray()) ); // process.getInputStream();
 
 	} else {
 	    
@@ -174,7 +205,8 @@ public class ProcessableResource
 				  );
 	    // 'Concatenate' std-out with error-out
 	    //in = process.getErrorStream();
-	    in = new java.io.SequenceInputStream( process.getInputStream(), process.getErrorStream() );
+	    in = new java.io.SequenceInputStream( new BufferedInputStream(new ByteArrayInputStream(bufferedOutputStream.toByteArray())), // process.getInputStream(), 
+						  process.getErrorStream() );
 
 
 	}

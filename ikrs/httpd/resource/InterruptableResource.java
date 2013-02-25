@@ -145,6 +145,7 @@ public class InterruptableResource
 	
 	this.coreResource.open( readOnly );
 	this.bytePositionInputStream = new BytePositionInputStream( this.coreResource.getInputStream() );
+
     }
 
     /**

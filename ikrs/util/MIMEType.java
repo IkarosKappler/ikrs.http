@@ -682,6 +682,10 @@ public class MIMEType {
 	return this.contentType;
     }
 
+    public String toString() {
+	return getClass().getName() + "=[ contentType=" + this.contentType + " ]";
+    }
+
     /**
      * This method tries to create a new MIME type from the given file extension (without 
      * the dot '.'). If the file extension cannot be found in the internal mapping the method

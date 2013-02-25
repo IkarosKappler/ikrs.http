@@ -156,6 +156,8 @@ public final class HTTPHeaderLine
 	throws EOFException,
 	       IOException {
 
+	// System.out.println( " ----------- Bla" );
+
 	/* input must not be null */
 	if( in == null )
 	    throw new NullPointerException( "Cannot read from null." );

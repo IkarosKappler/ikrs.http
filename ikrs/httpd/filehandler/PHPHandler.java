@@ -39,6 +39,7 @@ import ikrs.httpd.resource.ProcessableResource;
 import ikrs.httpd.datatype.FormData;
 import ikrs.io.BytePositionInputStream;
 import ikrs.util.CustomLogger;
+import ikrs.util.MIMEType;
 
 public class PHPHandler
     extends CGIHandler {
@@ -189,7 +190,7 @@ public class PHPHandler
 	
 
 	this.getLogger().log( Level.INFO,
-			      getClass().getName() + ".process(...)",
+			      getClass().getName() + ".handleCGIOutput(...)",
 			      "CGI output received. Reading generated HTTP headers from InterruptableResource ..." );
 
 	// Note that the InterruptableResource allows to simulate the inputstream to be closed,
@@ -203,14 +204,34 @@ public class PHPHandler
 	    
 	    // ???
 	    // Store exit code in the resource's meta data?
-	}
 
+	} else {
+
+	    /*
+	    if( cgiOutput.getExitValue() != 0 ) {
+	    */
+	    
+	    this.getLogger().log( Level.WARNING,
+				  getClass().getName() + ".handleCGIOutput(...)",
+				  "The execution of the processable resource using the CGI file '" + file.getPath() + "' failed (exit code " + cgiOutput.getExitValue() + "). Continue though." );
+	    
+	}
+	    
 
 
 	// Continue ...
-
 	BytePositionInputStream in = ir.getInputStream();
 	HTTPHeaders phpHeaders = HTTPHeaders.read( in );
+
+
+	if( phpHeaders.size() == 0 ) {
+
+	    this.getLogger().log( Level.INFO,
+				  getClass().getName() + ".handleCGIOutput(...)",
+				  "The InterruptableResource has no HTTP headers." );
+	}
+
+
 
 	try {
 
@@ -226,11 +247,11 @@ public class PHPHandler
 
 		    // Convert the 'Status' line into the 'HTTP/1.1 <status> <reason_phrase>'
 		    // Note: This might throw a HeaderFormatException!
-		    HTTPHeaderLine newResponseLine = new HTTPHeaderLine( "HTTP/1.1 " + headerLine.getValue(), 
+		    HTTPHeaderLine newResponseLine = new HTTPHeaderLine( "HTTP/" + headers.getRequestVersion() + " " + headerLine.getValue(), 
 									 null 
 									 );
 		    this.getLogger().log( Level.INFO,
-					  getClass().getName() + ".process(...)",
+					  getClass().getName() + ".handleCGIOutput(...)",
 					  "Converting PHP-generated HTTPHeaders["+i+"] to a new status line and adding to the resource's meta data: " + phpHeaders.get(i) + ", status line replacement: " + newResponseLine );
 
 		    ir.getMetaData().getOverrideHeaders().replaceResponseLine( newResponseLine );
@@ -239,10 +260,18 @@ public class PHPHandler
 
 		    // A 'normal' key-value-tuple.
 		    this.getLogger().log( Level.INFO,
-					  getClass().getName() + ".process(...)",
+					  getClass().getName() + ".handleCGIOutput(...)",
 					  "Adding PHP-generated HTTPHeaders["+i+"] to the resource's meta data: " + phpHeaders.get(i) );
 
 		    ir.getMetaData().getOverrideHeaders().add( headerLine );
+
+
+		    // Override resource's MIME type?
+		    if( headerLine.getKey() != null && headerLine.getKey().equals(HTTPHeaders.NAME_CONTENT_TYPE) ) {
+
+			ir.getMetaData().setMIMEType( new MIMEType(headerLine.getValue()) );
+
+		    }
 		    
 		}
 	    }

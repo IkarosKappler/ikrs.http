@@ -11,7 +11,8 @@ import ikrs.typesystem.BasicType;
 
 public class DefaultCommand
     extends AbstractCommand
-    implements Command {
+    implements Command,
+	       Comparable<Command> {
 
     public DefaultCommand( String name,
 			   BasicType[] params ) {
@@ -52,4 +53,10 @@ public class DefaultCommand
     }
     //---END-------------------------- AbstractCommand implementation ---------------------
 
+    
+    //---BEGIN------------------------ Comparable implementation --------------------------
+    public int compareTo( Command c ) {
+	return this.getName().compareToIgnoreCase( c.getName() );
+    }
+    //---END-------------------------- Comparable implementation --------------------------
 }

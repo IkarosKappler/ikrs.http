@@ -29,7 +29,7 @@ public class CommandStatus
 
     public CommandStatus() {
 
-	super();
+	super( "STATUS" );
     }
 
    

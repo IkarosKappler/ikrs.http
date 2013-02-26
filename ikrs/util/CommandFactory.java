@@ -12,10 +12,21 @@ package ikrs.util;
  **/
 
 import java.text.ParseException;
+import java.util.Set;
 
 import ikrs.typesystem.BasicType;
 
 public interface CommandFactory<C extends Command> {
+
+    /**
+     * Get a set of all supported commands. This is usually a set of the
+     * commands that are understood by this factory plus all commands that
+     * are understood by all parent factories (if exist).
+     *
+     * @return A set containting all commands that are supported by this 
+     * factory.
+     **/
+    public Set<C> getSupportedCommands();
 
     /**
      * Get the parent factory for this factory.

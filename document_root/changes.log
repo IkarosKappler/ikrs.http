@@ -1,6 +1,8 @@
 
 
 [2013-02-25]
+  - Added the getSupportedCommands() method to the 
+    ikrs.util.CommandFactory interface.
   - Bug fixed in the ProcessableResource class: the open(boolean) method
     blocked on the system process's internal output buffer overflow.
     The output data is now being read while (!) the process is running.

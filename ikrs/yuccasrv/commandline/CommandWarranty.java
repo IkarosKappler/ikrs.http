@@ -31,7 +31,7 @@ public class CommandWarranty
 
     public CommandWarranty() {
 
-	super();
+	super( "WARRANTY" );
     }
 
    

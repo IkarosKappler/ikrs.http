@@ -7,6 +7,7 @@ package ikrs.util;
  **/
 
 import java.text.ParseException;
+import java.util.Set;
 
 import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
@@ -32,6 +33,17 @@ public abstract class AbstractCommandFactory<C extends Command>
     
 
     //---BEGIN----------------------- CommandFactory implementation -----------------------
+
+    /**
+     * Get a set of all supported commands. This is usually a set of the
+     * commands that are understood by this factory plus all commands that
+     * are understood by all parent factories (if exist).
+     *
+     * @return A set containting all commands that are supported by this 
+     * factory.
+     **/
+    public abstract Set<C> getSupportedCommands();
+
     /**
      * Get the parent factory for this factory.
      * If there is no parent factory present the method returns null.

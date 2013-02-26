@@ -8,19 +8,19 @@ package ikrs.yuccasrv.commandline;
 
 
 import ikrs.typesystem.BasicType;
-import ikrs.util.AbstractCommand;
+import ikrs.util.DefaultCommand;
 import ikrs.util.Command;
 import ikrs.util.CommandStringIncompleteException;
 
 public class YuccaCommand
-    extends AbstractCommand
+    extends DefaultCommand
     implements Command {
 
     private YuccaCommandFactory
 	myFactory;
 
-    protected YuccaCommand() {
-	super( null, null );
+    protected YuccaCommand( String name ) {
+	super( name, null );
     }
 
     public YuccaCommand( YuccaCommandFactory myFactory,

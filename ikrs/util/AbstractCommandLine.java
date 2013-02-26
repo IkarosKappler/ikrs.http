@@ -178,8 +178,8 @@ public class AbstractCommandLine<C extends Command>
 
     public static void main( String[] argv ) {
 
-	CommandFactory<DefaultCommand> factory = new DefaultCommandFactory();
-	AbstractCommandLine<DefaultCommand> cl = new AbstractCommandLine<DefaultCommand>( factory );
+	CommandFactory<Command> factory = new DefaultCommandFactory();
+	AbstractCommandLine<Command> cl = new AbstractCommandLine<Command>( factory );
 
 	try {
 	    cl.runCommandLine();

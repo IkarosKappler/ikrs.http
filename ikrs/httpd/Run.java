@@ -19,7 +19,7 @@ public class Run {
 	Yucca yucca = Yucca.runYucca( argv );
 	yucca.getCommandLine().getCommandFactory().setParentFactory( myCommandFactory );
 
-	// Note: yucca is already running in a seperate thread here!
+	// Note: yucca is already running in a separate thread here!
 	
 
     }

@@ -20,7 +20,7 @@ public class CommandQuit
 
     public CommandQuit() {
 
-	super();
+	super( "QUIT" );
     }
 
    

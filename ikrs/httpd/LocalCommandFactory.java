@@ -8,15 +8,28 @@ package ikrs.httpd;
 
 import ikrs.typesystem.BasicType;
 import ikrs.util.AbstractCommand;
-import ikrs.util.AbstractCommandFactory;
+import ikrs.util.DefaultCommandFactory;
 import ikrs.util.Command;
 import ikrs.util.UnknownCommandException;
 import ikrs.util.CommandStringIncompleteException;
 
 
 public class LocalCommandFactory
-    extends AbstractCommandFactory<Command> {
+    extends DefaultCommandFactory {
 
+    
+    public LocalCommandFactory() {
+	
+	super();
+
+	this.addSupportedCommand( new LocalCommand( "HTTPD",
+						    null,  // params
+						    0      // offset
+						    )
+				  );
+						   
+
+    }
 
 
     //--- BEGIN --------------------- AbstractCommandFactory implementation ------------------
@@ -35,7 +48,23 @@ public class LocalCommandFactory
 
 	
 	//return null;
-	throw new UnknownCommandException( "Unknown yucca/httpd command." );
+	if( name == null )
+	    throw new NullPointerException( "Command must not be null." );
+	
+	if( name.equalsIgnoreCase("HTTP") || name.equalsIgnoreCase("HTTPD") ) {
+
+	    if( params.length == 0 )
+		throw new CommandStringIncompleteException( "Command " + name + " requires at least one argument." );
+
+	    return new LocalCommand( params[0].getString(),
+				     params,
+				     1 );
+
+	} else {
+	
+	    throw new UnknownCommandException( "Unknown yucca/httpd command." );
+
+	}
     }
     //--- END ----------------------- AbstractCommandFactory implementation ------------------
 

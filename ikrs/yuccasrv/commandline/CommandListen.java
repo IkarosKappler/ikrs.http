@@ -33,7 +33,7 @@ public class CommandListen
 
     public CommandListen() {
 
-	super();
+	super( "LISTEN" );
     }
 
    

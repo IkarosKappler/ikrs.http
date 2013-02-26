@@ -5,6 +5,19 @@
 TO DO:
 [2013-02-25]
  - Build a customized ikrs.httpd-help command.
+ - Build a structure that allows to create a Rewrite-Engine.
+ - Change YuccaCommadFactory's command lookup order: parent commands 
+   first, subclasses' commands later (make it possible to override 
+   existing commands).
+ - Think about the commandline- and command-factory interfaces one or 
+   two more times; there might be some future issues regarding the type 
+   params (Could the DefaultCommandFactory eventually take some type 
+   params?
+ - Store the supported yucca commands inside global constants (affects
+   YuccaCommandFactory and all custom command classes.
+ - The ikrs.util.Command interface has a new method: 
+   getSupportedCommands(). This method should be used in yucca's HELP
+   command.
  - [DONE 2013-02-25]
    Move the favicon back to the document_root (pseudo convention in many browsers).
 

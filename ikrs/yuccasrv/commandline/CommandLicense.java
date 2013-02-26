@@ -31,7 +31,7 @@ public class CommandLicense
 
     public CommandLicense() {
 
-	super();
+	super( "LICENSE" );
     }
 
    

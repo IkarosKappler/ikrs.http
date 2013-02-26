@@ -10,15 +10,16 @@ import java.text.ParseException;
 
 
 import ikrs.typesystem.BasicType;
-import ikrs.util.AbstractCommandFactory;
+import ikrs.util.DefaultCommandFactory;
 import ikrs.util.Command;
 import ikrs.util.CommandFactory;
 import ikrs.util.CommandStringIncompleteException;
+import ikrs.util.DefaultCommand;
 import ikrs.util.UnknownCommandException;
 import ikrs.yuccasrv.Yucca;
 
 public class YuccaCommandFactory
-    extends AbstractCommandFactory<Command>
+    extends DefaultCommandFactory
     implements CommandFactory<Command> {
 
     /* The actual yucca server */
@@ -37,6 +38,14 @@ public class YuccaCommandFactory
 	super();
 
 	this.server = server;
+
+	this.addSupportedCommand( new CommandListen() );
+	this.addSupportedCommand( new CommandHelp( this, null, null ) );   // The help command needs to know its factory
+	this.addSupportedCommand( new CommandQuit() );
+	this.addSupportedCommand( new CommandUnlisten() );
+	this.addSupportedCommand( new CommandLicense() );
+	this.addSupportedCommand( new CommandWarranty() );
+	this.addSupportedCommand( new CommandStatus() );
     }
 
     /**
@@ -50,6 +59,7 @@ public class YuccaCommandFactory
 	return this.server;
     }
 
+
     //---BEGIN----------------------- AbstractCommandFactory implementation -----------------------
     /**
      * Make a new Command with the given name and params.
@@ -60,7 +70,7 @@ public class YuccaCommandFactory
      * @return The new command.
      **/
     public Command make( String name,
-			      BasicType[] params )
+			 BasicType[] params )
 	throws UnknownCommandException,
 	CommandStringIncompleteException {
 
@@ -68,7 +78,7 @@ public class YuccaCommandFactory
 	if( name.equalsIgnoreCase("LISTEN") || name.equalsIgnoreCase("BIND") ) 
 	    cmd = new CommandListen();
 	else if( name.equalsIgnoreCase("HELP") || name.equalsIgnoreCase("?") ) 
-	    cmd = new CommandHelp();
+	    cmd = new CommandHelp( this, name, params );    // The help command needs to know its factory
 	else if( name.equalsIgnoreCase("QUIT") || name.equalsIgnoreCase("EXIT") ) 
 	    cmd = new CommandQuit();
 	else if( name.equalsIgnoreCase("UNLISTEN") || name.equalsIgnoreCase("RELEASE") || name.equalsIgnoreCase("UNBIND") ) 
@@ -98,10 +108,17 @@ public class YuccaCommandFactory
     }
     //---END------------------------- AbstractCommandFactory implementation -----------------------
 
+    /**
+     * This method should NOT be used any more. It was replaced by 
+     * CommandFactory.getSupportedCommands().
+     *
+     * @deprecated
+     **/
     public static String[] getImplementedCommands() {
 	return new String[] {
 	    "HELP", "LICENSE", "LISTEN", "STATUS", "UNLISTEN", "WARRANTY", "QUIT"
 	};
     }
+    
     
 }

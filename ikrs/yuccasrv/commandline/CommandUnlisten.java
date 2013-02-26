@@ -29,7 +29,7 @@ public class CommandUnlisten
 
     public CommandUnlisten() {
 
-	super();
+	super( "UNLISTEN" );
     }
 
    

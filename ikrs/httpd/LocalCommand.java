@@ -49,6 +49,8 @@ public class LocalCommand
 
 	} else {
 
+	    System.out.println( "Unknown argument '" + this.getName() +"'. Use 'STATUS' instead." );
+
 	    return -1;
 
 	}

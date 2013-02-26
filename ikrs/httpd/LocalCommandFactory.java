@@ -54,7 +54,7 @@ public class LocalCommandFactory
 	if( name.equalsIgnoreCase("HTTP") || name.equalsIgnoreCase("HTTPD") ) {
 
 	    if( params.length == 0 )
-		throw new CommandStringIncompleteException( "Command " + name + " requires at least one argument." );
+		throw new CommandStringIncompleteException( "Command " + name + " requires at least one argument: STATUS" );
 
 	    return new LocalCommand( params[0].getString(),
 				     params,

@@ -3,8 +3,25 @@
 
 
 TO DO:
+[2013-02-28]
+ - [DONE 2013-02-28]
+   Add a DateFormat object that formats custom time stamps into a HTTP 
+   Date format.
+ - [DONE 2013-02-28]
+   Add the HTTP Date format to the 'Date' header for 'Content-Range'
+   replies in the ikrs.httpd.response.successful.OK class (status code
+   206).
+ - [DONE 2013-02-28]
+   Add the HTTP Date format to the 'Expires' header for 'Content-Range'
+   replies.
+ - [DONE 2013-02-28]
+   Expand the ResourceMetaData: 
+    - last modified
+    - etag
+
 [2013-02-27]
- - The DefaultDirectoryResource adds one additional slash '/' 
+ - [DONE 2013-02-28]
+   The DefaultDirectoryResource adds one additional slash '/' 
    between path name and file name IF the path already ends with a
    slash.
  - [DONE 2013-02-27]

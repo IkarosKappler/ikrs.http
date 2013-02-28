@@ -1,5 +1,19 @@
 
+telnet 127.0.0.1 8888
+=====================
+
+Variant A (correct):
+--------------------
 GET README.txt HTTP/1.1
 Host: 127.0.0.1:8888
 Content-Range: bytes 7-16/*
+Connection: Close
+
+
+
+Variant B (corrupt, because the file does not have 32 bytes):
+-------------------------------------------------------------
+GET README.txt HTTP/1.1
+Host: 127.0.0.1:8888
+Content-Range: bytes 7-16/32
 Connection: Close

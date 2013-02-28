@@ -387,10 +387,20 @@ public class DefaultDirectoryResource
 
 	    // File name [make an anchor!]
 	    if( this.isHTMLFormat() ) {
-		if( this.getRequestURI().getPath() == null || this.getRequestURI().getPath().equals("/") )
+		if( this.getRequestURI().getPath() == null || this.getRequestURI().getPath().equals("/") ) {
+
 		    return "<a href=\"" + file.getName() + "\">" + file.getName() + "</a>";
-		else
-		    return "<a href=\"" + (this.getRequestURI().getPath() + "/") + file.getName() + "\">" + file.getName() + "</a>";
+
+		} else {
+
+		    // Hint: depending on the address the user entered the path
+		    //       might already have a trailing slash.
+		    String pathBase = this.getRequestURI().getPath();
+		    if( pathBase != null && !pathBase.endsWith("/") )
+			pathBase += "/";
+
+		    return "<a href=\"" + pathBase + file.getName() + "\">" + file.getName() + "</a>";
+		}
 	    } else {
 		return file.getName();
 	    }

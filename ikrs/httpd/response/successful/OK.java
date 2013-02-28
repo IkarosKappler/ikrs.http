@@ -215,6 +215,9 @@ public class OK
 						   "Resource accessor granted access to the file '" + uri.getPath() + "'. optionalReturnSettings=" + optionalReturnSettings );
 
 
+	    resource.getReadLock().lock();
+	    resource.open( true ); // Open in read-only mode 
+
 
 	    // Supported since version 1.0.2.alpha:
 	    // The 'Content-Range' header
@@ -253,9 +256,6 @@ public class OK
 
 		}*/
 
-
-	    resource.getReadLock().lock();
-	    resource.open( true ); // Open in read-only mode 
 
 
 	    // Has the resource a customized statusCode?

@@ -317,12 +317,13 @@ public class DefaultResponseBuilder
 
 	} catch( IOException e ) {
 	    
-	    this.getHTTPHandler().getLogger().log( Level.INFO,
+	    this.getHTTPHandler().getLogger().log( Level.WARNING,
 						   getClass().getName() + ".create(...)",
 						   "IOException: " + e.getMessage()
 						   ); 
+
 	    
-		// Return an apropriate error response	    
+	    // Return an apropriate error response	    
 	    return buildPreparedErrorResponse( headers, postData, socketID, socket, sessionID,
 					       e,
 					       Constants.HTTP_STATUS_SERVERERROR_INTERNAL_SERVER_ERROR, 

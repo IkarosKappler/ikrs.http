@@ -81,7 +81,19 @@ public class RangedResource
 	// Open the core resource first!
 	// (otherwise we will not be able to access the input stream)
 	super.open( readOnly );
+	
+    }
 
+    /**
+     * Get the input stream from this resource.
+     *
+     * @throws IOException If any IO error occurs.
+     **/
+    public InputStream getInputStream()
+	throws IOException {
+
+	if( !this.isOpen() )
+	    throw new IOException( "Cannot retrieve resource's input stream. Resouce was not yet opened." );
 
 	if( this.readLimitInputStream == null ) {
 
@@ -103,20 +115,7 @@ public class RangedResource
 
 	}
 
-	
-	
-    }
 
-    /**
-     * Get the input stream from this resource.
-     *
-     * @throws IOException If any IO error occurs.
-     **/
-    public InputStream getInputStream()
-	throws IOException {
-
-	if( !this.isOpen() )
-	    throw new IOException( "Cannot retrieve resource's input stream. Resouce was not yet opened." );
 
 	return this.readLimitInputStream;
     }

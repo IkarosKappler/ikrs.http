@@ -16,6 +16,8 @@ TO DO:
    header is correctly processed.
  - Check if the 'Content-Range' header is also required in the response
    headers.
+ - Requests containing the 'Content-Range' field SHOULD return a 206 
+   (Partial Content) response.
 
 [2013-02-26]
  - Large CGI output (> 100k?) should be buffered on the hard drive.

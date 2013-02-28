@@ -54,6 +54,7 @@ public interface PreparedHTTPResponse {
 	       HeaderFormatException,
 	       DataFormatException,
 	       UnsupportedFormatException,
+	       ParametrizedHTTPException,
 	       SecurityException,
 	       IOException; 
 

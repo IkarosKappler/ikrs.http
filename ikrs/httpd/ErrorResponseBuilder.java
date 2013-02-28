@@ -265,7 +265,7 @@ public class ErrorResponseBuilder
 		// File not found -> use raw message
 		this.getHTTPHandler().getLogger().log( Level.FINE,
 						       getClass().getName() + ".buildPreparedErrorResponse(...)",
-						       "Error file resource '" + uri.getPath() + "' not found; using raw message."
+						       "Error file resource '" + (uri!=null?uri.getPath():"null") + "' not found; using raw message."
 						       );		
 		resource = new ByteArrayResource( this.getHTTPHandler(),
 						  this.getHTTPHandler().getLogger(),
@@ -360,7 +360,10 @@ public class ErrorResponseBuilder
 	    this.getHTTPHandler().getLogger().log( Level.WARNING,
 						   getClass().getName() + ".buildPreparedErrorResponse(...)",
 						   "Cannot build error reply (statusCode="+statusCode+", reasonPhrase="+reasonPhrase+"). RuntimeException: " + e.toString()
-						   ); 
+						   );
+	    
+	    // This is a very fatal error.
+	    e.printStackTrace();
 	    
 	    return null;
 

@@ -255,6 +255,7 @@ public abstract class AbstractPreparedResponse
 	       HeaderFormatException,
 	       DataFormatException,
 	       UnsupportedFormatException,
+	       ParametrizedHTTPException,
 	       SecurityException,
 	       IOException;
       

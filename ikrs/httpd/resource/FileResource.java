@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
@@ -81,6 +82,9 @@ public class FileResource
 
 	// This initializes the input stream!
 	this.inputStream = new FileInputStream( this.file );
+
+	// Store file modification date
+	this.getMetaData().setLastModified( new Date(this.file.lastModified()) );
 	
     }
 

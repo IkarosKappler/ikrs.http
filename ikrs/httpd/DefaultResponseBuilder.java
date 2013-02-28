@@ -261,7 +261,24 @@ public class DefaultResponseBuilder
 					       "Unsupported media type: " + e.getMessage(),
 					       additionalSettings,
 					       optionalReturnSettings
-					       );    
+					       );   
+
+	} catch( ParametrizedHTTPException e ) { 
+
+	    this.getHTTPHandler().getLogger().log( Level.INFO,
+						   getClass().getName() + ".create(...)",
+						   "ParametrizedHTTPException: " + e.getMessage()
+						   ); 
+ 
+	    // Return an apropriate error response	    
+	    return buildPreparedErrorResponse( headers, postData, socketID, socket, sessionID,
+					       e,
+					       e.getStatusCode(),
+					       e.getReasonPhrase(),
+					       e.getReasonPhrase() + ": " + e.getMessage(),
+					       additionalSettings,
+					       optionalReturnSettings
+					       );  
 
 	} catch( SecurityException e ) {
 	    
@@ -342,7 +359,7 @@ public class DefaultResponseBuilder
 							       PostDataWrapper postData,
 							       UUID socketID,
 							       Socket socket,
-							       UUID sessionID,  // ConnectionUserID userID,
+							       UUID sessionID,  
 							       Exception e,
 							       int statusCode,
 							       String reasonPhrase,

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,14 @@ import ikrs.httpd.Constants;
 import ikrs.httpd.ContentRange;
 import ikrs.httpd.CustomUtil;
 import ikrs.httpd.DataFormatException;
+import ikrs.httpd.ETag;
 import ikrs.httpd.HeaderFormatException;
 import ikrs.httpd.HTTPHandler;
 import ikrs.httpd.HTTPHeaderLine;
 import ikrs.httpd.HTTPHeaders;
 import ikrs.httpd.MalformedRequestException;
+import ikrs.httpd.MD5;
+import ikrs.httpd.ParametrizedHTTPException;
 import ikrs.httpd.PostDataWrapper;
 import ikrs.httpd.Resource;
 import ikrs.httpd.UnsupportedFormatException;
@@ -108,6 +112,7 @@ public class OK
 	       HeaderFormatException,
 	       DataFormatException,
 	       UnsupportedFormatException,
+	       ParametrizedHTTPException,
 	       SecurityException,
 	       IOException {
 
@@ -155,11 +160,13 @@ public class OK
 	       HeaderFormatException,
 	       DataFormatException,
 	       UnsupportedFormatException,
+	       ParametrizedHTTPException,
 	       SecurityException,
 	       IOException {
 
 
 	String httpMethod = this.getRequestHeaders().getRequestMethod();
+	Date currentDate  = new Date( System.currentTimeMillis() );
 
 	// Fetch the request URI
 	String requestURI = this.getRequestHeaders().getRequestURI();
@@ -222,7 +229,6 @@ public class OK
 	    // Supported since version 1.0.2.alpha:
 	    // The 'Content-Range' header
 	    String request_contentRange = this.getRequestHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_RANGE );
-	    //long response_contentLength = -1L;
 	    if( request_contentRange != null ) {
 		
 		// This might throw a MalformedRequestException
@@ -231,30 +237,76 @@ public class OK
 		// The numerical fields are in range so far ...
 		// ... but we have to check if the instanceLength is in range (the parser does not
 		//     know the resource's length).
-		if( cRange.getInstanceLength() > resource.getLength() ) {
+		if( (cRange.getInstanceLength() != -1 
+		     && cRange.getInstanceLength() != resource.getLength()
+		     )
+		    || cRange.getLastBytePosition() >= resource.getLength() ) {
 		    
 		    // TODO:
 		    //  Server should send a '416 Requested range not satisfiable' error response!
-		    throw new MalformedRequestException( "Cannot satisfy requested range (out of bounds)" );
+		    optionalReturnSettings.put( Constants.KEY_GENERATED_STATUS_CODE, 
+						new BasicNumberType(Constants.HTTP_STATUS_CLIENTERROR_REQUEST_RANGE_NOT_SATISFIABLE) );
+		    optionalReturnSettings.put( Constants.KEY_GENERATED_REASON_PHRASE,
+						new BasicStringType("Requested range not satisfiable") );
+		    //throw new MalformedRequestException( "Cannot satisfy requested range (out of bounds)" );
+		    throw new ParametrizedHTTPException( "Cannot satisfy requested range (out of bounds).",
+							 Constants.HTTP_STATUS_CLIENTERROR_REQUEST_RANGE_NOT_SATISFIABLE,
+							 "Requested range not satisfiable" );
+							 
 
 		}
 		
 		// Build a 'ranged' resource.
-		// ...
-		//throw new UnknownMethodException( "The 'Content-Range' header is not yet implemented (and not supported)." );		
+		// ... send a '206 Partial Content' response.
+		optionalReturnSettings.put( Constants.KEY_GENERATED_STATUS_CODE, 
+					    new BasicNumberType(Constants.HTTP_STATUS_SUCCESSFUL_PARTIAL_CONTENT) );
+		optionalReturnSettings.put( Constants.KEY_GENERATED_REASON_PHRASE,
+					    new BasicStringType("Partial Content") );
+		long oldResourceLength = resource.getLength();
 		resource = new RangedResource( resource,
 					       cRange,
 					       this.getHTTPHandler(),
 					       this.getHTTPHandler().getLogger()
 					       );
 
+
+		// Replace the OK status!
+		super.setStatusCode( Integer.toString(Constants.HTTP_STATUS_SUCCESSFUL_PARTIAL_CONTENT) );
+		super.setReasonPhrase( "Partial Content" );
+
+		// Following header fields MUST be included in the response:
+		//  - Content-Range
+		//  - Date
+		//  - ETag and/or Content-Location
+		//  - Expires, Cache-Control and/or Vary
+		ContentRange responseRange = new ContentRange( ContentRange.NAME_BYTESUNIT_BYTES,
+							       cRange.getFirstBytePosition(),
+							       cRange.getLastBytePosition(),
+							       oldResourceLength );
+		super.addResponseHeader( "Content-Range", responseRange.toString() );
+		// TODO: HTTP date format
+		//  Example: Date: Tue, 15 Nov 1994 08:12:31 GMT
+		super.addResponseHeader( "Date", this.getHTTPHandler().getHTTPDateFormat().format(currentDate) );
+
+		// Generate the ETag from inode, resource size and last modification date
+		try {
+		    ETag etag   = ETag.create( resource, uri );
+		    super.addResponseHeader( "ETag", etag.createHeaderValue() ); 
+		} catch( java.security.NoSuchAlgorithmException e ) {
+		    this.getHTTPHandler().getLogger().log( Level.SEVERE,
+							   getClass().getName() + ".prepare(...)",
+							   "MD5 algorithm not found: " + e.getMessage() ); 
+		    throw new ConfigurationException( "MD5 algorithm not found: " + e.getMessage() );
+		}
+
+		// Ignore Content-Location
+		//  ...
+
+		// The 'Expires' also requires a HTTP date!
+		super.addResponseHeader( "Expires", this.getHTTPHandler().getHTTPDateFormat().format(currentDate) );
+		super.addResponseHeader( "Cache-Control", "no-cache" );  // no-cache or better max-age?
 		
-
-	    } /*else {
-
-		response_contentLength = resource.getLength();
-
-		}*/
+	    }
 
 
 
@@ -308,7 +360,7 @@ public class OK
 	
 	    // Add default headers (might be overwritter later, see below).
 	    super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() ); 
-	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) ); //response_contentLength) );
+	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) );
 	    super.addResponseHeader( "Content-Language",  "en" );
 	    super.addResponseHeader( "Connection",        "close" );
 	    super.addResponseHeader( "Content-Type",      response_mimeType + "; charset=" + response_charSet.getString() );

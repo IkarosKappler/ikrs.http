@@ -81,7 +81,9 @@ public class RangedResource
 	// Open the core resource first!
 	// (otherwise we will not be able to access the input stream)
 	super.open( readOnly );
-	
+      
+	// No need to store the dat of last modification:
+	//  both resources share the same meta data instance.
     }
 
     /**

@@ -243,6 +243,10 @@ public abstract class AbstractDirectoryResource
 	byte[] rawData = out.toByteArray();
 	this.inputStream = new ByteArrayInputStream( rawData );
 	this.length = rawData.length;
+
+
+	// Store the current modification date!
+	this.getMetaData().setLastModified( new Date(System.currentTimeMillis()) );
 	
     }
 

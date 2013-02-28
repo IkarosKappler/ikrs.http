@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -226,7 +227,9 @@ public class ProcessableResource
 	// Don't forget to close the input stream!
 	in.close();
 
-	
+
+	// Store current date as date of last modification
+	this.getMetaData().setLastModified( new Date(System.currentTimeMillis()) );
     }
 
     /**

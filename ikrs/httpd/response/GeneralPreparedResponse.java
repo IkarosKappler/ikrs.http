@@ -30,6 +30,7 @@ import ikrs.httpd.HeaderFormatException;
 import ikrs.httpd.HTTPHandler;
 import ikrs.httpd.HTTPHeaders;
 import ikrs.httpd.MalformedRequestException;
+import ikrs.httpd.ParametrizedHTTPException;
 import ikrs.httpd.Resource;
 import ikrs.httpd.UnsupportedFormatException;
 import ikrs.httpd.UnsupportedMethodException;
@@ -111,6 +112,7 @@ public class GeneralPreparedResponse
 	       HeaderFormatException,
 	       DataFormatException,
 	       UnsupportedFormatException,
+	       ParametrizedHTTPException,
 	       SecurityException,
 	       IOException {
 

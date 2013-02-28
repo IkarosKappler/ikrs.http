@@ -1,0 +1,47 @@
+package ikrs.httpd;
+
+/**
+ * The ETag (entity tag) is sort of a resource hash. It is built of the 
+ * resource's name, the resource's size (if available) and the 
+ * resource's date of last modification; if the modification date is 
+ * unknown the current time stamp is used, so each time it is called a 
+ * new hash is generated (the resource might have changed in between).
+ *
+ * 
+ * For details see 
+ * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2013-02-28
+ * @version 1.0.0
+ **/
+
+
+import java.net.URI;
+
+
+public class ETag {
+
+    private URI relativeURI;
+
+    private Resource resource;
+
+    /**
+     * This class is not meant to be instantiated directly.
+     **/
+    private ETag() {
+	super();
+    }
+
+
+    public ETag create( Resource resource,
+			URI relativeURI ) {
+
+	
+	ETag etag
+
+    }
+
+
+}

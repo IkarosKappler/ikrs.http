@@ -123,6 +123,7 @@ public class BufferedResource
 	this.byteArrayResource.open( true );  // Open in readOnly mode (the whole implementation is read-only)
 
 	// Done. Do NOT close input stream (that is the task of the instance which opened it!)
+
     }
 
     /**

@@ -72,6 +72,9 @@ public class Constants {
     public static final String KEY_SESSIONID                                     = "SESSION_ID";
     public static final String KEY_SESSIONTIMEOUT                                = "SESSION_TIMEOUT";
 
+    public static final String KEY_GENERATED_STATUS_CODE                         = "GENERATED_STATUS_CODE";
+    public static final String KEY_GENERATED_REASON_PHRASE                       = "GENERATED_REASON_PHRASE";
+
     /* Configuration constants */
     public static final String KEY_DEFAULTCHARACTERSET                           = "DEFAULT_CHARSET";
 

@@ -37,10 +37,14 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.URI;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -164,6 +168,17 @@ public class HTTPHandler
     private Map<Integer,URI> errorDocumentMap;
 
 
+    /**
+     * A DateFormat instance for getting Date object in the required HTTP Date
+     * representation. The date format is like this:
+     *  Tue, 15 Nov 1994 08:12:31 GMT
+     * 
+     * For details see
+     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html 
+     * section 14.18 (Date).
+     **/
+    private DateFormat httpDateFormat;
+
     public HTTPHandler() {
 	super();
 	
@@ -215,6 +230,11 @@ public class HTTPHandler
 		    getClass().getName(),
 		    "[Init FileFilter] Initializing the file filter.");
 	this.fileFilter         = new DefaultFileFilter();
+
+
+	// Init the HTTP Date format
+	this.httpDateFormat     = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss z", Locale.US ); // Locale.US?
+	this.httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 
 	logger.log( Level.INFO,
@@ -492,6 +512,10 @@ public class HTTPHandler
 	}
 
 	return list;
+    }
+
+    public DateFormat getHTTPDateFormat() {
+	return this.httpDateFormat;
     }
 
     /**

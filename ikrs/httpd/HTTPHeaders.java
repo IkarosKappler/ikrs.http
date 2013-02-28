@@ -35,6 +35,7 @@ public class HTTPHeaders {
     public static final String NAME_ACCEPT_LANGUAGE    = "Accept-Language";
     public static final String NAME_CONNECTION         = "Connection";
     public static final String NAME_CONTENT_LENGTH     = "Content-Length";
+    public static final String NAME_CONTENT_RANGE      = "Content-Range";
     public static final String NAME_CONTENT_TYPE       = "Content-Type";
     public static final String NAME_COOKIE             = "Cookies";
     public static final String NAME_HOST               = "Host";

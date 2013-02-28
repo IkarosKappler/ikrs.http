@@ -3,6 +3,25 @@
 
 
 TO DO:
+[2013-02-27]
+ - The DefaultDirectoryResource adds one additional slash '/' 
+   between path name and file name IF the path already ends with a
+   slash.
+ - [DONE 2013-02-27]
+   Implement download recovery (from a specified byte position).
+ - Server should send a status code 416 (Requested range not 
+   satisfiable) on range errors; this requires a new exception type
+   and the ResponseBuilder to be modified, I fear.
+ - Write some test scripts to check if the 'Content-Range' request
+   header is correctly processed.
+ - Check if the 'Content-Range' header is also required in the response
+   headers.
+
+[2013-02-26]
+ - Large CGI output (> 100k?) should be buffered on the hard drive.
+   Implement a block orientated buffered resource. And extend the
+   CGIHandler (move the read process from the PHPHandler?).
+
 [2013-02-25]
  - Build a customized ikrs.httpd-help command.
  - Build a structure that allows to create a Rewrite-Engine.
@@ -12,7 +31,7 @@ TO DO:
  - Think about the commandline- and command-factory interfaces one or 
    two more times; there might be some future issues regarding the type 
    params (Could the DefaultCommandFactory eventually take some type 
-   params?
+   params)?
  - Store the supported yucca commands inside global constants (affects
    YuccaCommandFactory and all custom command classes.
  - The ikrs.util.Command interface has a new method: 

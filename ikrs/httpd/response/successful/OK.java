@@ -24,6 +24,7 @@ import ikrs.httpd.AbstractPreparedResponse;
 import ikrs.httpd.AuthorizationException;
 import ikrs.httpd.ConfigurationException;
 import ikrs.httpd.Constants;
+import ikrs.httpd.ContentRange;
 import ikrs.httpd.CustomUtil;
 import ikrs.httpd.DataFormatException;
 import ikrs.httpd.HeaderFormatException;
@@ -38,6 +39,7 @@ import ikrs.httpd.UnsupportedMethodException;
 import ikrs.httpd.UnsupportedVersionException;
 import ikrs.httpd.UnknownMethodException;
 import ikrs.httpd.resource.ByteArrayResource;
+import ikrs.httpd.resource.RangedResource;
 import ikrs.httpd.response.GeneralPreparedResponse;
 
 import ikrs.typesystem.*;
@@ -213,6 +215,45 @@ public class OK
 						   "Resource accessor granted access to the file '" + uri.getPath() + "'. optionalReturnSettings=" + optionalReturnSettings );
 
 
+
+	    // Supported since version 1.0.2.alpha:
+	    // The 'Content-Range' header
+	    String request_contentRange = this.getRequestHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_RANGE );
+	    //long response_contentLength = -1L;
+	    if( request_contentRange != null ) {
+		
+		// This might throw a MalformedRequestException
+		// (NullPointerException cannot be raised because the header field is not null)
+		ContentRange cRange = ContentRange.parse( request_contentRange );
+		// The numerical fields are in range so far ...
+		// ... but we have to check if the instanceLength is in range (the parser does not
+		//     know the resource's length).
+		if( cRange.getInstanceLength() > resource.getLength() ) {
+		    
+		    // TODO:
+		    //  Server should send a '416 Requested range not satisfiable' error response!
+		    throw new MalformedRequestException( "Cannot satisfy requested range (out of bounds)" );
+
+		}
+		
+		// Build a 'ranged' resource.
+		// ...
+		//throw new UnknownMethodException( "The 'Content-Range' header is not yet implemented (and not supported)." );		
+		resource = new RangedResource( resource,
+					       cRange,
+					       this.getHTTPHandler(),
+					       this.getHTTPHandler().getLogger()
+					       );
+
+		
+
+	    } /*else {
+
+		response_contentLength = resource.getLength();
+
+		}*/
+
+
 	    resource.getReadLock().lock();
 	    resource.open( true ); // Open in read-only mode 
 
@@ -259,10 +300,15 @@ public class OK
 
 	    }
 
+
+	   
+
+	    
+	    
 	
 	    // Add default headers (might be overwritter later, see below).
 	    super.addResponseHeader( "Server",            this.getHTTPHandler().getSoftwareName() ); 
-	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) );
+	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) ); //response_contentLength) );
 	    super.addResponseHeader( "Content-Language",  "en" );
 	    super.addResponseHeader( "Connection",        "close" );
 	    super.addResponseHeader( "Content-Type",      response_mimeType + "; charset=" + response_charSet.getString() );

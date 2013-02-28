@@ -111,6 +111,8 @@ public class FileSystemResourceAccessor
 					       "URI="+uri+", host="+uri.getHost()+", path="+uri.getPath()+", query="+uri.getQuery() );
 
 	
+       
+
 
 	//Environment<String,BasicType> session = new DefaultEnvironment<String,BasicType>();
 	Session<String,BasicType,HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );

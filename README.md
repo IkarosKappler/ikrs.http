@@ -9,6 +9,18 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-02-27]
+  - EOI bug in ikrs.httpd.ReadLimitInputStream solved [reaching the 
+    virtual end did not necesarily cause -1 but 0 (zero) to be 
+    returned which caused an infinite loop in the RangedRessource's
+    inputstream read procedures].
+  - Implemented the ikrs.httpd.resource.ResourceDelegation and
+    RangedResource class.
+  - Implemented download recovery (from a specified byte position):
+    the server now recognizes the 'Content-Range' header; some new
+    classes were added and still need some testing, but the 
+    ikrs.httpd.resource.RangedResource seems to work fine so far.
+
 [2013-02-25]
   - Bug fixed in the ProcessableResource class: the open(boolean) method
     blocked on the system process's internal output buffer overflow.

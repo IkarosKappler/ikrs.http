@@ -104,6 +104,11 @@ public class ReadLimitInputStream
 			Math.min( (int)(this.readLimit - this.in.getAbsoluteBytePosition()),
 				  len ) );
 
+	// virtual EOI reached?
+	// Check this here because reading 0 (zero) bytes not necesarily cause
+	// the underlying input stream to return -1!
+	if( len <= 0 )
+	    return -1;
 
 	return this.in.read( b, 
 			     off, 

@@ -26,14 +26,17 @@ TO DO:
    slash.
  - [DONE 2013-02-27]
    Implement download recovery (from a specified byte position).
- - Server should send a status code 416 (Requested range not 
+ - [DONE 2013-02-28]
+   Server should send a status code 416 (Requested range not 
    satisfiable) on range errors; this requires a new exception type
    and the ResponseBuilder to be modified, I fear.
  - Write some test scripts to check if the 'Content-Range' request
    header is correctly processed.
- - Check if the 'Content-Range' header is also required in the response
+ - [DONE 2013-02-28]
+   Check if the 'Content-Range' header is also required in the response
    headers.
- - Requests containing the 'Content-Range' field SHOULD return a 206 
+ - [DONE 2013-02-28]
+   Requests containing the 'Content-Range' field SHOULD return a 206 
    (Partial Content) response.
 
 [2013-02-26]
@@ -57,58 +60,71 @@ TO DO:
    getSupportedCommands(). This method should be used in yucca's HELP
    command.
  - [DONE 2013-02-25]
-   Move the favicon back to the document_root (pseudo convention in many browsers).
+   Move the favicon back to the document_root (pseudo convention in many 
+   browsers).
 
 [2013-02-05]
  - [DONE 2013-02-25]
-   There is an issue with the FileSystemResourceLocator if the processed resource comes from
-   a FileHandler (such as the PHPHandler): the eventually generated HTTP header containing the
-   Content-Type is not yet applied to the returned resource's meta data!
+   There is an issue with the FileSystemResourceLocator if the processed 
+   resource comes from a FileHandler (such as the PHPHandler): the 
+   eventually generated HTTP header containing the Content-Type is not 
+   yet applied to the returned resource's meta data!
 
 [2013-01-31]
  - [DONE 2013-01-05]
    Replace the internal maps by threadsafe versions!
  - [DONE 2013-01-05]
-   The the directory list generator still uses the old (not valid any more) favicon URL.
+   The the directory list generator still uses the old (not valid any 
+   more) favicon URL.
  - [DONE 2013-02-05]
    Clean up document_root directory: move all tests into a sub directory.
 
 [2013-01-21]
  - [DONE 2013-01-23; in AbstractPreparedResponse.execute() fixed]
-   Even if the request was HTTP version 1.0 the reply always comes in version 1.1; this is wrong.
+   Even if the request was HTTP version 1.0 the reply always comes in 
+   version 1.1; this is wrong.
 
 [2013-01-16]
  - [DONE 2013-01-23; the error document map is now configurable by 
-   	 	     {USER_HOME}/.yuccasrv/ikrs.httpd.conf#ERROR_DOCUMENT.{STATUS_CODE}]
-   The HTTP handlers internal default-error-document-map should be configurable.
+   {USER_HOME}/.yuccasrv/ikrs.httpd.conf#ERROR_DOCUMENT.{STATUS_CODE}]
+   The HTTP handlers internal default-error-document-map should be 
+   configurable.
 
 [2013-01-10]
- - [DONE 2013-01-16; the HTTP handler has a new method 'getDefaultErrorDocumentURI(...)']
+ - [DONE 2013-01-16; the HTTP handler has a new method 
+   'getDefaultErrorDocumentURI(...)'] 
    htaccess' ErrorDocument directives are not yet handled.
 
 [2013-01-09]
  - [DONE 2013-01-09]
-   The session timeout must be configurable. It is currently hard coded to 300 seconds (5 minutes).
+   The session timeout must be configurable. It is currently hard coded 
+   to 300 seconds (5 minutes).
  - [DONE 2013-01-09] 
-   Yucca's command line should be dynamically extensible by the HTTHandler (add httpd configuration
-   commands).
+   Yucca's command line should be dynamically extensible by the 
+   HTTHandler (add httpd configuration commands).
 
 [2013-01-05]
- - Run some tests to check whether rejected requests really result into an 503 Server Error.
- - Yucca.performQuit() still lacks some cleanup. Release listeners and handlers.
- - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It should extend
-   ikrs.util.KeyValueStringPair.
+ - Run some tests to check whether rejected requests really result into 
+   an 503 Server Error.
+ - Yucca.performQuit() still lacks some cleanup. Release listeners and 
+   handlers.
+ - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
+   should extend ikrs.util.KeyValueStringPair.
  - [DONE 2013-01-04]
-   Build a nested htaccess evaluation. Currently the application just searches up the document
-   tree until the first htaccess file is found. That is not correct! *All* htaccess files
-   upon the request path must be used; later occurrences override earlier stated stettings.
+   Build a nested htaccess evaluation. Currently the application just 
+   searches up the document tree until the first htaccess file is found. 
+   That is not correct! *All* htaccess files upon the request path must 
+   be used; later occurrences override earlier stated stettings.
  - [DONE 2013-01-07]
-   Currently the system writes a hexdump of requested files on stdout. The output MUST be limited to 
-   a max mark, such as 1MB or so ... otherwise the dump may take minutes to hours on large files
-   before the actual download can start.
- - [DONE 2013-01-07; log output moved to ikrs.httpd.HTTPRequestDistributor]
-   ikrs.httpd.HTTPHeaders.read(...) still writes debug data into stdout. This should be configurable
-   and (if enabled) written through the log manager.
+   Currently the system writes a hexdump of requested files on stdout. 
+   The output MUST be limited to a max mark, such as 1MB or so ... 
+   otherwise the dump may take minutes to hours on large files before 
+   the actual download can start.
+ - [DONE 2013-01-07; log output moved to 
+   ikrs.httpd.HTTPRequestDistributor]
+   ikrs.httpd.HTTPHeaders.read(...) still writes debug data into stdout. 
+   This should be configurable and (if enabled) written through the log 
+   manager.
 
 [2012-12-17]
  - [DONE 2012-12-18]

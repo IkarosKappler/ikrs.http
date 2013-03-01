@@ -1,6 +1,12 @@
 
-telnet 127.0.0.1 8888
-=====================
+# @date 2013-02-27
+
+
+This is a template for how to make 'Content-Range' tests.
+
+
+> telnet 127.0.0.1 8888
+=======================
 
 Variant A (correct):
 --------------------

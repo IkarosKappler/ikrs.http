@@ -1,4 +1,10 @@
 
+[2013-03-01]
+  - Enhanced the ikrs.util.session.Default- and AbstractSessionManager
+    by adding a new (optional) 'threadSafe' param; this allows to tell
+    the manager to use synchronized session maps and so does the 
+    HTTPHandler now.
+
 [2013-02-28]
   - Status code for 'Content-Range' responses changed to 206 (Partial
     Content); was still 200 before.

@@ -9,6 +9,31 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-01]
+  - Enhanced the ikrs.util.session.Default- and AbstractSessionManager
+    by adding a new (optional) 'threadSafe' param; this allows to tell
+    the manager to use synchronized session maps and so does the 
+    HTTPHandler now.
+
+[2013-02-28]
+  - Status code for 'Content-Range' responses changed to 206 (Partial
+    Content); was still 200 before.
+  - Added the ParametrizedHTTPException class to the ResponseBuilder
+    to allow to override the status code/reason phrase at the error
+    response builder.
+  - The ResouceMetaData now has a last-modified field.
+  - There is now an ETag class (Entity tag) and the OK response already
+    uses the generated ETag hash for response headers.
+  - The HTTPHandler now has a global DateFormat that should be used to
+    generate Date strings in the required HTTP Date format; for details
+    see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html section
+    14.18.
+  - The '206 Partial Content' response now contains the 'Date' and 
+    'Expires' headers (sent if the 'Content-Range' request is present).
+  - Solved an issue with the DefaultDirectoryResource; in some cases an
+    additional slash ('/') was added between the path base and the 
+    linked file(s).
+
 [2013-02-27]
   - EOI bug in ikrs.httpd.ReadLimitInputStream solved [reaching the 
     virtual end did not necesarily cause -1 but 0 (zero) to be 

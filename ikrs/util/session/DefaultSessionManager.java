@@ -25,9 +25,9 @@ public class DefaultSessionManager<K,V,U>
     extends AbstractSessionManager<K,V,U> {
 
     /**
-     * Create a new DefaultSessionManager.
+     * Create a new DefaultSessionManager (not thread safe).
      *
-     * @param sessionFactory The session factory to use to create new sessions.
+     * @param sessionFactory         The session factory to use to create new sessions.
      * @param sessionTimeout_seconds The number of seconds a session may be untouched before it dies.
      *
      * @throws NullPointerException If the sessionFactory is null.
@@ -39,13 +39,29 @@ public class DefaultSessionManager<K,V,U>
 	       IllegalArgumentException {
 
 	super( sessionFactory, sessionTimeout_seconds );
-
-	/*if( sessionTimeout_seconds <= 0 )
-	    throw new IllegalArgumentException( "The manager's session timeout must be greater than zero." );
-
-	this.sessionTimeout_seconds = sessionTimeout_seconds;
-	*/
     }
+
+
+    /**
+     * Create a new DefaultSessionManager.
+     *
+     * @param sessionFactory         The session factory to use to create new sessions.
+     * @param sessionTimeout_seconds The number of seconds a session may be untouched before it dies.
+     * @param threadSafe             If set to true the internal session map will be 
+     *                               synchronized (thread safe).
+     *
+     * @throws NullPointerException If the sessionFactory is null.
+     * @throws IllegalArgumentException If sessionTimeout_seconds <= 0.
+     **/
+    public DefaultSessionManager( SessionFactory<K,V,U> sessionFactory,
+				  int sessionTimeout_seconds,
+				  boolean threadSafe ) 
+	throws NullPointerException,
+	       IllegalArgumentException {
+
+	super( sessionFactory, sessionTimeout_seconds, threadSafe );
+    }
+
     
     //--- BEGIN --------------------------- SessionManager ----------------------------------------
     /**

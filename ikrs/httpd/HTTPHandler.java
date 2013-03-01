@@ -223,7 +223,8 @@ public class HTTPHandler
 		    getClass().getName(),
 		    "[Init SessionManager] Creating the session manager (sessionMaxAge=" + sessionMaxAge + ").");
 	this.sessionManager                     = new DefaultSessionManager<String,BasicType,HTTPConnectionUserID>( sessionFactory, 
-														    sessionMaxAge  // max-age for sessions in seconds
+														    sessionMaxAge,  // max-age for sessions in seconds
+														    true  // threadSafe
 														    );
 
 	logger.log( Level.INFO,

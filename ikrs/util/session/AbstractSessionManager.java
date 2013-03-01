@@ -14,6 +14,7 @@ package ikrs.util.session;
  * @version 1.0.0
  **/
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,20 +39,38 @@ public abstract class AbstractSessionManager<K,V,U>
     /**
      * A map containing the sessions.
      **/
-    private TreeMap<UUID,Session<K,V,U>> sessionIDMap;
+    private Map<UUID,Session<K,V,U>> sessionIDMap;
 
     /**
      * A map containing the sessions, accessible by their user IDs.
      **/
-    private TreeMap<U,Session<K,V,U>> sessionUserMap;
+    private Map<U,Session<K,V,U>> sessionUserMap;
 
+
+    /**
+     * Create a new AbstractSessionManager (not thread safe).
+     *
+     * @param sessionFactory         The session factory to use (must not be null).
+     * @param sessionTimeout_seconds The session timeout to be used (seconds).
+     **/
+    protected AbstractSessionManager( SessionFactory<K,V,U> sessionFactory,
+				      int sessionTimeout_seconds ) 
+	throws NullPointerException {
+
+	this( sessionFactory, sessionTimeout_seconds, false );
+    }
 
     /**
      * Create a new AbstractSessionManager.
      *
+     * @param sessionFactory         The session factory to use (must not be null).
+     * @param sessionTimeout_seconds The session timeout to be used (seconds).
+     * @param threadSafe             If set to true the internal session map will be 
+     *                               synchronized (thread safe).
      **/
     protected AbstractSessionManager( SessionFactory<K,V,U> sessionFactory,
-				      int sessionTimeout_seconds) 
+				      int sessionTimeout_seconds,
+				      boolean threadSafe ) 
 	throws NullPointerException {
 
 	super();
@@ -65,6 +84,14 @@ public abstract class AbstractSessionManager<K,V,U>
 
 	this.sessionIDMap           = new TreeMap<UUID,Session<K,V,U>>();
 	this.sessionUserMap         = new TreeMap<U,Session<K,V,U>>();
+
+	// Synchronize?
+	if( threadSafe ) {
+
+	    this.sessionIDMap   = Collections.synchronizedMap( this.sessionIDMap );
+	    this.sessionUserMap = Collections.synchronizedMap( this.sessionUserMap );
+
+	}
     }
 
     /**
@@ -74,7 +101,7 @@ public abstract class AbstractSessionManager<K,V,U>
      *
      * @return The internal session-by-ID map.
      **/
-    protected TreeMap<UUID,Session<K,V,U>> getSessionIDMap() {
+    protected Map<UUID,Session<K,V,U>> getSessionIDMap() {
 	return this.sessionIDMap;
     }
 
@@ -86,7 +113,7 @@ public abstract class AbstractSessionManager<K,V,U>
      *
      * @return The internal session-by-userID map.
      **/
-    protected TreeMap<U,Session<K,V,U>> getSessionUserMap() {
+    protected Map<U,Session<K,V,U>> getSessionUserMap() {
 	return this.sessionUserMap;
     }
 

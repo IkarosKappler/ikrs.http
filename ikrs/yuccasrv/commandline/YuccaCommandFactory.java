@@ -74,7 +74,15 @@ public class YuccaCommandFactory
 	throws UnknownCommandException,
 	CommandStringIncompleteException {
 
-	YuccaCommand cmd;
+	YuccaCommand cmd = null;
+	if( this.getParentFactory() != null ) {
+	    try {
+		return this.getParentFactory().make( name, params );
+	    } catch( UnknownCommandException e ) {
+		// NOOP (try to recognize other known commands)
+	    }
+	} 
+
 	if( name.equalsIgnoreCase("LISTEN") || name.equalsIgnoreCase("BIND") ) 
 	    cmd = new CommandListen();
 	else if( name.equalsIgnoreCase("HELP") || name.equalsIgnoreCase("?") ) 
@@ -89,8 +97,6 @@ public class YuccaCommandFactory
 	    cmd = new CommandWarranty();
 	else if( name.equalsIgnoreCase("STATUS") ) 
 	    cmd = new CommandStatus();
-	else if( this.getParentFactory() != null ) 
-	    return this.getParentFactory().make( name, params );
 	else
 	    throw new UnknownCommandException( "Unknown command: '"+name+"'.", name );
 

@@ -180,8 +180,10 @@ public class HTTPHandler
     public HTTPHandler() {
 	super();
 	
+	// Better not override the logger's log level!
+	// It should be trusted that the passed log level is the desired one.
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
-	this.logger.setLevel( Level.WARNING );
+	
 
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
 								      true   // allowsMultipleChildNames

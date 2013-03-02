@@ -81,7 +81,7 @@ public class CommandHelp
 
 	StringBuffer b = new StringBuffer( "Available commands: " );
 	java.util.Set<Command> supportedCommands = this.yuccaCommandFactory.getSupportedCommands();
-	System.out.println( getClass() + " supported commands: " + supportedCommands );
+	//System.out.println( getClass() + " supported commands: " + supportedCommands );
 
 	
 	Iterator<Command> iter = supportedCommands.iterator();

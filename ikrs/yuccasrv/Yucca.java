@@ -94,7 +94,7 @@ public class Yucca
 					  1024*1024,          // files should not be bigger than 1MB
 					  1,                  // one file per log
 					  false               // do not append
-					  ) ;
+					  );
 	fh.setFormatter( new YuccaLogFormatter() );
 	this.logger.addHandler( fh );
 	/* Create a new stream handler that prints the debug data into System.out */
@@ -106,6 +106,7 @@ public class Yucca
 	this.logger.setLevel( Level.SEVERE );
 	
 	/* Create ther bind manager with the configured logger! */
+	//this.bindManager = new BindManager();
 	this.bindManager = new BindManager( new DefaultCustomLogger(Constants.DEFAULT_LOGGER_NAME) );
 
 	/* Create a child logger for the bind manager */

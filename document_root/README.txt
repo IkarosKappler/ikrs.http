@@ -3,6 +3,11 @@
 
 
 TO DO:
+[2013-03-02]
+ - The STATUS command prints the current system configuration; the
+   output also prints sensitive data such as the keystore and truststore
+   passwords!
+
 [2013-03-01]
  - [DONE 2013-03-02]
    The Log-Level passed at system start does not take effect.
@@ -51,7 +56,8 @@ TO DO:
 [2013-02-25]
  - Build a customized ikrs.httpd-help command.
  - Build a structure that allows to create a Rewrite-Engine.
- - Change YuccaCommadFactory's command lookup order: parent commands 
+ - [DONE 2013-03-02]
+   Change YuccaCommadFactory's command lookup order: parent commands 
    first, subclasses' commands later (make it possible to override 
    existing commands).
  - Think about the commandline- and command-factory interfaces one or 

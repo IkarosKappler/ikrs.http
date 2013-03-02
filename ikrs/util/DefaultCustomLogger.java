@@ -37,6 +37,14 @@ public class DefaultCustomLogger
 		     String trace,
 		     String msg ) {
 
+	/*
+	System.out.println( ".......###" + 
+			    LogManager.getLogManager().getLogger( this.loggerName ).getLevel() + 
+			    " [" + level + "]" + 
+			    ": " + 
+			    msg );
+	*/
+
 	LogManager.getLogManager().getLogger( this.loggerName ).log( level, trace + " " + msg );
 
     }

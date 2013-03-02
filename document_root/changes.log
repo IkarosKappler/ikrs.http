@@ -2,6 +2,9 @@
 [2013-03-02]
   - Solved the logger's log level issue; both (yucca and ikrs.http) now
     use the same logger instance.
+  - Changed YuccaCommadFactory's command lookup order: parent commands 
+    first, subclasses' commands later (makes it possible to override 
+    existing commands).
 
 [2013-03-01]
   - Enhanced the ikrs.util.session.Default- and AbstractSessionManager

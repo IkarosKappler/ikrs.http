@@ -82,8 +82,6 @@ public class HTTPHandler
     extends TCPAdapter 
     implements RejectedExecutionHandler {
 
-    //    private boolean inited = false;
-
 
     protected static final String[] SUPPORTED_METHODS = new String[] {
 	Constants.HTTP_METHOD_GET,
@@ -183,7 +181,7 @@ public class HTTPHandler
 	super();
 	
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
-	this.logger.setLevel( Level.ALL );
+	this.logger.setLevel( Level.WARNING );
 
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
 								      true   // allowsMultipleChildNames

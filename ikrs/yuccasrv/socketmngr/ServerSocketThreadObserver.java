@@ -5,7 +5,7 @@ package ikrs.yuccasrv.socketmngr;
  * all important server socket events.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-22
  * @version 1.0.0
  **/

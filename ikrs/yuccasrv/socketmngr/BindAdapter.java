@@ -10,7 +10,7 @@ package ikrs.yuccasrv.socketmngr;
  *   socket events.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-24
  * @version 1.0.0
  **/

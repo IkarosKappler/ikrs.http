@@ -5,7 +5,7 @@ package ikrs.yuccasrv.socketmngr;
  * from the bind manager (server opened, incoming connection, server error,
  * server closed).
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-23
  * @version 1.0.0
  **/

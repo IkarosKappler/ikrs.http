@@ -5,7 +5,7 @@ package ikrs.yuccasrv.socketmngr;
  * basic server into a concurrent thread.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-22
  * @version 1.0.0
  **/

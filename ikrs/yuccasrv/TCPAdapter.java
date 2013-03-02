@@ -5,7 +5,7 @@ package ikrs.yuccasrv;
  * serverAcceptedTCPConnection( BindManager source, UUID socketID, Socket sock )
  * method.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-15
  * @version 1.0.0
  **/

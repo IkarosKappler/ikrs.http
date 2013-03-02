@@ -9,6 +9,10 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-02]
+  - Solved the logger's log level issue; both (yucca and ikrs.http) now
+    use the same logger instance.
+
 [2013-03-01]
   - Enhanced the ikrs.util.session.Default- and AbstractSessionManager
     by adding a new (optional) 'threadSafe' param; this allows to tell

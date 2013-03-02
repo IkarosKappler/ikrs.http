@@ -3,7 +3,7 @@ package ikrs.yuccasrv;
 /**
  * This is the main class of the Yucca server.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-02
  * @version 1.0.0
  **/
@@ -76,8 +76,6 @@ public class Yucca
 
 	super();
 
-
-	this.bindManager = new BindManager();
 	
 	this.basicEnvironment = environment;
 
@@ -107,12 +105,14 @@ public class Yucca
 	/* Set the default log level */
 	this.logger.setLevel( Level.SEVERE );
 	
+	/* Create ther bind manager with the configured logger! */
+	this.bindManager = new BindManager( new DefaultCustomLogger(Constants.DEFAULT_LOGGER_NAME) );
 
 	/* Create a child logger for the bind manager */
 	//Logger bindLogger = Logger.getAnonymousLogger();
 	//bindLogger.setParent( this.logger );
 	//this.bindManager.setLogger( bindLogger );
-	this.bindManager.setLogger( new DefaultCustomLogger(this.bindManager.getClass().getName()) );
+	//this.bindManager.setLogger( new DefaultCustomLogger(this.bindManager.getClass().getName()) );
 
 	/* Finally listen for events to report them as FINEST */
 	this.bindManager.addBindListener( this );
@@ -1017,9 +1017,13 @@ public class Yucca
 
 	    try {
 		yucca.getLogger().setLevel( Level.parse(elem.getString()) );
-		System.out.println( "Log level is "+yucca.getLogger().getLevel() );
+		yucca.getLogger().log( Level.INFO,
+				       "Log level set to " + yucca.getLogger().getLevel() );
+		//System.out.println( "Log level set to "+yucca.getLogger().getLevel() );
 	    } catch( IllegalArgumentException e ) {
-		yucca.getLogger().warning( "The passed log level '"+elem+"' is not valid." );
+		yucca.getLogger().log( Level.SEVERE,
+				       "The passed log level '"+elem+"' is not valid." );
+		//e.printStackTrace();
 	    }
 	}
 

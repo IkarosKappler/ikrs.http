@@ -12,7 +12,7 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "1.0.2.alpha";
+    public static final String VERSION                                           = "1.0.3.alpha";
     public static final String HTTP                                              = "HTTP";
     public static final String SUPPORTED_HTTP_VERSION                            = "1.1";
 
@@ -26,8 +26,16 @@ public class Constants {
     public static final String HTTP_METHOD_OPTIONS                               = "OPTIONS";
     public static final String HTTP_METHOD_CONNECT                               = "CONNECT";
 
-    /* For the LogManager. */
-    public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
+    /* For the LogManager. 
+     * Not that Yucca's log level is not automatically applied
+     * to the HTTPd-logger; this is why this value was changed
+     * from "DEFAULT_HTTP_LOGGER" to "DEFAULT_YUCCA_LOGGER".
+     *
+     * It's a small trick that both (yucca and ikrs.httpd) use
+     * the same logger instance.
+     */
+    //public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
+    public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_YUCCA_LOGGER";
 
     /* The http yucca-driven config constants */
     public static final String KEY_HTTPCONFIG                                    = "httpConfig";

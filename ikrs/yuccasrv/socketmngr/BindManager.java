@@ -9,7 +9,7 @@ package ikrs.yuccasrv.socketmngr;
  * the socket from the inner table.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-03-25
  * @version 1.0.0
  **/

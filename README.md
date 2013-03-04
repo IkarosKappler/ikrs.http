@@ -9,9 +9,18 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-04]
+  - The STATUS command prints the current system configuration; there is
+    a fix that hides sensitive data such das keystore and truststore 
+    passwords (otherwise the passwords would be written into the log 
+    files!).
+
 [2013-03-02]
   - Solved the logger's log level issue; both (yucca and ikrs.http) now
     use the same logger instance.
+  - Changed YuccaCommadFactory's command lookup order: parent commands 
+    first, subclasses' commands later (makes it possible to override 
+    existing commands).
 
 [2013-03-01]
   - Enhanced the ikrs.util.session.Default- and AbstractSessionManager

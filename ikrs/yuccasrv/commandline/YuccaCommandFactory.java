@@ -22,6 +22,7 @@ public class YuccaCommandFactory
     extends DefaultCommandFactory
     implements CommandFactory<Command> {
 
+
     /* The actual yucca server */
     private Yucca
 	server;

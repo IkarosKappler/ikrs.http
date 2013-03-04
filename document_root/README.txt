@@ -4,7 +4,8 @@
 
 TO DO:
 [2013-03-02]
- - The STATUS command prints the current system configuration; the
+ - [DONE 2013-03-04]
+   The STATUS command prints the current system configuration; the
    output also prints sensitive data such as the keystore and truststore
    passwords!
 
@@ -65,8 +66,9 @@ TO DO:
    params (Could the DefaultCommandFactory eventually take some type 
    params)?
  - Store the supported yucca commands inside global constants (affects
-   YuccaCommandFactory and all custom command classes.
- - The ikrs.util.Command interface has a new method: 
+   YuccaCommandFactory and all custom command classes).
+ - [2013-03-02 actually this was changed before]
+   The ikrs.util.Command interface has a new method: 
    getSupportedCommands(). This method should be used in yucca's HELP
    command.
  - [DONE 2013-02-25]

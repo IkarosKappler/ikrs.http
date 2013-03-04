@@ -386,10 +386,84 @@ public class ServerSocketThread
     public String getStatusString() {
 	StringBuffer b = new StringBuffer();
 	b.append( "bindAddress=" ).append(this.bindAddress.toString() ).append( ",\n" ).
-	      append( "bindPort=" ).append( this.bindPort ).append( ",\n" ).
-	      append( "bindSettings=" ).append( this.bindSettings.toString() ).append( ",\n" ).
-	      append( "uuid=" ).append( this.uuid );
+	    append( "bindPort=" ).append( this.bindPort ).append( ",\n" );
+	this.bindSettingsToSecureStatusString( null, this.bindSettings, b ).append( ",\n" );
+	//b.append( "bindSettings=" ).append( this.bindSettings.toString() ).append( ",\n" ).
+	b.append( "uuid=" ).append( this.uuid );
 	return b.toString();
+    }
+
+    private StringBuffer bindSettingsToSecureStatusString( String childName,
+							   Environment<String,BasicType> child,
+							   StringBuffer b ) {
+
+	// Warning: do NOT print the SSL keyStore- and trustStore passwords!
+	//          (otherwise they would appear in the log files in plain text)
+	if( childName != null 
+	    &&
+	    childName.equalsIgnoreCase(Constants.CONFIG_SERVER_LISTEN_PROPERTY) ) {
+
+	    BasicType wrp_propertyName = child.get( Constants.CONFIG_SERVER_LISTEN_PROPERTY_NAME );
+	    String propertyName        = wrp_propertyName.getString();
+	    if( propertyName.equalsIgnoreCase(Constants.CONFIG_SERVER_SSL_KEYSTOREPASSWORD) 
+		|| 
+		propertyName.equalsIgnoreCase(Constants.CONFIG_SERVER_SSL_TRUSTSTOREPASSWORD) ) {
+
+		b.append( childName + ": { ****** }" );
+		return b;
+
+	    }
+
+	}
+
+	// else: print normal
+	if( childName != null )
+	    b.append( childName ).append( ": { " );
+
+	Iterator<Map.Entry<String,BasicType>> iter = child.entrySet().iterator();
+	int i = 0;
+	while( iter.hasNext() ) {
+
+	    Map.Entry<String,BasicType> entry = iter.next();
+	    
+	    if( entry.getKey() != null ) {
+
+		if( i > 0 )
+		    b.append( ", " );
+
+		if( entry.getKey().equalsIgnoreCase(Constants.CONFIG_SERVER_SSL_KEYSTOREPASSWORD) ) {
+		    b.append( entry.getKey() ).append( "=" ).append( "******" );
+		} else if( entry.getKey().equalsIgnoreCase(Constants.CONFIG_SERVER_SSL_TRUSTSTOREPASSWORD) ) {
+		    b.append( entry.getKey() ).append( "=" ).append( "******" );
+		} else {
+		    b.append( entry.getKey() ).append( "=" ).append( entry.getValue() );
+		}
+
+	    } // END if
+
+	    i++;
+
+	} // END while
+
+	if( childName != null )
+	    b.append( " }" );
+
+
+	// Print all 'property' children (recursive call).
+	List<Environment<String,BasicType>> properties = child.getChildren(Constants.CONFIG_SERVER_LISTEN_PROPERTY);
+	for( i = 0; i < properties.size(); i++ ) {
+
+	    if( i > 0 )
+		b.append( ",\n" );
+	    b.append( " " );
+	    bindSettingsToSecureStatusString( Constants.CONFIG_SERVER_LISTEN_PROPERTY,
+					      properties.get(i),
+					      b );
+
+	}
+	    
+
+	return b;
     }
 
 }

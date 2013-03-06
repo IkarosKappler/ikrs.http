@@ -121,30 +121,36 @@ public class IkarosExampleHandler
 	Session<String,BasicType,ikrs.httpd.HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );
 	
 
-	String data = 
-	    "This is a test\n" +
-	    "--------------\n" +
+	String data =         
+	    makeDoubleLineBox( "                         This is a test                        " ) + "\n" +
+	    //"--------------\n" +
 	    "\n" +
 	    "This is the example output of a customized java written file-/directory- handler:\n" +
 	    "Class=" + this.getClass().getName() + "\n" +
 	    "\n" +
 	    "\n" +
-	    "You want to access URI: " + requestURI.toString() + "\n" +
+	    "You want to access URI:  " + requestURI.toString() + "\n" +
 	    "File exists in local FS: " + file.exists() +"\n" +
+	    "DOCUMENT_ROOT:           " + this.getHTTPHandler().getDocumentRoot().getAbsolutePath() + "\n" +
 	    "Request Headers: \n";
 	for( int i = 0; i < headers.size(); i++ )
 	    data += "   " + headers.get(i) + "\n";
 
 	data +=
-	    "Request Method:      " + headers.getRequestMethod() + "\n" +
-	    "Request Version:     " + headers.getRequestVersion() + "\n" +
-	    "Request Protocol:    " + headers.getRequestProtocol() + "\n" +
-	    "Request URI:         " + headers.getRequestURI() + "\n" +
-	    "POST data available: " + (postData!=null) + "\n" +
+	    "Request Method:          " + headers.getRequestMethod() + "\n" +
+	    "Request Version:         " + headers.getRequestVersion() + "\n" +
+	    "Request Protocol:        " + headers.getRequestProtocol() + "\n" +
+	    "Request URI:             " + headers.getRequestURI() + "\n" +
+	    "POST data available:     " + (postData!=null) + "\n" +
 	    "\n" +
-	    "Session:             " + session + "\n" +
-	    "Testvalue:           " + session.get("TEST") + "\n" +
-	    "                     (this value is null on first call or if your session expired)\n" +
+	    "Session:                 " + session + "\n" +
+	    "Testvalue:               " + session.get("TEST") + "\n" +
+	    "                         (this value is null on first call or if your session expired)\n" +
+	    "\n"+
+	    makeSingleLineBox( "Note that this is a TCP/HTTP session, _not_ a browser session! " ) + "\n" + 
+	    "\n" +
+	    "\n" +
+	    makeFancyLineBox(  "   Oh, did I mention I that love to make fancy text boxes? :)  " ) + "\n" +
 	    "\n" +
 	    "\n";
 
@@ -156,14 +162,123 @@ public class IkarosExampleHandler
 							    data.getBytes(),
 							    false   // no need to use fair locks
 							    );
+
+	// I want this output to be displayed as plain text.
+	// One other posible way would be
+	//   MIMEType mimeType = new MIMEType( "text/plain" );
 	MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
 	resource.getMetaData().setMIMEType( mimeType );
+	resource.getMetaData().setCharsetName( "UTF-8" );
 		
 	return resource;
     }
-
     //--- END -------------------------- FileHandler implementation ------------------------------
 
+
+    private String makeDoubleLineBox( String line ) {
+
+	line = " " + line + " ";
+	StringBuffer b = new StringBuffer();
+
+	// Characters in US-ASCII (extended)
+	// DOES NOT WORK!
+	/*
+	b.append( (char)201 );  // left upper corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( (char)205 );  // double horizonal line
+	b.append( (char)187 );  // right upper corner
+
+	b.append( (char)186 );  // double vertical line
+	b.append( line );
+	b.append( (char)186 );
+
+	b.append( (char)200 );  // left lower corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( (char)205 );  // double horizonal line
+	b.append( (char)188 );  // right lower corner
+	*/
+	
+	// Characters in Unicode
+	// Does work :)
+	b.append( '\u2554' );  // left upper corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2550' );  // double horizonal line
+	b.append( '\u2557' );  // right upper corner
+	b.append( "\n" );
+
+	b.append( '\u2551' );  // double vertical line
+	b.append( line );
+	b.append( '\u2551' );
+	b.append( "\n" );
+
+	b.append( '\u255A' );  // left lower corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2550' );  
+	b.append( '\u255D' );  // right lower corner
+	//b.append( "\n" );
+
+	return b.toString();
+    }
+
+
+    private String makeSingleLineBox( String line ) {
+
+	line = " " + line + " ";
+	StringBuffer b = new StringBuffer();
+	
+	// Characters in Unicode
+	// Does work :)
+	b.append( '\u250C' );  // left upper corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2500' );  // single horizonal line
+	b.append( '\u2510' );  // right upper corner
+	b.append( "\n" );
+
+	b.append( '\u2502' );  // single vertical line
+	b.append( line );
+	b.append( '\u2502' );
+	b.append( "\n" );
+
+	b.append( '\u2514' );  // left lower corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2500' );  
+	b.append( '\u2518' );  // right lower corner
+	//b.append( "\n" );
+
+	return b.toString();
+    }
+
+
+    private String makeFancyLineBox( String line ) {
+
+	line = " " + line + " ";
+	StringBuffer b = new StringBuffer();
+	
+	// Characters in Unicode
+	// Does work :)
+	b.append( '\u250C' );  // left upper corner
+	b.append( '\u257C' );  // left-2-right: fine-2-bold
+	for( int i = 0; i < line.length()-2; i++ )
+	    b.append( '\u2501' );  // single bold horizonal line
+	b.append( '\u257E' );  // left-2-right: bold-2-fine
+	b.append( '\u2510' );  // right upper corner
+	b.append( "\n" );
+
+	b.append( '\u2502' );  // single vertical line
+	b.append( line );
+	b.append( '\u2502' );
+	b.append( "\n" );
+
+	b.append( '\u2514' );  // left lower corner
+	b.append( '\u257C' );  // left-2-right: fine-2-bold
+	for( int i = 0; i < line.length()-2; i++ )
+	    b.append( '\u2501' );  
+	b.append( '\u257E' );  // left-2-right: bold-2-fine
+	b.append( '\u2518' );  // right lower corner
+	//b.append( "\n" );
+
+	return b.toString();
+    }
 
 
 }

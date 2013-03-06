@@ -9,6 +9,14 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-06]
+  - Added the response-characterSet (name) to the ResourceMetaData.
+  - Slighty modified the custom_directory_handler example by adding
+    the {DOCUMENT_ROOT} to the output; also added some fancy text-box
+    stuff ;) ... actually this is the most important example class as it
+    shows how to extend the HTTP handler without modifying the handler
+    code!
+
 [2013-03-04]
   - The STATUS command prints the current system configuration; there is
     a fix that hides sensitive data such das keystore and truststore 

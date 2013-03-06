@@ -3,6 +3,9 @@
 
 
 TO DO:
+[2013-03-04]
+ - Write a short documentation for all implemented commands.
+
 [2013-03-02]
  - [DONE 2013-03-04]
    The STATUS command prints the current system configuration; the

@@ -325,7 +325,8 @@ public class OK
 
        
 	    String response_mimeType    = resource.getMetaData().getMIMEType().getContentType();
-	    BasicType response_charSet  = this.getHTTPHandler().getGlobalConfiguration().get( Constants.KEY_DEFAULTCHARACTERSET );
+	    String response_charset     = resource.getMetaData().getCharsetName();
+	    // BasicType wrp_response_charSet  = this.getHTTPHandler().getGlobalConfiguration().get( Constants.KEY_DEFAULTCHARACTERSET );
 
 	    // Check if the content type is overridden by the htaccess file
 	    BasicType wrp_addedType     = optionalReturnSettings.get( Constants.KEY_HTACCESS_ADDEDTYPE );
@@ -341,14 +342,21 @@ public class OK
 
 
 
-	    if( response_charSet == null ) {
+	    if( response_charset == null ) {
 		
-		// Default charset would be "iso-8859-1" :/
-		// ... but iso-8859-* is sh%%
-		response_charSet = new BasicStringType( "utf-8" ); 
-		this.getHTTPHandler().getLogger().log( Level.FINE,
-						       getClass().getName() + ".prepare(...)",
-						       "There is no character encoding specified for the resource. Using default value '" + response_charSet.getString() + "'." );
+		// Get global confgured default charset
+		BasicType wrp_default_charset  = this.getHTTPHandler().getGlobalConfiguration().get( Constants.KEY_DEFAULTCHARACTERSET );
+		if( wrp_default_charset == null ) {
+		    // Default charset would be "iso-8859-1" :/
+		    // ... but iso-8859-* is sh%%
+		    //response_charSet = new BasicStringType( "utf-8" ); 
+		    response_charset = "utf-8";
+		    this.getHTTPHandler().getLogger().log( Level.FINE,
+							   getClass().getName() + ".prepare(...)",
+							   "There is no character encoding specified for the resource. Using default value '" + response_charset + "'." );
+		} else {
+		    response_charset = wrp_default_charset.getString();
+		}
 
 	    }
 
@@ -363,7 +371,7 @@ public class OK
 	    super.addResponseHeader( "Content-Length",    Long.toString(resource.getLength()) );
 	    super.addResponseHeader( "Content-Language",  "en" );
 	    super.addResponseHeader( "Connection",        "close" );
-	    super.addResponseHeader( "Content-Type",      response_mimeType + "; charset=" + response_charSet.getString() );
+	    super.addResponseHeader( "Content-Type",      response_mimeType + "; charset=" + response_charset );
 
 	    if( authLine != null ) {
 		int max_age  = 0; // 60?

@@ -98,7 +98,7 @@ public class DefaultResponseBuilder
 
 	    // Validate header PROTOCOL
 	    if( protocol == null || !protocol.equals(Constants.HTTP) )
-		throw new UnsupportedVersionException( "The server only accepts " + Constants.HTTP + " requests. Protocol '" + protocol + "' is not allowed." );
+		throw new HeaderFormatException( "The server only accepts " + Constants.HTTP + " requests. Protocol '" + protocol + "' is not allowed." );
 
 
 	    // Validate header VERSION

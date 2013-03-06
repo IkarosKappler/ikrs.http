@@ -244,7 +244,10 @@ public final class HTTPHeaderLine
     }
 
     public String toString() {
-	return this.key + ": " + this.value;
+	if( this.value == null )
+	    return this.key;
+	else
+	    return this.key + ": " + this.value;
     }
 
 }

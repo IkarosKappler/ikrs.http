@@ -27,19 +27,15 @@ public class ResourceMetaData {
     private HTTPHeaders overrideHeaders;
 
     /**
-     * The resource's URI.
-     **/
-    //private URI relativeURI;
-
-    /**
      * The resource's last modification date.
      **/
     private Date lastModified;
 
+    
     /**
-     * The resource's length (int bytes).
+     * The resource's charset (name, such as "UTF-8" or "ISO-8859-1").
      **/
-    //private long length;
+    private String charsetName;
 
 
     public ResourceMetaData() {
@@ -78,6 +74,13 @@ public class ResourceMetaData {
     public Date getLastModified() {
 	return this.lastModified;
     }
+
+    public void setCharsetName( String name ) {
+	this.charsetName = name;
+    }
     
+    public String getCharsetName() {
+	return this.charsetName;
+    }
 
 }

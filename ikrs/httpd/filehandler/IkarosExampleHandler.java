@@ -150,7 +150,7 @@ public class IkarosExampleHandler
 	    makeSingleLineBox( "Note that this is a TCP/HTTP session, _not_ a browser session! " ) + "\n" + 
 	    "\n" +
 	    "\n" +
-	    makeFancyLineBox(  "   Oh, did I mention I that love to make fancy text boxes? :)  " ) + "\n" +
+	    makeFancyLineBox(  "      Did I mention that I love to make fancy text boxes?      " ) + "\n" +
 	    "\n" +
 	    "\n";
 

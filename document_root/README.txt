@@ -3,8 +3,21 @@
 
 
 TO DO:
+[2013-03-09]
+ - Implement a VERSION command.
+ - The ikrs.util.Command interface requires some self descriptive 
+   methods, such as getDescription() oder describe( arg0, arg1, ... )?
+ - Enhance the HELP command by adding the descriptive parts.
+ - Implement the HTTPD STATUS command (method already exists but is
+   still empty).
+ - [DONE 2013-03-09]
+   Implement a LOGLEVEL command for yucca.
+ - [DONE 2013-03-09]
+   Bild a HTTPD VERSION command.
+
 [2013-03-04]
- - Write a short documentation for all implemented commands.
+ - [DONE 2013-03-09]
+   Write a short documentation for all implemented commands.
 
 [2013-03-02]
  - [DONE 2013-03-04]
@@ -320,7 +333,7 @@ TO DO:
    ... some HTML template stuff or a configurable HTML list generator or 
    something like that.
 
- - YUCCA's security manager must be configured (I think anyone can flood 
+ - YUCCA's security manager must be configured (I think anyone can flood
    me right now).
 
 
@@ -331,7 +344,8 @@ Important Notes
 
 Use PHP-CGI instead of PHP-CLI
 ------------------------------
- - To enable PHP install the 'php-cgi' package (not the commandline interface 'php-cli' or just 'php').
+ - To enable PHP install the 'php-cgi' package (not the commandline 
+   interface 'php-cli' or just 'php').
    Example:
    sudo apt-get install php5-cgi
 
@@ -339,24 +353,29 @@ Use PHP-CGI instead of PHP-CLI
 
 The "File not found" issue
 --------------------------
- - If the PHP interpreter is prompting on each PHP file you want to run (using your browser):
+ - If the PHP interpreter is prompting on each PHP file you want to run 
+   (using your browser):
 
    "<b>Security Alert!</b> The PHP CGI cannot be accessed directly"
 
-   The CGI handler requires to set some environment vars for php-cgi. By default this is not allowed
-   by the 'cgi.force_redirect' directive in your php.ini (php-cgi, NOT php-cli!).
+   The CGI handler requires to set some environment vars for php-cgi. By 
+   default this is not allowed by the 'cgi.force_redirect' directive in 
+   your php.ini (php-cgi, NOT php-cli!).
    
    Locate your php-cgi configuration file, something like
    /etc/php5/cgi/php.ini,  
    near line ~834
-   ; cgi.force_redirect is necessary to provide security running PHP as a CGI under
-   ; most web servers.  Left undefined, PHP turns this on by default.  You can
+   ; cgi.force_redirect is necessary to provide security running PHP as 
+   a CGI under
+   ; most web servers.  Left undefined, PHP turns this on by default.  
+   You can
    ; turn it off here AT YOUR OWN RISK
    ; **You CAN safely turn this off for IIS, in fact, you MUST.**
    ; http://php.net/cgi.force-redirect
    ;cgi.force_redirect = 1
 
-   Now set 'cgi.force_redirect' to 0 to allow modifications to php-cgi's environment:
+   Now set 'cgi.force_redirect' to 0 to allow modifications to php-cgi's 
+   environment:
    cgi.force_redirect = 0
 
 
@@ -368,8 +387,10 @@ The "File not found" issue
    you have to set the document-root in your php-cgi config file,
    near line ~804:
    ; The root of the PHP pages, used only if nonempty.
-   ; if PHP was not compiled with FORCE_REDIRECT, you SHOULD set doc_root
-   ; if you are running php as a CGI under any web server (other than IIS)
+   ; if PHP was not compiled with FORCE_REDIRECT, you SHOULD set 
+   doc_root
+   ; if you are running php as a CGI under any web server (other than 
+   IIS)
    ; see documentation for security issues.  The alternate is to use the
    ; cgi.force_redirect configuration below
    ; http://php.net/doc-root
@@ -379,16 +400,22 @@ The "File not found" issue
    Example:
    doc_root = "/home/your_user_name/java/document_root"
 
-   If this does not fix the problem add an additional document-root directive:
+   If this does not fix the problem add an additional document-root 
+   directive:
    server.document_root = "/home/your_user_name/java/document_root"
    
 
    Now near line ~850:
-   ; cgi.fix_pathinfo provides *real* PATH_INFO/PATH_TRANSLATED support for CGI.  PHP's
-   ; previous behaviour was to set PATH_TRANSLATED to SCRIPT_FILENAME, and to not grok
-   ; what PATH_INFO is.  For more information on PATH_INFO, see the cgi specs.  Setting
-   ; this to 1 will cause PHP CGI to fix its paths to conform to the spec.  A setting
-   ; of zero causes PHP to behave as before.  Default is 1.  You should fix your scripts
+   ; cgi.fix_pathinfo provides *real* PATH_INFO/PATH_TRANSLATED support 
+   for CGI.  PHP's
+   ; previous behaviour was to set PATH_TRANSLATED to SCRIPT_FILENAME, 
+   and to not grok
+   ; what PATH_INFO is.  For more information on PATH_INFO, see the cgi 
+   specs.  Setting
+   ; this to 1 will cause PHP CGI to fix its paths to conform to the 
+   spec.  A setting
+   ; of zero causes PHP to behave as before.  Default is 1.  You should 
+   fix your scripts
    ; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.
    ; http://php.net/cgi.fix-pathinfo
    ;cgi.fix_pathinfo=1
@@ -397,25 +424,30 @@ The "File not found" issue
    cgi.fix_pathinfo = 1
 
    
-   NOTE 1: The ikrs.http.filehandler.CGIHandler class will add an additional security check field
+   NOTE 1: The ikrs.http.filehandler.CGIHandler class will add an 
+   	   additional security check field
 	   REDIRECT_STATUS = 1
-   	   to the environment vars which will finally fix the "File not found" issue.
+   	   to the environment vars which will finally fix the "File not 
+	   found" issue.
 
-   NOTE 2: I only changed my config in /etc/php5/cgi/, I left /etc/php5/cli unchanged.
+   NOTE 2: I only changed my config in /etc/php5/cgi/, I left 
+   	   /etc/php5/cli unchanged.
 
 
 
 File-Upload issue: $_FILES is always empty
 ------------------------------------------
 
-As soon as PHP (CGI mode) is running there might be the problem of failing file uploads (HTTP POST):
-PHP's $_FILES array is always empty, even if the file data was successfully sent using HTTP POST 
-method.
-  (i)  Does you upload form use method="post" and enctype="multipart/form-data"? :)
+As soon as PHP (CGI mode) is running there might be the problem of 
+failing file uploads (HTTP POST):
+PHP's $_FILES array is always empty, even if the file data was 
+successfully sent using HTTP POST method.
+  (i)  Does you upload form use method="post" and 
+       enctype="multipart/form-data"? :)
   (ii) Check your php.ini (in /etc/php5/cgi):
     - Check if 'file_uploads' is enabled.
-    - Check if 'upload_tmp_dir' is set (to your system's tempfiles directory or a temp dir of your 
-      choice) [near line ~890].
+    - Check if 'upload_tmp_dir' is set (to your system's tempfiles 
+      directory or a temp dir of your choice) [near line ~890].
     - Check if your upload-file size does not exceed 'post_max_size'.
 
 
@@ -423,22 +455,25 @@ method.
 How to add custom file handlers
 ===============================  
 
-There are three basic steps required to add a custom file- or directory handler.
+There are three basic steps required to add a custom file- or directory 
+handler.
  (i)   You need to build your own handler class that implements the 
        ikrs.httpd.FileHandler interface.
        Optionally you might just want to extend the abstract class 
        ikrs.httpd.filehandlers.AbstractFileHandler; 
-       in that case you have to override the methods 'boolean requiresExistingFile()' 
-       and 'Resource process(...)'.
+       in that case you have to override the methods 
+       'boolean requiresExistingFile()' and 'Resource process(...)'.
 
        If you are not sure what to do just see the example handler in
        ikrs.httpd.filehandlers.IkarosExampleHandler.
 
 
- (ii)  You need to bind your handler into the system and assign an alias name.
-       Do this by editing the {USER_HOME}/.yuccasrv/filehandlers.ini file; add a new
-       line
-		<your_handler_alias> = <your_handler_class> [ <list_of_associated_file_extensions> ]
+ (ii)  You need to bind your handler into the system and assign an alias 
+       name.
+       Do this by editing the {USER_HOME}/.yuccasrv/filehandlers.ini 
+       file; add a new line
+	<your_handler_alias> = <your_handler_class> 
+			       [ <list_of_associated_file_extensions> ]
 		
        where
 	   - <your_handler_alias>                 can be any name (not including white spaces), but 
@@ -496,13 +531,122 @@ This is the user specific directory containing all configuration files required 
 
 {DOCUMENT_ROOT}/system/errors/Error.{STATUS_CODE}.html
 ------------------------------------------------------
- The error response files. If the file for a given error code does not exist the server will
- send an auto-generated response content.
+ The error response files. If the file for a given error code does not 
+ exist the server will send an auto-generated response content.
 
 
 {DOCUMENT_ROOT}/system/styles/directory.list.css
 ------------------------------------------------
  The stylesheet for HTML/XHTML directory listings.
+
+
+
+
+
+Realtime Commands
+=================
+
+
+HELP
+----
+ Prints a short summary of all available commands.
+ Indeed the HELP command could be a bit mor verbose; a more enhanced
+ version might come soon ...
+
+
+
+HTTPD
+-----
+ This is a customized command for the httpd module (added to yucca's
+ bind manager). Currently there is only one sub command, which is not
+ fully implemented:
+  - STATUS
+    ~~~~~~
+    Prints the current status of the HTTPd module.
+
+
+
+LICENSE
+-------
+ Prints the license information.
+
+
+
+LISTEN
+------
+ Add a new listening socket the yucca's bind manager:
+ LISTEN [-p <protocol>] [-b <backlog>] <host> <port>
+
+ If succeeded the bind manager fires a serverCreated() event and yucca
+ will print a bind summary containing the created socket's ID (this 
+ requires the log level to be at least set to Level.INFO; a command for
+ changing the level at runtime will be coming soon).
+ 
+ @See UNLISTEN <socketID>
+
+
+
+LOGLEVEL
+--------
+ Prints or changes the current log level.
+ LOGLEVEL [<level>]
+
+ Valid log levels are: 
+    - SEVERE (highest value)
+    - WARNING
+    - INFO
+    - CONFIG
+    - FINE
+    - FINER
+    - FINEST (lowest value) 
+
+ These are the same values as in java.util.logging.Level (see java docs
+ for further details).
+
+
+
+QUIT
+----
+ This command quits Yucca. This means that all listening sockets will 
+ be released, and the finalize() event will be fired to all running
+ server threads and to all bound listeners (such as the HTTPd module).
+
+
+
+STATUS
+------
+ Prints the current socket manager status summary containing basic 
+ information such as bind addresses, ports, socket IDs, SSL 
+ configuration, protocol information and backlog.
+ 
+ Since version 1.0.3 this command is secure and does not print any
+ sensitive data. 
+
+
+
+UNLISTEN
+--------
+ Releases a listening socket specified by the passed socket ID:
+ UNLISTEN <socketID>
+
+ If you don't know a listening socket's ID just use the STATUS
+ command. The socket ID is the unique number generated when the
+ socket was bound by LISTEN.
+
+
+
+VERSION
+--------
+ Prints the Yucca version number. This command does not take any
+ arguments.
+
+
+
+WARRANTY
+--------
+ Prints the warranty.
+
+
 
 
 

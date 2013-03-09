@@ -6,8 +6,14 @@ A free tiny java written http server.
 
 
 
+
 Changes
 =======
+
+[2013-03-09]
+  - Yucca command LOGLEVEL built.
+  - Yucca command VERSION built.
+  - Commandline documentation written (see README).
 
 [2013-03-06]
   - Added the response-characterSet (name) to the ResourceMetaData.

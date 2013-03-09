@@ -40,13 +40,16 @@ public class YuccaCommandFactory
 
 	this.server = server;
 
-	this.addSupportedCommand( new CommandListen() );
+	
 	this.addSupportedCommand( new CommandHelp( this, null, null ) );   // The help command needs to know its factory
-	this.addSupportedCommand( new CommandQuit() );
-	this.addSupportedCommand( new CommandUnlisten() );
 	this.addSupportedCommand( new CommandLicense() );
-	this.addSupportedCommand( new CommandWarranty() );
+	this.addSupportedCommand( new CommandListen() );
+	this.addSupportedCommand( new CommandLogLevel() );
+	this.addSupportedCommand( new CommandQuit() );
 	this.addSupportedCommand( new CommandStatus() );
+	this.addSupportedCommand( new CommandUnlisten() );
+	this.addSupportedCommand( new CommandVersion() );
+	this.addSupportedCommand( new CommandWarranty() );
     }
 
     /**
@@ -94,10 +97,14 @@ public class YuccaCommandFactory
 	    cmd = new CommandUnlisten();
 	else if( name.equalsIgnoreCase("LICENSE") ) 
 	    cmd = new CommandLicense();
+	else if( name.equalsIgnoreCase("LOGLEVEL") ) 
+	    cmd = new CommandLogLevel();
 	else if( name.equalsIgnoreCase("WARRANTY") ) 
 	    cmd = new CommandWarranty();
 	else if( name.equalsIgnoreCase("STATUS") ) 
 	    cmd = new CommandStatus();
+	else if( name.equalsIgnoreCase("VERSION") ) 
+	    cmd = new CommandVersion();
 	else
 	    throw new UnknownCommandException( "Unknown command: '"+name+"'.", name );
 
@@ -105,12 +112,7 @@ public class YuccaCommandFactory
 	cmd.setName( name );
 	cmd.setParams( params );
 	cmd.setFactory( this );
-	
-	/*
-	return new YuccaCommand( this,    // This will make the server instance accessible to the created command
-				 name, 
-				 params );
-	*/
+
 	return cmd;
     }
     //---END------------------------- AbstractCommandFactory implementation -----------------------

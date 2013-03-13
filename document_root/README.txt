@@ -4,11 +4,11 @@
 
 TO DO:
 [2013-03-13]
- - Yucca's command lint has not (!) yet a finalize() method! The thread 
+ - Yucca's command line has not (!) yet a finalize() method! The thread 
    cannot be interrupted.
 
 [2013-03-11]
- - [Done 2013-03-13]
+ - [DONE 2013-03-13]
    Yucca's command line currently does not allow additional white space
    chars between command name and additional arguments.
 
@@ -16,7 +16,8 @@ TO DO:
  - The error documents have a wrong favicon URI.
 
 [2013-03-09]
- - Implement a VERSION command.
+ - [DONE 2013-03-10]
+   Implement a VERSION command.
  - The ikrs.util.Command interface requires some self descriptive 
    methods, such as getDescription() oder describe( arg0, arg1, ... )?
  - Enhance the HELP command by adding the descriptive parts.

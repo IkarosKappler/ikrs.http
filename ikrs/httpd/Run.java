@@ -14,7 +14,7 @@ public class Run {
 
     public static void main( String[] argv ) {
 
-	LocalCommandFactory myCommandFactory = new LocalCommandFactory();
+	ModuleCommandFactory myCommandFactory = new ModuleCommandFactory();
 
 	Yucca yucca = Yucca.runYucca( argv );
 	yucca.getCommandLine().getCommandFactory().setParentFactory( myCommandFactory );

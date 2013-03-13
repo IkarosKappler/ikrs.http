@@ -15,6 +15,8 @@ Changes
    chars between command name and additional arguments.
    Actually it was a regex problem in the 
    ikrs.util.AbstractCommandFactory.parse(...) method.
+ - Renamed ikrs.http.LocalCommand to ModuleCommand, and also it's 
+   factory.
 
 [2013-03-09]
   - Yucca command LOGLEVEL built.

@@ -121,7 +121,7 @@ public abstract class AbstractCommandFactory<C extends Command>
 	ParseException {
 	
 	//throw new UnsupportedOperationException( "Parser not yet implemented." );
-	String params[] = str.split( "\\s(?=([^\"]*\"[^\"]*\")*[^\"]*$)" );
+	String params[] = str.split( "\\s+(?=([^\"]*\"[^\"]*\")*[^\"]*$)+" );
 	//for( int i = 0; i < params.length; i++ ) 
 	//System.out.println( "--- "+params[i] );
 	

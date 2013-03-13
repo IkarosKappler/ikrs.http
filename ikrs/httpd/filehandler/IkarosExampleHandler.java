@@ -31,8 +31,6 @@ import ikrs.httpd.PostDataWrapper;
 import ikrs.httpd.Resource;
 import ikrs.httpd.UnsupportedFormatException;
 import ikrs.httpd.resource.ByteArrayResource;
-//import ikrs.httpd.resource.InterruptableResource;
-//import ikrs.httpd.resource.ProcessableResource;
 import ikrs.httpd.datatype.FormData;
 import ikrs.io.BytePositionInputStream;
 import ikrs.util.CustomLogger;

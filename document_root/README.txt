@@ -3,6 +3,18 @@
 
 
 TO DO:
+[2013-03-13]
+ - Yucca's command lint has not (!) yet a finalize() method! The thread 
+   cannot be interrupted.
+
+[2013-03-11]
+ - [Done 2013-03-13]
+   Yucca's command line currently does not allow additional white space
+   chars between command name and additional arguments.
+
+[2013-03-10]
+ - The error documents have a wrong favicon URI.
+
 [2013-03-09]
  - Implement a VERSION command.
  - The ikrs.util.Command interface requires some self descriptive 
@@ -14,6 +26,7 @@ TO DO:
    Implement a LOGLEVEL command for yucca.
  - [DONE 2013-03-09]
    Bild a HTTPD VERSION command.
+ - There is an issue with the HTTP Date format: the hour part is wrong.
 
 [2013-03-04]
  - [DONE 2013-03-09]

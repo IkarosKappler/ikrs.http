@@ -453,8 +453,8 @@ public class ServerSocketThread
 	List<Environment<String,BasicType>> properties = child.getChildren(Constants.CONFIG_SERVER_LISTEN_PROPERTY);
 	for( i = 0; i < properties.size(); i++ ) {
 
-	    if( i > 0 )
-		b.append( ",\n" );
+	    //if( i > 0 )
+	          b.append( ",\n" );
 	    b.append( " " );
 	    bindSettingsToSecureStatusString( Constants.CONFIG_SERVER_LISTEN_PROPERTY,
 					      properties.get(i),

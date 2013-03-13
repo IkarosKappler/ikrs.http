@@ -1,4 +1,11 @@
 
+
+[2013-03-13]
+ - Yucca's command line currently did not allow additional white space
+   chars between command name and additional arguments.
+   Actually it was a regex problem in the 
+   ikrs.util.AbstractCommandFactory.parse(...) method.
+
 [2013-03-09]
   - Yucca command LOGLEVEL built.
   - Yucca command VERSION built.

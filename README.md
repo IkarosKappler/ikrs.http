@@ -10,6 +10,10 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-15]
+ - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
+   extends ikrs.util.KeyValueStringPair now.
+
 [2013-03-13]
  - Yucca's command line currently did not allow additional white space
    chars between command name and additional arguments.

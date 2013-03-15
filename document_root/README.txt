@@ -13,7 +13,8 @@ TO DO:
    chars between command name and additional arguments.
 
 [2013-03-10]
- - The error documents have a wrong favicon URI.
+ - [DONE 2013-03-15; actually there error did not exist]
+   The error documents have a wrong favicon URI.
 
 [2013-03-09]
  - [DONE 2013-03-10]
@@ -150,7 +151,8 @@ TO DO:
    an 503 Server Error.
  - Yucca.performQuit() still lacks some cleanup. Release listeners and 
    handlers.
- - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
+ - [DONE 2013-03-15]
+   The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
    should extend ikrs.util.KeyValueStringPair.
  - [DONE 2013-01-04]
    Build a nested htaccess evaluation. Currently the application just 

@@ -9,8 +9,9 @@ package ikrs.httpd;
  * Note: instances of this class are and have to be immutable!
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-21
+ * @modified 2013-03-15 Ikaros Kappler (class now extends KeyValuePair).
  * @version 1.0.0
  **/
 
@@ -23,49 +24,53 @@ import java.nio.charset.Charset;
 
 import ikrs.util.CRLFLineReader;
 import ikrs.util.KeyValuePair;
+import ikrs.util.KeyValueStringPair;
 
 
 public final class HTTPHeaderLine 
+    extends KeyValueStringPair
     implements Comparable<HTTPHeaderLine> {
 
 
     private String rawLine;
-    private String key;
-    private String value;
+    //private String key;
+    //private String value;
 
     /**
      * This is a private constructor and not meant to be public.
      **/
-    private HTTPHeaderLine( String rawLine ) {
+    /*private HTTPHeaderLine( String rawLine ) {
 	super();
 
 	this.rawLine = rawLine;
-    }
+	}*/
 
 
     public HTTPHeaderLine( String key,
 			   String value 
 			   ) {
-	this.key = key;
-	this.value = value;
+	super( key, value );
+
+	//this.key = key;
+	//this.value = value;
     }
 
     /**
      * Get the key of this header line.
      **/
-    public String getKey() {
-	return this.key;
-    }
+    //public String getKey() {
+    //	return this.key;
+    //}
 
     /**
      * Get the value of this header line.
      **/
-    public String getValue() {
-	return this.value;
-    }
+    //public String getValue() {
+    //	return this.value;
+    //}
 
     public boolean isResponseStatus() {
-	return this.key != null && this.key.startsWith("HTTP");
+	return this.getKey() != null && this.getKey().startsWith("HTTP");
     }
 
     
@@ -202,52 +207,13 @@ public final class HTTPHeaderLine
 	HTTPHeaderLine header = new HTTPHeaderLine( pair.getKey(), pair.getValue() );
 	return header;
 
-	/*
-
-	HTTPHeaderLine header = new HTTPHeaderLine( line );
-
-	if( line.length() == 0 )
-	    return header;
-
-
-	int index = line.indexOf(":");
-	if( index == -1 ) {
-	    header.key = line;
-	    return header;
-	}
-
-	if( index == 0 ) {
-	    
-	    // ':' at beginning   
-	    header.key = "";
-	    if( line.length() > 1 )
-		header.value = line.substring(1).trim();
-	    else
-		header.value = "";
-
-	} else if( index >= line.length()-1 ) {
-
-	    // ':' at end of line
-	    header.key = line.substring(0,index).trim();
-	    header.value = "";
-
-	} else {
-	    // ':' anywhere in the middle
-	    header.key = line.substring(0, index).trim();
-	    header.value = line.substring(index+1).trim();
-
-	}
-	
-	
-	return header;
-	*/
     }
 
     public String toString() {
-	if( this.value == null )
-	    return this.key;
+	if( this.getValue() == null )
+	    return this.getKey();
 	else
-	    return this.key + ": " + this.value;
+	    return this.getKey() + ": " + this.getValue();
     }
 
 }

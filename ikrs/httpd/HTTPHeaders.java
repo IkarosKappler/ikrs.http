@@ -29,18 +29,19 @@ import ikrs.util.CaseInsensitiveComparator;
 public class HTTPHeaders {
 
     // Reqeuest/response headers.
-    public static final String NAME_ACCEPT             = "Accept";
-    public static final String NAME_ACCEPT_CHARSET     = "Accept-Charset";
-    public static final String NAME_ACCEPT_ENCODING    = "Accept-Encoding";
-    public static final String NAME_ACCEPT_LANGUAGE    = "Accept-Language";
-    public static final String NAME_CONNECTION         = "Connection";
-    public static final String NAME_CONTENT_LENGTH     = "Content-Length";
-    public static final String NAME_CONTENT_RANGE      = "Content-Range";
-    public static final String NAME_CONTENT_TYPE       = "Content-Type";
-    public static final String NAME_COOKIE             = "Cookies";
-    public static final String NAME_HOST               = "Host";
-    public static final String NAME_REFERER            = "Referer";
-    public static final String NAME_USER_AGENT         = "User-Agent";
+    public static final String NAME_ACCEPT                = "Accept";
+    public static final String NAME_ACCEPT_CHARSET        = "Accept-Charset";
+    public static final String NAME_ACCEPT_ENCODING       = "Accept-Encoding";
+    public static final String NAME_ACCEPT_LANGUAGE       = "Accept-Language";
+    public static final String NAME_CONNECTION            = "Connection";
+    public static final String NAME_CONTENT_DISPOSITION   = "Content-Disposition";
+    public static final String NAME_CONTENT_LENGTH        = "Content-Length";
+    public static final String NAME_CONTENT_RANGE         = "Content-Range";
+    public static final String NAME_CONTENT_TYPE          = "Content-Type";
+    public static final String NAME_COOKIE                = "Cookies";
+    public static final String NAME_HOST                  = "Host";
+    public static final String NAME_REFERER               = "Referer";
+    public static final String NAME_USER_AGENT            = "User-Agent";
 
     // Response headers.
     public static final String NAME_ALLOW              = "Allow";
@@ -783,7 +784,7 @@ public class HTTPHeaders {
 	return toString( new StringBuffer() ).toString();
     }
 
-    protected StringBuffer toString( StringBuffer b ) {
+    public StringBuffer toString( StringBuffer b ) {
 
 	b.append( "Headers={ " );
 	for( int i = 0; i < this.list.size(); i++ ) {

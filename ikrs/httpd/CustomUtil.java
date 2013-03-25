@@ -428,10 +428,10 @@ public class CustomUtil {
 
 	while( (maxReadLength == -1 || totalLength < maxReadLength)
 	       //&& (len = in.read(buffer,0,(int)bytesLeft)) > 0 ) {
-	       && (len = in.read(buffer,0,(int)Math.max( maxReadLength, bufferSize ))) > 0 ) {
+	       && (len = in.read(buffer,0,(int)Math.max( maxReadLength, bufferSize ))) != -1 ) {
 
 	    //for( int i = 0; i < len; i++ )
-	    //	System.out.print( (char)buffer[i] );
+	    //	System.out.print( "X" + (char)buffer[i] );
 
 	    out.write( buffer, 0, len );
 	    out.flush();

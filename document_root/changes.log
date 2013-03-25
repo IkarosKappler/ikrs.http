@@ -1,15 +1,59 @@
 
+[2013-03-25]
+  - Header field 'Content-Disposition' declared in 
+    ikrs.httpd.HTTPHeaderLine.
+  - Fixed an EOI issue (0 read bytes replaces by -1, EOI) in 
+    CustomUtil.transfer(...).
+  - Built advanced HeaderParam methods 
+    (again: the ikrs.httpd.datatypes.* classes are still experimental!).
+  - Built basic POST data handling for the XMLExampleHandler class.
+    See source for details (not yet finished).
+    For a working basic test see 
+    {DOCUMENT_ROOT}/tests_and_examples/xml_example_parser. A detailed
+    description is located in the source code of the 'example.xmlparser'
+    file.
+  - Fixed: the FormDataItem extended KeyValueStringPair, but it may also 
+    contain binary data! Each FormDataItem has a header part and an 
+    internal input stream to read from.
+  - The FormData had no method(s) to retrieve the key set; as it 
+    consists of a sequence of form data items which has a header set
+    each such a method is not required any more.
+  - Fixed a white-space issue in the HeaderParam parser; all values are
+    trimmed now and do not contain any trailing or leading white space
+    characters any more.
+   
+
+[2013-03-22]
+  - The ikrs.httpd.datatype.HeaderParams is now a three-dimensional 
+    structure recocnizing the delimiter chars [ ',', ';', '=' ] in 
+    exactly this order; the structure was two-dimensional before.
+  - The ikrs.httpd.datatype.FormData and all its implementing classes
+    were slightly changed.
+  - The QueryFormDataDelegation class is now deprecated and MUST NOT be
+    used any more.
+
+    Note that the whole ikrs.httpd.datatype package is highly 
+    experimental and should be used for test cases only!
+    Actually it does not cover RFC 2616 at all as it contains very basic	
+    MIME tools and some very simple parser classes.
+
+[2013-03-18]
+  - Fixed an issue with the directory listing: 
+    the DefaultDirectoryResource did not add the trailing slash '/'
+    after directory hyperlinks, so HTTP forms might have sent their
+    GET/POST data into the wrong directory (the parent).
+
 [2013-03-15]
- - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
-   extends ikrs.util.KeyValueStringPair now.
+  - The ikrs.http.HTTPHeaderLine is someting like a key-value-pair. It 
+    extends ikrs.util.KeyValueStringPair now.
 
 [2013-03-13]
- - Yucca's command line currently did not allow additional white space
-   chars between command name and additional arguments.
-   Actually it was a regex problem in the 
-   ikrs.util.AbstractCommandFactory.parse(...) method.
- - Renamed ikrs.http.LocalCommand to ModuleCommand, and also it's 
-   factory.
+  - Yucca's command line currently did not allow additional white space
+    chars between command name and additional arguments.
+    Actually it was a regex problem in the 
+    ikrs.util.AbstractCommandFactory.parse(...) method.
+  - Renamed ikrs.http.LocalCommand to ModuleCommand, and also it's 
+    factory.
 
 [2013-03-09]
   - Yucca command LOGLEVEL built.

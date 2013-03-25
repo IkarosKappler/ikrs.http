@@ -387,9 +387,32 @@ public class DefaultDirectoryResource
 
 	    // File name [make an anchor!]
 	    if( this.isHTMLFormat() ) {
+		
 		if( this.getRequestURI().getPath() == null || this.getRequestURI().getPath().equals("/") ) {
 
-		    return "<a href=\"" + file.getName() + "\">" + file.getName() + "</a>";
+		    if( file.isDirectory() ) {
+			
+			// Why add the trailing '/' after directory-refs?
+			// Because: imagine the request addresses a directory, and the directory contains
+			//          an index.html file with a form inside.
+			//          Something like this:
+			//
+			//          GET /dir_A/dir_B HTTP/1.1
+			// 
+			//          Remember, that the 'index.html' is not part of the request URI!
+			//          The web browser thinks, the dir_B might be a normal file that contains
+			//          the data from the index.html.
+			//          If now the form is submitted, the form target ('action') is presumed
+			//          in dir_A, but actually it is located in dir_B.
+			// 
+			//          That why directory references should have the trailing slash '/'!
+			return "<a href=\"" + file.getName() + "/" + "\">" + file.getName() + "/" + "</a>";
+
+		    } else {
+
+			return "<a href=\"" + file.getName() + "\">" + file.getName() + "</a>";
+
+		    }
 
 		} else {
 
@@ -399,10 +422,16 @@ public class DefaultDirectoryResource
 		    if( pathBase != null && !pathBase.endsWith("/") )
 			pathBase += "/";
 
-		    return "<a href=\"" + pathBase + file.getName() + "\">" + file.getName() + "</a>";
+		    if( file.isDirectory() )
+			return "<a href=\"" + pathBase + file.getName() + "/" + "\">" + file.getName() + "/" + "</a>";
+		    else
+			return "<a href=\"" + pathBase + file.getName() + "\">" + file.getName() + "</a>";
 		}
 	    } else {
-		return file.getName();
+		if( file.isDirectory() )
+		    return file.getName() + "/";
+		else
+		    return file.getName();
 	    }
 	    
 	case 2:  

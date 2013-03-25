@@ -7,19 +7,24 @@ package ikrs.httpd;
  **/
 
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.logging.Level;
 
+import ikrs.httpd.HTTPHeaders;
+import ikrs.httpd.datatype.DefaultFormData;
 import ikrs.httpd.datatype.FormData;
+import ikrs.httpd.datatype.FormDataItem;
 import ikrs.httpd.datatype.HeaderParams;
 //import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.httpd.datatype.Query;
-import ikrs.httpd.datatype.QueryFormDataDelegation;
+//import ikrs.httpd.datatype.QueryFormDataDelegation;
 //import ikrs.io.ByteSequenceTokenizer;
 import ikrs.io.MultipartMIMETokenizer;
 import ikrs.util.CustomLogger;
@@ -85,28 +90,32 @@ public class DefaultPostDataWrapper
 	String hdr_contentType = hl_contentType.getValue(); 
 
 	// This should be adapted to some general HeaderParams instance
-	HeaderParams headerParams = new HeaderParams( HTTPHeaders.NAME_CONTENT_TYPE, hdr_contentType ); 
-	String contentType = headerParams.getToken( 0, 0 );
-
-
-
+	HeaderParams headerParams           = new HeaderParams( HTTPHeaders.NAME_CONTENT_TYPE, hdr_contentType ); 
+	String param_contentType            = headerParams.getMainToken();
+	String param_contentType_addonKey   = headerParams.getToken( param_contentType, false, 1, 0 ); // "boundary", false, 1 );
+	String param_contentType_addonValue = headerParams.getToken( param_contentType, false, 1, 1 ); // "boundary", false, 1 );
+	this.getLogger().log( Level.INFO,
+			      getClass().getName() + ".readFormData()",
+			      "param_contentType=" + param_contentType + ", param_contentType_addonKey=" + param_contentType_addonKey + ", param_contentType_addonValue=" + param_contentType_addonValue );
 
 
 	// My supported content types are:
 	//  - multipart/form-data; boundary=----WebKitFormBoundaryeANQMKoBwsmwQrYZ
 	//  - application/x-www-form-urlencoded  (default?)
 	
-	if( hl_contentType.getValue().equals("application/x-www-form-urlencoded") ) {
+	if( param_contentType.equalsIgnoreCase("application/x-www-form-urlencoded") ) { 
+	    // hl_contentType.getValue().startsWith("application/x-www-form-urlencoded") ) {
 
-	    return readFormData_wwwFormURLEncoded( contentType, headerParams );
+	    return readFormData_wwwFormURLEncoded( param_contentType, headerParams );
 
-	} else if( hl_contentType.getValue().startsWith("multipart/form-data") ) {
+	} else if( param_contentType.equalsIgnoreCase("multipart/form-data") ) { 
+	    // hl_contentType.getValue().startsWith("multipart/form-data") ) {
 
-	    return readFormData_multiPartFormData( contentType, headerParams );
+	    return readFormData_multiPartFormData( param_contentType, headerParams );
 
 	} else {
 
-	    throw new UnsupportedFormatException( "The POST data's content type is '" + hl_contentType.getValue() + "'. The server does not recognize this format." );
+	    throw new UnsupportedFormatException( "The POST data's content type is '" + param_contentType + "'. The server does not recognize this format." );
 
 	}
 
@@ -187,7 +196,19 @@ public class DefaultPostDataWrapper
 
 
 	    // Build form data directly from query
-	    FormData formData = new QueryFormDataDelegation( query );
+	    //FormData formData = new QueryFormDataDelegation( query );
+	    FormData formData = new DefaultFormData();
+	    HTTPHeaders queryHeaders = new HTTPHeaders();
+	    Iterator<String> keyIter = query.keyIterator();
+	    while( keyIter.hasNext() ) {
+
+		String tmpKey   = keyIter.next();
+		String tmpValue = query.getParam( tmpKey );
+		queryHeaders.add( new HTTPHeaderLine(tmpKey,tmpValue) );
+
+	    }
+	    FormDataItem item = new FormDataItem( queryHeaders, this.getInputStream() );
+	    formData.add( item );
 
 
 	    this.getLogger().log( Level.FINE,
@@ -208,7 +229,7 @@ public class DefaultPostDataWrapper
     }
 
 
-    private FormData readFormData_multiPartFormData( String contentType,
+    private FormData readFormData_multiPartFormData( String param_contentType,
 						     HeaderParams headerParams ) 
 	throws IOException,
 	       HeaderFormatException,
@@ -221,17 +242,25 @@ public class DefaultPostDataWrapper
 
 
 	try {
-
-	    String boundary = headerParams.getTokenByPrefix( 0,           // on first level
-							     "boundary=",  // the token name - so to say
+	    // System.out.println( "xxxxxxxxx" + getClass().getName() + ": params=" + headerParams );
+	    /*String boundary = headerParams.getTokenByPrefix( 0,           // on first level
+							     "boundary=", // the token name - so to say
 							     false        // not case sensitive?
 							     );  
-	    KeyValueStringPair kv_boundary = KeyValueStringPair.split( boundary );
+	    */
+	    String boundary = headerParams.getTokenValue( param_contentType, // "multipart/form-data",           // on first level
+							  "boundary", // the token name - so to say
+							  false,        // not case sensitive?
+							  1             // get first token ('boundary' is at index 0)
+							  );
+	    //KeyValueStringPair kv_boundary = KeyValueStringPair.split( boundary );
 
 	    if( boundary == null 
-		|| kv_boundary == null
-		|| kv_boundary.getValue() == null
-		|| kv_boundary.getValue().length() == 0 ) {
+		|| boundary.length() == 0
+		//|| kv_boundary == null
+		//|| kv_boundary.getValue() == null
+		//|| kv_boundary.getValue().length() == 0 
+		) {
 
 		 this.getLogger().log( Level.INFO,
 				   getClass().getName() + ".readFormData_multiPartFormData()",
@@ -243,12 +272,12 @@ public class DefaultPostDataWrapper
 
 	    // Explode boundary (later: use a common parser class here for parsing header lines containing
 	    // tokens with '=').
-	    String boundary_value          = kv_boundary.getValue();
+	    //String boundary_value          = kv_boundary.getValue();
 
 	    
 	    this.getLogger().log( Level.INFO,
 				  getClass().getName() + ".readFormData_multiPartFormData()",
-				  "Processing POST data using boundary '" + boundary_value + "' ..." );
+				  "Processing POST data using boundary '" + boundary + "' ..." );
 
 	    // The format of the multipart-body is:
 	    // ------------------------------------
@@ -290,12 +319,15 @@ public class DefaultPostDataWrapper
 	    //
 	    
 	    MultipartMIMETokenizer mmt = new MultipartMIMETokenizer( this.getInputStream(),   
-								     boundary_value   // Use the raw boundary from the headers here!
+								     boundary   // Use the raw boundary from the headers here!
 								     );
+	    ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream( 128 );
+	    FormData formData = new DefaultFormData();
+
 
 	    InputStream token;
 	    int  tokenIndex  = 0;
-	    long tokenLength;
+	    long tokenLength = 0;
 	    long totalLength = 0;
 	    byte[] endBuffer = new byte[4];
 	    while( (token = mmt.getNextToken()) != null ) {
@@ -304,14 +336,26 @@ public class DefaultPostDataWrapper
 				      getClass().getName() + ".readFormData_multiPartFormData()",
 				      "Processing multiform part " + tokenIndex + " by reading from token/input: " + token.toString() + ", globalInputStream=" + this.getInputStream() );
 
-		int b;
+		ByteArrayOutputStream bufferOut = new ByteArrayOutputStream( 256 );
+		CustomUtil.transfer( token, 
+				     bufferOut, 
+				     -1,         // no maxReadLength
+				     128         // bufferSize
+				     );
+		ByteArrayInputStream bufferIn   = new ByteArrayInputStream( bufferOut.toByteArray() );
+		/*int b;
 		tokenLength = 0;
 		while( (b = token.read()) != - 1 )  {
 
 		    System.out.print( (char)b );
 		    tokenLength++;
 		    totalLength++;
-		}
+		    }*/
+		
+
+		HTTPHeaders itemHeaders = HTTPHeaders.read( bufferIn ); // token );
+		FormDataItem item       = new FormDataItem( itemHeaders, bufferIn ); // token );
+		formData.add( item );
 
 
 		this.getLogger().log( Level.INFO,
@@ -322,15 +366,12 @@ public class DefaultPostDataWrapper
 	    }
 	    
 
-	    /*java.io.FileOutputStream fout = new java.io.FileOutputStream( "document_root_alpha/multipartFormData_A.dat" );
-	    byte[] buf = new byte[256];
-	    int len;
-	    while( (len = this.getInputStream().read(buf)) > 0 )
-		fout.write(buf,0,len);
-	    fout.close();
-	    */
+	    // It is not necesary to consume trailing bytes here; the HTTPRequestDistributor will
+	    // do so later (IF there are more bytes available at all).
+
 	    
-	    return null; // ??? 
+
+	    return formData; 
 
 	} catch( IOException e ) {
 

@@ -56,7 +56,8 @@ public interface PostDataWrapper {
 
 
     /**
-     * ??? ... !!!
+     * ??? Is it a good idea to place the form data parser here ??? !!!
+     * The POST form data is more part of MIME instead of HTTP ...
      **/
     public FormData readFormData()
 	throws IOException,

@@ -18,13 +18,16 @@ package ikrs.httpd.datatype;
  *
  * @author Ikaros Kappler
  * @date 2012-10-04
- * @version 1.0.0
+ * @modified 2013-03-20 Ikaros Kappler [method 'keySet()' added].
+ * @version 1.0.1
  **/
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import ikrs.util.CaseInsensitiveComparator;
@@ -116,6 +119,15 @@ public class Query {
 	    return this.paramMap.remove( key );
 	else
 	    return this.paramMap.put( key, value );
+    }
+
+    /**
+     * Get the (unmodifiable!) key set for this query.
+     *
+     * @return The (unmodifiable!) key set for this query.
+     **/
+    public Set<String> keySet() {
+	return Collections.unmodifiableSet( this.paramMap.keySet() );
     }
 
     /**

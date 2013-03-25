@@ -59,6 +59,15 @@ if [ "$ec" -ne "0" ]; then
 fi
 
 
+echo "Compile XMLExampleHandler ..."
+javac -Xlint:unchecked XMLExampleHandler.java
+ec="$?"
+if [ "$ec" -ne "0" ]; then
+    echo "Sorry, failed to compile XMLExampleHandler. Exit code $ec"
+    exit 1
+fi
+
+
 echo "Done."
 
 

@@ -1,0 +1,4 @@
+
+DirectoryIndex index.html
+
+AddHandler xml-example-parser .xmlparser

@@ -287,6 +287,8 @@ public class HeaderParams {
 
 	String[] tokensA = value.split( "," );
 	
+
+	// This has the best runtime i've ever seen ;)
 	for( int a = 0; a < tokensA.length; a++ ) {
 
 	    if( (tokensA[a] = tokensA[a].trim()).length() == 0 )
@@ -324,12 +326,15 @@ public class HeaderParams {
 
     }
 
+    
     public String toString() {
 	return this.params.toString();
     }
 
 
-
+    /**
+     * This is just for testing.
+     **/
     public static void main( String[] argv ) {
 
 	// Test A:

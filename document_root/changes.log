@@ -1,8 +1,13 @@
 
+[2013-04-02]
+  - The DefaultPostDataWrapper didn't remove the trailing bytes CRLF
+    from each multipart item; this was fixed and the XMLExampleHandler
+    now counts the correct number of data bytes.
+
 [2013-03-25]
   - Header field 'Content-Disposition' declared in 
     ikrs.httpd.HTTPHeaderLine.
-  - Fixed an EOI issue (0 read bytes replaces by -1, EOI) in 
+  - Fixed an EOI issue (0 read bytes replaced by -1, EOI) in 
     CustomUtil.transfer(...).
   - Built advanced HeaderParam methods 
     (again: the ikrs.httpd.datatypes.* classes are still experimental!).

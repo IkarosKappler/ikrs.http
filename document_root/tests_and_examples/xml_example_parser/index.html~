@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Example of how to bind an external XML parser by the use of a file handler</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="/system/styles/directory.list.css" /></head>
+
+<body>
+
+<p>
+<form name="xml_example_parser_form" method="post" enctype="multipart/form-data" action="example.xmlparser" >
+  Which XML file do you want to upload?<br/>
+  File: <input name="my_file" type="file" size="50" maxlength="100000" accept="text/*" /><br/>
+  <input type="submit" /><br/>
+</form>
+
+
+</p>
+
+</body>
+</html>

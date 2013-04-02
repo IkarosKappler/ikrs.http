@@ -111,15 +111,15 @@ public class XMLExampleHandler
 			 "Processing. requestURI=" + requestURI + ". file=" + file.getAbsolutePath() );
 
 	
-	
+	/*
 	// Print POST data on stdout
-	/*byte[] tmpBuf = new byte[ 256 ];
-	int tmpLen;
-	while( (tmpLen = postData.getInputStream().read(tmpBuf)) != -1 ) {
-	    for( int i = 0; i < tmpLen; i++ )
-		System.out.print( (char)tmpBuf[i] );
-		}*/
-	
+	byte[] buf = new byte[ 256 ];
+	int len;
+	while( (len = postData.getInputStream().read(buf)) != -1 ) {
+	    for( int i = 0; i < len; i++ )
+		System.out.print( (char)buf[i] );
+	}
+	*/
 
 	
 	// The XML parser only works with POST data
@@ -137,113 +137,24 @@ public class XMLExampleHandler
 
 	    }*/
 
-	StringBuffer buffer    = new StringBuffer();
-	StringBuffer xmlBuffer = null;   // A buffer to store the XML data
-	String xmlFileName     = null;
-	buffer.append( "This is a test.\n" ).
-	    append( "\n" ).
-	    append( "TODO: implement the actual XML parser to test the " + getClass().getName() + " class!\n" ).
-	    append( "\n\n" ).
-	    append( "Statistics:\n" ).
-	    append( "-----------\n" );
-	buffer.append( " =================== There are " + formData.size() + " form data items. ===============\n" );
 	for( int i = 0; i < formData.size(); i++ ) {
 
 	    FormDataItem item = formData.get(i);
-	    buffer.append( " +++ Item["+i+"]=" + item + "\n" );
+	    System.out.println( " +++ Item["+i+"]=" + item );
 	    
 	    // Parse header values (deep parse)
 	    for( int h = 0; h < item.getHeaders().size(); h++ ) {
 
 		HTTPHeaderLine header = item.getHeaders().get( h );
 		HeaderParams params = new HeaderParams( header.getKey(), header.getValue() );
-		buffer.append( " +++ +++ (key=" + header.getKey() + ")\n" );
-		buffer.append( " +++ +++ params["+i+"]["+h+"]=" + params.getMainToken() + "\n" );
+		System.out.println( " +++ +++ (key=" + header.getKey() + ")" );
+		System.out.println( " +++ +++ params["+i+"]["+h+"]=" + params.getMainToken() );
 		for( int l = 0; l < params.getSublevelCount(h); l++ )
-		    buffer.append( " +++ +++ +++ token["+i+"]["+h+"]["+l+"]=" + params.getToken(h,l) + "\n" );
+		    System.out.println( " +++ +++ +++ token["+i+"]["+h+"]["+l+"]=" + params.getToken(h,l) );
 
 	    }
-
-	    String hdr_contentDisposition = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_DISPOSITION );
-	    String hdr_contentType        = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_TYPE );
-
-	    buffer.append( " ---------- Content-Disposition: " + hdr_contentDisposition + "\n" );
-	    buffer.append( " ---------- Content-Type:        " + hdr_contentType + "\n" );
-
-	    HeaderParams prm_contentDisposition = new HeaderParams( HTTPHeaders.NAME_CONTENT_DISPOSITION, hdr_contentDisposition );	    
-	    String value_contentDisposition_main     = prm_contentDisposition.getMainToken(); // This should equal 'form-data'
-	    String value_contentDisposition_name     = null;
-	    String value_contentDisposition_filename = null;
-	    if( value_contentDisposition_main != null 
-		&& value_contentDisposition_main.equalsIgnoreCase("form-data") ) {
-
-		value_contentDisposition_name     = prm_contentDisposition.getTokenValue( "form-data", "name", true );
-		value_contentDisposition_filename = prm_contentDisposition.getTokenValue( "form-data", "filename", true );
-		
-		buffer.append( " ---------- --- Content-Disposition // name:     " + value_contentDisposition_name + "\n" );
-		buffer.append( " ---------- --- Content-Disposition // filename: " + value_contentDisposition_filename + "\n" );
-
-	    }
-
-
-	    // The 'my_file' form field was defined in the PHP file.
-	    if( value_contentDisposition_name.equals("my_file") 
-		&& value_contentDisposition_filename != null 
-		&& value_contentDisposition_filename.length() != 0 ) {
-
-		xmlBuffer   = new StringBuffer();
-		xmlFileName = value_contentDisposition_filename;
-	    }
-		
-
-	    buffer.append( "Raw data, eventually binary:\n" );
-	    if( item.getInputStream() == null ) {
-		buffer.append( "NA\n" );
-	    } else {
-		// Print POST data on stdout
-		long binaryTokenLength = 0;
-		byte[] buf = new byte[ 256 ];
-		int len;
-		while( (len = item.getInputStream().read(buf)) != -1 ) {
-		    for( int b = 0; b < len; b++ ) { 
-			buffer.append( (char)buf[b] );
-			//System.out.print( "[X_" + b + "]='" + (char)buf[b] + "' (" + buf[b] + ") " );
-			//buffer.append( "[X_" + b + "]='" + (char)buf[b] + "' (" + buf[b] + ") " );
-			
-			// Data is part of the sent XML file?
-			if( value_contentDisposition_name.equals("my_file") 
-			    && value_contentDisposition_filename != null 
-			    && value_contentDisposition_filename.length() != 0 ) {
-
-			    xmlBuffer.append( (char)buf[b] );
-			}
-
-		    }
-		    binaryTokenLength += len;
-		}
-		buffer.append( "\n" ).append( "Token data read: " ).append( binaryTokenLength ).append( "bytes\n" );
-	    }
-	    
-	    
-	    buffer.append( "\n\n" );
 
 	}
-
-	
-	buffer.append( "\n\n\n" );
-	if( xmlBuffer == null )
-	    buffer.append( "No XML file sent.\n" );
-	else {
-	    buffer.append( "Received XML data from file '" ).
-		append( xmlFileName ).
-		append( "'.\n" ).
-		append( "---BEGIN---------- XML data ------------------\n" ).
-		append( xmlBuffer ).append( "\n" ).
-		append( "---END------------ XML data ------------------\n" );
-	}
-
-	
-	buffer.append( "-EOI-" );
 	
 
 	
@@ -258,8 +169,11 @@ public class XMLExampleHandler
 	Session<String,BasicType,ikrs.httpd.HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );
 	
 
-	String data = buffer.toString();
-	buffer.delete( 0, buffer.length() ); // Clear buffer
+	String data = 
+	    "This is a test.\n" +
+	    "\n" +
+	    "TODO: implement the actual XML parser to the " + getClass().getName() + " class!\n";
+
 
 	ByteArrayResource resource = new ByteArrayResource( this.getHTTPHandler(),
 							    this.getLogger(),

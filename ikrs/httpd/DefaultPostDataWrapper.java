@@ -22,10 +22,7 @@ import ikrs.httpd.datatype.DefaultFormData;
 import ikrs.httpd.datatype.FormData;
 import ikrs.httpd.datatype.FormDataItem;
 import ikrs.httpd.datatype.HeaderParams;
-//import ikrs.httpd.datatype.KeyValueStringPair;
 import ikrs.httpd.datatype.Query;
-//import ikrs.httpd.datatype.QueryFormDataDelegation;
-//import ikrs.io.ByteSequenceTokenizer;
 import ikrs.io.MultipartMIMETokenizer;
 import ikrs.util.CustomLogger;
 import ikrs.util.KeyValueStringPair;
@@ -55,7 +52,8 @@ public class DefaultPostDataWrapper
 
     //--- BEGIN ---------------------- AbstractPostDataWrapper implementation -----------------------
     /**
-     * ??? ... !!!
+     * ??? Is it a good idea to place the form data parser here ??? !!!
+     * The POST form data is more part of MIME instead of HTTP ...
      **/
     public FormData readFormData() 
 	throws IOException,
@@ -253,6 +251,7 @@ public class DefaultPostDataWrapper
 							  false,        // not case sensitive?
 							  1             // get first token ('boundary' is at index 0)
 							  );
+
 	    //KeyValueStringPair kv_boundary = KeyValueStringPair.split( boundary );
 
 	    if( boundary == null 
@@ -336,13 +335,37 @@ public class DefaultPostDataWrapper
 				      getClass().getName() + ".readFormData_multiPartFormData()",
 				      "Processing multiform part " + tokenIndex + " by reading from token/input: " + token.toString() + ", globalInputStream=" + this.getInputStream() );
 
+
+
 		ByteArrayOutputStream bufferOut = new ByteArrayOutputStream( 256 );
 		CustomUtil.transfer( token, 
 				     bufferOut, 
 				     -1,         // no maxReadLength
 				     128         // bufferSize
 				     );
-		ByteArrayInputStream bufferIn   = new ByteArrayInputStream( bufferOut.toByteArray() );
+		byte[] byteArray = bufferOut.toByteArray();
+
+		// Don't forget that each part itself has a trailing CRLF inside the POST data!
+		// See http://www.ietf.org/rfc/rfc2046.txt for details.
+		ByteArrayInputStream bufferIn   = null;
+		if( byteArray.length >= 2 
+		    && byteArray[byteArray.length-2] == Constants.CR
+		    && byteArray[byteArray.length-1] == Constants.LF ) {
+		    
+		    // Drop trailing CRLF
+		    bufferIn = new ByteArrayInputStream( byteArray, 0, byteArray.length-2 );
+
+		} else {
+
+		    // Ooops ... the specification tells that there should be a trailing CRLF, but there isn't.
+		    // --> Don't interrupt; print warning and continue with full data block
+		    this.getLogger().log( Level.WARNING,
+					  getClass().getName() + ".readFormData_multiPartFormData()",
+					  "Multiform part " + tokenIndex + " misses the trailing CRLF bytes (not found). Continuing though with full data block. Further data processing might probably fail!" );
+		    bufferIn = new ByteArrayInputStream( byteArray );
+
+		}
+
 		/*int b;
 		tokenLength = 0;
 		while( (b = token.read()) != - 1 )  {

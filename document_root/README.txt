@@ -3,6 +3,14 @@
 
 
 TO DO:
+[2013-03-26]
+ - The directory listing has trailing slashes in directory link names.
+
+[2013-03-25]
+ - [DONE 2013-04-02]
+   The XMLExampleHandler counts exactly two more bytes as the file/sent
+   data really has. Idea: some boundary bytes counted?
+
 [2013-03-18]
  - The PostDataWrapper parses its FormData in one single step; this 
    should be optimized because large post data (~many MBs) will take 

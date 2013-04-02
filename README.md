@@ -10,6 +10,11 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-04-02]
+  - The DefaultPostDataWrapper didn't remove the trailing bytes CRLF
+    from each multipart item; this was fixed and the XMLExampleHandler
+    now counts the correct number of data bytes.
+
 [2013-03-25]
   - Header field 'Content-Disposition' declared in 
     ikrs.httpd.HTTPHeaderLine.

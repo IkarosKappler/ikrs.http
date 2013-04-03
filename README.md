@@ -10,6 +10,13 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-04-03]
+  - Fixed: the directory listing missed trailing slashes in directory 
+    link names.
+  - Finished the XML example parser class: XMLExampleHandler.
+    Call {DOCUMENT_ROOT}/tests_and_examples/xml_example_parser/ from
+    your browser to run it.
+
 [2013-04-02]
   - The DefaultPostDataWrapper didn't remove the trailing bytes CRLF
     from each multipart item; this was fixed and the XMLExampleHandler

@@ -4,7 +4,8 @@
 
 TO DO:
 [2013-03-26]
- - The directory listing has trailing slashes in directory link names.
+ - [DONE 2013-04-03]
+   The directory listing has trailing slashes in directory link names.
 
 [2013-03-25]
  - [DONE 2013-04-02]

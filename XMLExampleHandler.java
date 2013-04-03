@@ -9,6 +9,8 @@
  **/
 
 import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
@@ -42,6 +44,20 @@ import ikrs.util.KeyValueStringPair;
 import ikrs.util.MIMEType;
 import ikrs.util.session.Session;
 import ikrs.typesystem.BasicType;
+
+
+// This are the classes we need to parse the XML document
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+// import javax.xml.parsers.SAXParser;
+// import javax.xml.parsers.SAXParserFactory;
 
 public class XMLExampleHandler
     extends AbstractFileHandler {
@@ -128,108 +144,36 @@ public class XMLExampleHandler
 	    
 	
 	FormData formData        = postData.readFormData();
-	/*Set<String> formDataKeys = formData.keySet();
-	Iterator<String> keyIter = formDataKeys.iterator();
-	while( keyIter.hasNext() ) {
+	if( formData.size() == 0 )
+	    throw new HeaderFormatException( "No params passed (but required)." );
 
-	    FormDataItem item = formData.get( keyIter.next() );
-	    System.out.println( "Item[*]=" + item );
-
-	    }*/
 
 	StringBuffer buffer    = new StringBuffer();
 	StringBuffer xmlBuffer = null;   // A buffer to store the XML data
 	String xmlFileName     = null;
 	buffer.append( "This is a test.\n" ).
 	    append( "\n" ).
-	    append( "TODO: implement the actual XML parser to test the " + getClass().getName() + " class!\n" ).
+	    append( "The " + getClass().getName() + " class expects an XML document with the form item name 'my_file' passed via HTTP POST.\n" ).
 	    append( "\n\n" ).
 	    append( "Statistics:\n" ).
 	    append( "-----------\n" );
 	buffer.append( " =================== There are " + formData.size() + " form data items. ===============\n" );
+
 	for( int i = 0; i < formData.size(); i++ ) {
 
 	    FormDataItem item = formData.get(i);
 	    buffer.append( " +++ Item["+i+"]=" + item + "\n" );
+	    StringBuffer tmpXMLBuffer = new StringBuffer();
+	    String tmpFileName = this.processFormDataItem( item, i, buffer, tmpXMLBuffer );
 	    
-	    // Parse header values (deep parse)
-	    for( int h = 0; h < item.getHeaders().size(); h++ ) {
-
-		HTTPHeaderLine header = item.getHeaders().get( h );
-		HeaderParams params = new HeaderParams( header.getKey(), header.getValue() );
-		buffer.append( " +++ +++ (key=" + header.getKey() + ")\n" );
-		buffer.append( " +++ +++ params["+i+"]["+h+"]=" + params.getMainToken() + "\n" );
-		for( int l = 0; l < params.getSublevelCount(h); l++ )
-		    buffer.append( " +++ +++ +++ token["+i+"]["+h+"]["+l+"]=" + params.getToken(h,l) + "\n" );
-
+	    if( tmpFileName != null && xmlFileName == null ) {
+		xmlBuffer   = tmpXMLBuffer;
+		xmlFileName = tmpFileName;
 	    }
-
-	    String hdr_contentDisposition = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_DISPOSITION );
-	    String hdr_contentType        = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_TYPE );
-
-	    buffer.append( " ---------- Content-Disposition: " + hdr_contentDisposition + "\n" );
-	    buffer.append( " ---------- Content-Type:        " + hdr_contentType + "\n" );
-
-	    HeaderParams prm_contentDisposition = new HeaderParams( HTTPHeaders.NAME_CONTENT_DISPOSITION, hdr_contentDisposition );	    
-	    String value_contentDisposition_main     = prm_contentDisposition.getMainToken(); // This should equal 'form-data'
-	    String value_contentDisposition_name     = null;
-	    String value_contentDisposition_filename = null;
-	    if( value_contentDisposition_main != null 
-		&& value_contentDisposition_main.equalsIgnoreCase("form-data") ) {
-
-		value_contentDisposition_name     = prm_contentDisposition.getTokenValue( "form-data", "name", true );
-		value_contentDisposition_filename = prm_contentDisposition.getTokenValue( "form-data", "filename", true );
-		
-		buffer.append( " ---------- --- Content-Disposition // name:     " + value_contentDisposition_name + "\n" );
-		buffer.append( " ---------- --- Content-Disposition // filename: " + value_contentDisposition_filename + "\n" );
-
-	    }
-
-
-	    // The 'my_file' form field was defined in the PHP file.
-	    if( value_contentDisposition_name.equals("my_file") 
-		&& value_contentDisposition_filename != null 
-		&& value_contentDisposition_filename.length() != 0 ) {
-
-		xmlBuffer   = new StringBuffer();
-		xmlFileName = value_contentDisposition_filename;
-	    }
-		
-
-	    buffer.append( "Raw data, eventually binary:\n" );
-	    if( item.getInputStream() == null ) {
-		buffer.append( "NA\n" );
-	    } else {
-		// Print POST data on stdout
-		long binaryTokenLength = 0;
-		byte[] buf = new byte[ 256 ];
-		int len;
-		while( (len = item.getInputStream().read(buf)) != -1 ) {
-		    for( int b = 0; b < len; b++ ) { 
-			buffer.append( (char)buf[b] );
-			//System.out.print( "[X_" + b + "]='" + (char)buf[b] + "' (" + buf[b] + ") " );
-			//buffer.append( "[X_" + b + "]='" + (char)buf[b] + "' (" + buf[b] + ") " );
-			
-			// Data is part of the sent XML file?
-			if( value_contentDisposition_name.equals("my_file") 
-			    && value_contentDisposition_filename != null 
-			    && value_contentDisposition_filename.length() != 0 ) {
-
-			    xmlBuffer.append( (char)buf[b] );
-			}
-
-		    }
-		    binaryTokenLength += len;
-		}
-		buffer.append( "\n" ).append( "Token data read: " ).append( binaryTokenLength ).append( "bytes\n" );
-	    }
-	    
-	    
-	    buffer.append( "\n\n" );
 
 	}
 
-	
+
 	buffer.append( "\n\n\n" );
 	if( xmlBuffer == null )
 	    buffer.append( "No XML file sent.\n" );
@@ -239,20 +183,18 @@ public class XMLExampleHandler
 		append( "'.\n" ).
 		append( "---BEGIN---------- XML data ------------------\n" ).
 		append( xmlBuffer ).append( "\n" ).
-		append( "---END------------ XML data ------------------\n" );
+		append( "---END------------ XML data ------------------\n\n\n" );
+
+	    this.parseXMLData( buffer, xmlFileName, xmlBuffer.toString() );
 	}
 
-	
+
+
+
 	buffer.append( "-EOI-" );
 	
 
-	
-	// Fetch passed params
-	if( formData.size() == 0 )
-	    throw new HeaderFormatException( "No params passed (but required)." );
-
-	// There should be exactly one boundary part ...
-	// ...
+       
 
 
 	Session<String,BasicType,ikrs.httpd.HTTPConnectionUserID> session = this.getHTTPHandler().getSessionManager().get( sessionID );
@@ -279,7 +221,152 @@ public class XMLExampleHandler
     //--- END -------------------------- FileHandler implementation ------------------------------
 
 
-    
+       /**
+     * If the 'my_file' param is found in the passed item the method will
+     * print the file data into the xmlBuffer and return the file's name
+     * (otherwise it returns null).
+     **/
+    private String processFormDataItem( FormDataItem item,
+					int itemIndex,
+					StringBuffer buffer,
+					StringBuffer xmlBuffer ) 
+	throws IOException {
 
+	String xmlFileName = null;
+	    
+	// Parse header values (deep parse)
+	for( int h = 0; h < item.getHeaders().size(); h++ ) {
+
+	    HTTPHeaderLine header = item.getHeaders().get( h );
+	    HeaderParams params = new HeaderParams( header.getKey(), header.getValue() );
+	    buffer.append( " +++ +++ (key=" + header.getKey() + ")\n" );
+	    buffer.append( " +++ +++ params["+itemIndex+"]["+h+"]=" + params.getMainToken() + "\n" );
+	    for( int l = 0; l < params.getSublevelCount(h); l++ )
+		buffer.append( " +++ +++ +++ token["+itemIndex+"]["+h+"]["+l+"]=" + params.getToken(h,l) + "\n" );
+
+	}
+
+	String hdr_contentDisposition = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_DISPOSITION );
+	String hdr_contentType        = item.getHeaders().getStringValue( HTTPHeaders.NAME_CONTENT_TYPE );
+
+	buffer.append( " ---------- Content-Disposition: " + hdr_contentDisposition + "\n" );
+	buffer.append( " ---------- Content-Type:        " + hdr_contentType + "\n" );
+
+	HeaderParams prm_contentDisposition = new HeaderParams( HTTPHeaders.NAME_CONTENT_DISPOSITION, hdr_contentDisposition );	    
+	String value_contentDisposition_main     = prm_contentDisposition.getMainToken(); // This should equal 'form-data'
+	String value_contentDisposition_name     = null;
+	String value_contentDisposition_filename = null;
+	if( value_contentDisposition_main != null 
+	    && value_contentDisposition_main.equalsIgnoreCase("form-data") ) {
+
+	    value_contentDisposition_name     = prm_contentDisposition.getTokenValue( "form-data", "name", true );
+	    value_contentDisposition_filename = prm_contentDisposition.getTokenValue( "form-data", "filename", true );
+		
+	    buffer.append( " ---------- --- Content-Disposition // name:     " + value_contentDisposition_name + "\n" );
+	    buffer.append( " ---------- --- Content-Disposition // filename: " + value_contentDisposition_filename + "\n" );
+
+	}
+
+
+	// The 'my_file' form field was defined in the PHP file.
+	if( value_contentDisposition_name.equals("my_file") 
+	    && value_contentDisposition_filename != null 
+	    && value_contentDisposition_filename.length() != 0 ) {
+
+	    // xmlBuffer   = new StringBuffer();
+	    xmlFileName = value_contentDisposition_filename;
+	}
+		
+
+	buffer.append( "Raw data, eventually binary:\n" );
+	if( item.getInputStream() == null ) {
+	    buffer.append( "NA\n" );
+	} else {
+	    // Print POST data on stdout or write into output buffer?
+	    long binaryTokenLength = 0;
+	    byte[] buf = new byte[ 256 ];
+	    int len;
+	    while( (len = item.getInputStream().read(buf)) != -1 ) {
+		for( int b = 0; b < len; b++ ) { 
+		    buffer.append( (char)buf[b] );
+		    //System.out.print( (char)buf[b] );
+			
+		    // Data is part of the sent XML file?
+		    if( value_contentDisposition_name.equals("my_file") 
+			&& value_contentDisposition_filename != null 
+			&& value_contentDisposition_filename.length() != 0 ) {
+
+			xmlBuffer.append( (char)buf[b] );
+		    }
+
+		}
+		binaryTokenLength += len;
+	    }
+	    buffer.append( "\n" ).append( "Token data read: " ).append( binaryTokenLength ).append( " bytes\n" );
+	}
+	    
+	    
+	buffer.append( "\n\n" );
+
+	
+	
+	return xmlFileName;	
+    }
+
+
+    private void parseXMLData( StringBuffer buffer,
+			       String fileName,
+			       String xmlData ) {
+
+	try {
+	    buffer.append( "[parseXMLData] Parsing XML data ...\n" );
+	    InputStream in                   = new ByteArrayInputStream( xmlData.getBytes("UTF-8") ); // might throw IOException
+	    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder db               = dbFactory.newDocumentBuilder();    // might throw ParserConfigurationException
+	    Document doc                     = db.parse( in );                    // might throw SAXException
+	    
+	    doc.getDocumentElement().normalize();
+
+	    buffer.append( "[parseXMLData] Document parsed: " + doc + "\n\n" );
+	    this.printNodes( buffer,         
+			     doc.getDocumentElement().getElementsByTagName("*"),   // wildcard: get all nodes
+			     1                                                     // the initial indent
+			     );
+	    
+	    
+	} catch( IOException e ) {
+	    buffer.append( "IOException during parse process: " + e.getMessage() + "\n\n" );
+	} catch( ParserConfigurationException e ) {
+	    buffer.append( "ParserConfigurationException during parse process: " + e.getMessage() + "\n\n" );   
+	} catch( SAXException e ) {
+	    buffer.append( "SAXException during parse process: " + e.getMessage() + ". Was the passed data really an XML document?\n\n" );
+	}
+
+    }
+
+    private void printNodes( StringBuffer buffer, NodeList nodeList, int indent ) {
+	
+	for( int n = 0; n < nodeList.getLength(); n++ ) {
+	    
+	    Node node              = nodeList.item( n );
+	    this.printIndent( buffer, indent );
+	    buffer.append( "[Node: " ).append( node.getNodeName() );
+	    NamedNodeMap attributes = node.getAttributes();
+	    if( attributes != null ) {
+		for( int a = 0; a < attributes.getLength(); a++ ) {
+		    Node attr = attributes.item(a);
+		    buffer.append( " " ).append( attr.getNodeName() ).append( "='" ).append( attr.getNodeValue() ).append( "'" );
+		}
+	    }
+	    buffer.append( "]\n" );
+	    
+	    this.printNodes( buffer, node.getChildNodes(), indent + 4 );
+	}
+    }
+
+    private void printIndent( StringBuffer buffer, int indent ) {
+	while( indent-- > 0 )
+	    buffer.append( " " );
+    }
 
 }

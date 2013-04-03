@@ -405,8 +405,8 @@ public class DefaultDirectoryResource
 			//          If now the form is submitted, the form target ('action') is presumed
 			//          in dir_A, but actually it is located in dir_B.
 			// 
-			//          That why directory references should have the trailing slash '/'!
-			return "<a href=\"" + file.getName() + "/" + "\">" + file.getName() + "/" + "</a>";
+			//          That's why directory references should have the trailing slash '/'!
+			return "<a href=\"" + file.getName() + "/" + "\">" + file.getName() + "</a>";
 
 		    } else {
 

@@ -12,7 +12,7 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "1.0.6.alpha";
+    public static final String VERSION                                           = "1.0.7.alpha";
     public static final String HTTP                                              = "HTTP";
     public static final String SUPPORTED_HTTP_VERSION                            = "1.1";
 
@@ -34,7 +34,6 @@ public class Constants {
      * It's a small trick that both (yucca and ikrs.httpd) use
      * the same logger instance.
      */
-    //public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_HTTP_LOGGER";
     public static final String NAME_DEFAULT_LOGGER                               = "DEFAULT_YUCCA_LOGGER";
 
     /* The http yucca-driven config constants */
@@ -86,15 +85,10 @@ public class Constants {
     /* Configuration constants */
     public static final String KEY_DEFAULTCHARACTERSET                           = "DEFAULT_CHARSET";
 
-    //public static final String KEY_SERVERNAME                                    = "SERVER_NAME";
-    //public static final String KEY_SERVERPORT                                    = "SERVER_PORT";
     public static final String KEY_SOFTWARENAME                                  = "SOFTWARE_NAME";
 
 
     // The session key constants
-    //public static final String SKEY_ISALIVE                                      = "IS_ALIVE";
-    //public static final String SKEY_LASTACCESSTIME                               = "LAST_ACCESSTIME";
-
     public static final String SKEY_REMOTE_ADDRESS                               = "REMOTE_ADDRESS";
     public static final String SKEY_REMOTE_HOST                                  = "REMOTE_HOST";
     public static final String SKEY_REMOTE_PORT                                  = "REMOTE_PORT";

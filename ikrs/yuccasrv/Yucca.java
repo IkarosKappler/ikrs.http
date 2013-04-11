@@ -879,13 +879,55 @@ public class Yucca
 	return filesCopied;
     }
 
+    private static void printSingleLineBox( String[] lines ) {
+
+	// Find longest line
+	String line = null;
+	for( int i = 0; i < lines.length; i++ ) {
+	    if( line == null || (line != null && lines[i] != null && lines[i].length() > line.length()) )
+		line = lines[i];
+	}
+
+	if( line == null )
+	    return; // No lines at all?!
+
+	// Characters in Unicode
+	// Does work :)
+	StringBuffer b = new StringBuffer();
+	b.append( '\u250C' );  // left upper corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2500' );  // single horizonal line
+	b.append( '\u2510' );  // right upper corner
+	b.append( "\n" );
+	for( int l = 0; l < lines.length; l++ ) {
+
+	    b.append( '\u2502' );  // single vertical line
+	    b.append( lines[l] );
+	    for( int k = lines[l].length(); k < line.length(); k++ )
+		b.append( " " );
+	    b.append( '\u2502' );
+	    b.append( "\n" );
+	}
+
+	b.append( '\u2514' );  // left lower corner
+	for( int i = 0; i < line.length(); i++ )
+	    b.append( '\u2500' );  
+	b.append( '\u2518' );  // right lower corner
+	//b.append( "\n" );
+	
+	System.out.println( b.toString() );
+    }
+
     public static Yucca runYucca( String[] argv ) {
 
 	//Yucca.printWarranty();
-	System.out.println( "    ikrs.yucca Copyright (C) 2012 Ikaros Kappler" );
-	System.out.println( "    This program comes with ABSOLUTELY NO WARRANTY; for details type 'warranty'" );
-	System.out.println( "    This is free software, and you are welcome to redistribute it" );
-	System.out.println( "    under certain conditions; type `license' for details." );
+	String[] lines = new String[] {
+	    "    ikrs.yucca Copyright (C) 2012 Ikaros Kappler    ",
+	    "    This program comes with ABSOLUTELY NO WARRANTY; for details type 'warranty'    ",
+	    "    This is free software, and you are welcome to redistribute it    ",
+	    "    under certain conditions; type `license' for details.    "
+	};
+	Yucca.printSingleLineBox( lines );
 
 	/* Convert the command line arguments into a command */
 	Command myCall = new DefaultCommand( "yucca",

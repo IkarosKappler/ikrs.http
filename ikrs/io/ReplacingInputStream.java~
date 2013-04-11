@@ -1,0 +1,94 @@
+package ikrs.io;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2013-04-11
+ * @version 1.0.0
+ **/
+
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import ikrs.util.ByteArrayComparator;
+
+public class ReplacingInputStream 
+    extends InputStream {
+
+    private MultiStopMarkInputStream multiIn;
+
+    public ReplacingInputStream( InputStream in,
+				 Map<byte[],byte[]> replacementMap 
+				 ) {
+	super();
+
+	// Convert key set to list
+	List<byte[]> keyList = new ArrayList<byte[]>( replacementMap.size() );
+	
+	Iterator<byte[]> keyIter = replacementMap.keySet().iterator();
+	while( keyIter.hasNext() ) {
+	    
+	    byte[] key   = keyIter.next();
+	    byte[] value = replacementMap.get( key );
+
+	}
+    }
+    
+    //--- BEGIN -------------- InputStream implementation -------------------
+    public int read()
+	throws IOException {
+	
+	return -1;
+    }
+    //--- END ---------------- InputStream implementation -------------------
+
+    /* Just for testing */
+    public static void main( String[] argv ) {
+	
+	try {
+	    String[] stopMarks = new String[] {
+		"%MARK_0%",
+		"%MARK_A%",
+		"%MARK_B%",
+		"%MARK_C%"
+	    };
+	    String[] replacements = new String[] {
+		"_repl_0_",
+		"_repl_A_",
+		"_repl_B_",
+		"_repl_C_"
+	    };
+	    String data = 
+		stopMarks[0] +
+		"This " + 
+		stopMarks[3] + 
+		" is a " + 
+		stopMarks[2] + 
+		" very simple " + 
+		stopMarks[1] + 
+		" test.";
+	    Map<byte[],byte[]> replacementMap = new java.util.TreeMap<byte[],byte[]>( new ByteArrayComparator() );
+	    for( int i = 0; i < stopMarks.length; i++ ) {
+		replacementMap.put( stopMarks[i].getBytes("UTF-8"), 
+				    replacements[i].getBytes("UTF-8")
+				    );
+	    }
+
+	    
+	    ReplacingInputStream in = 
+		new ReplacingInputStream( new java.io.ByteArrayInputStream(data.getBytes("UTF-8")),
+					  replacementMap );
+
+	    // ... 
+	    
+
+	} catch( IOException e ) {
+	    e.printStackTrace();
+	}
+	
+
+    }
+}

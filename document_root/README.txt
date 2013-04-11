@@ -3,6 +3,28 @@
 
 
 TO DO:
+[2013-04-10]
+ - Check the ikrs.io.MultiStopMarkInputStream.skip(long) method. Is
+   skipping bytes on the upper stream enough?
+ - [DONE 2013-04-11]
+   Build a ReplacingInputStream based on the MultiStopMarkInputStream
+   class.
+
+[2013-04-08]
+ - [DONE 2013-04-08; actually this was an mis-reported issue]
+   On system start there is no check if the configured document root
+   really exists (which might lead into a 50x Server Error). Add a check
+   and console prompt if the user wishes to create the directory if not
+   present.
+   Solution: the HTTPConfiguration class manages the document root
+   	     setting.
+ - [DONE 2013-04-10]
+   Write a MultiStopMarkInputStream that allows to pass a whole set of
+   possible stop marks for the underlying stream. Idea: nest regular
+   StopMarkInputStream into each other, each detected its own stop mark.
+   This will be helpful for building the error document placeholder
+   processor.
+
 [2013-03-26]
  - [DONE 2013-04-03]
    The directory listing has trailing slashes in directory link names.

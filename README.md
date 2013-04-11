@@ -10,6 +10,22 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-04-11]
+  - Built a ReplacingInputStream based on the MultiStopMarkInputStream
+    class.
+
+[2013-04-10]
+  - The ikrs.io.StopMarkInputStream.stopMarkReached() method did not
+    return a proper value; even if the stop mark was reached it 
+    returned false.
+  - Wrote a MultiStopMarkInputStream that allows to pass a whole set of
+    possible stop marks for the underlying stream. Idea: use the new
+    stream 'tokenizer' to build configurable error documents 
+    (placeholder processor).
+  - Added the ikrs.io.StopMarkInputStream.continueStream() and 
+    *.continueStream(boolean overrideEOI) methods.
+  - Added ikrs.util.ByteArrayComparator.
+
 [2013-04-03]
   - Fixed: the directory listing missed trailing slashes in directory 
     link names.

@@ -10,6 +10,7 @@ package ikrs.io;
  *
  * @authior Ikaros Kappler
  * @date 2012-10-08
+ * @modified 2013-04-10 Ikaros Kappler (stopMarkReached() issue fixed).
  * @version 1.0.0
  **/
 
@@ -90,6 +91,59 @@ public class StopMarkInputStream
     //}
 
     /**
+     * The continueStream() method resets the stream once the stop mark was reached.
+     * This means that the current buffer will be cleared, the stop mark bytes are 
+     * skipped and more bytes can be read from the underlying read (unless EOI was 
+     * reached).
+     *
+     * Actually this method is meant for the use of nested StopMarkInputStreams;
+     * once the underlying stream reached its stop mark (equals EOI) the stream
+     * can be reset for reading more bytes.
+     *
+     * Note: this method just calls the protected method continueStream( true ).
+     *
+     * @return true if - and only if - EOI was not yet reached. Hint: true does not
+     *         mean that EOI will not be reached on the next read() call.
+     **/
+    public boolean continueStream() {
+	return this.continueStream( false );
+    }
+
+    /**
+     * The continueStream() method resets the stream once the stop mark was reached.
+     * This means that the current buffer will be cleared, the stop mark bytes are 
+     * skipped and more bytes can be read from the underlying read.
+     * Unless EOI was reached - OR overrideEOI is set to true.
+     *
+     * Actually this method is meant for the use of nested StopMarkInputStreams;
+     * once the underlying stream reached its stop mark (equals EOI) the stream
+     * can be reset for reading more bytes.
+     *
+     * @param overrideEOI If set to true the next read() call will try to read one
+     *        more byte from the underlying stream.
+     * @return true if EOI was not yet reached OR overrideOI is set to true. 
+     *         Hint: true does not mean that EOI will not be reached on the next 
+     *         read() call.
+     **/
+    protected boolean continueStream( boolean overrideEOI ) {
+	if( this.isClosed )
+	    return false;
+
+	if( overrideEOI )
+	    this.eoiReached = false;
+	else if( this.eoiReached )
+	    return false;
+	if( !this.stopMarkReached )
+	    return true;
+	
+	this.stopMarkReached = false;
+	this.eoiReached      = false;
+	//if( this.stopMarkReached )
+	this.buffer.clear();
+	return true;
+    }
+
+    /**
      * This method just tells if this input stream was already closed..
      **/
     public boolean isClosed() {
@@ -97,7 +151,7 @@ public class StopMarkInputStream
     }
 
     /**
-     * This method just tell if this input stream already reached the stop mark; reaching the stop mark
+     * This method just tells if this input stream already reached the stop mark; reaching the stop mark
      * implies reaching EOF.
      **/
     public boolean stopMarkReached() {
@@ -133,10 +187,12 @@ public class StopMarkInputStream
 	    i++;
 	}
 
-	if( i >= this.stopMark.length )
+	if( i >= this.stopMark.length ) {
+	    this.stopMarkReached = true;
 	    return true;
-	else
+	} else {
 	    return false;
+	}
     }
 
     /**
@@ -239,8 +295,10 @@ public class StopMarkInputStream
 
 	
 
-	if( this.check_stopMarkReached() )
+	if( this.check_stopMarkReached() ) {
+	    //this.stopMarkReached = true;
 	    return -1;
+	}
 	
 	if( this.buffer.length() == 0 )
 	    return -1; // EOF

@@ -1,8 +1,24 @@
 package ikrs.httpd;
 
 /**
+ * Problem: the ModuleCommand/~Factory would require an HTTPHandler instance to be passed on
+ *          system start. But the system instantiates the HTTPHandler at a later point by
+ *          added a new handler to the yucca server.
+ *          So the factory requires the handler on instantiation and vice versa.
+ *
+ * To solve this problem the handler stores the first instance that was created in a static 
+ * attribute. When called the ModuleCommand tries to access this field.
+ *
+ * Warning: this only works if HTTP config uses a shared instance for _all_ listening ports.
+ *          See the 'sharedHandlerInstance' attribute in the ikrs.httpd.conf file (server
+ *          node).
+ *          If the 'sharedHandlerInstance' is not set Yucca will create different handler
+ *          instances for each 'server' tag. In this case the command will only work
+ *          for the first handler instance created.
+ *
  * @author Ikaros Kappler
  * @date 2013-01-09
+ * @modified 2013-04-17 Ikaros Kappler (shared handler instance added).
  * @version 1.0.0
  **/
 
@@ -17,7 +33,6 @@ import ikrs.util.CommandStringIncompleteException;
 public class ModuleCommandFactory
     extends DefaultCommandFactory {
 
-    
     public ModuleCommandFactory() {
 	
 	super();
@@ -31,6 +46,9 @@ public class ModuleCommandFactory
 
     }
 
+    //protected HTTPHandler getHandler() {
+    //	return this.handler;
+    //}
 
     //--- BEGIN --------------------- AbstractCommandFactory implementation ------------------
     /**

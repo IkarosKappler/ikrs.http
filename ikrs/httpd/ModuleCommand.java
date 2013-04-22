@@ -3,6 +3,7 @@ package ikrs.httpd;
 /**
  * @author Ikaros Kappler
  * @date 2013-01-09
+ * @modified 2013-04-17 Ikaros Kappler (shared handler instance added).
  * @version 1.0.0
  **/
 
@@ -37,14 +38,19 @@ public class ModuleCommand
 
     public int execute() {
 	
-	if( this.getName() == null )
+	if( HTTPHandler.sharedInstance == null ) {
+	    
+	    System.out.println( "Cannot run this command because there is no shared HTTPHandler instance." );
 	    return -1;
+	}
 
-
+	
 
 	if( this.getName().equalsIgnoreCase("STATUS") ) {
 
-	    System.out.println( "No status information available yet (not yet implemented)." );
+	    //System.out.println( "No status information available yet (not yet implemented)." );
+	    HTTPHandler.sharedInstance.performStatus();
+	    
 	    return 0;
 
 	} else {

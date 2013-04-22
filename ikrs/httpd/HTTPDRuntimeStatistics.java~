@@ -1,0 +1,26 @@
+package ikrs.httpd;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2013-04-22
+ * @version 1.0.0
+ **/
+
+public class HTTPDRuntimeStatistics {
+
+    private long systemStartedTime;
+
+    public HTTPDRuntimeStatistics( long serverStartedTime ) {
+	super();
+	
+	this.serverStartedTime = serverStartedTime;
+    }
+
+
+    public long getServerStartedTime() {
+	return this.serverStartedTime;
+    }
+
+
+
+}

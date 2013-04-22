@@ -3,6 +3,18 @@
 
 
 TO DO:
+[2013-04-22]
+ - On system start: print some output to show how many columns the hex
+   output requires.
+ - Try to find the exact width for stdout before line breaks are 
+   enforced.
+ - Add more runtime statistics:
+     - #requests
+     - #errors
+     - #warnings
+     - last error
+     - last warning
+
 [2013-04-10]
  - Check the ikrs.io.MultiStopMarkInputStream.skip(long) method. Is
    skipping bytes on the upper stream enough?

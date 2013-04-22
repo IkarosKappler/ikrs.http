@@ -22,8 +22,9 @@ package ikrs.httpd;
 /**
  * This is the main handler class that will be bound as a listener to the yucca server.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-15
+ * @modified 2013-04-17 Ikaros Kappler (shared handler instance added).
  * @version 1.0.0
  **/
 
@@ -40,6 +41,7 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +84,34 @@ public class HTTPHandler
     extends TCPAdapter 
     implements RejectedExecutionHandler {
 
+    
+    /**
+     * This is a bit ugly.
+     *
+     * Problem: the ModuleCommand/~Factory would require an HTTPHandler instance to be passed on
+     *          system start. But the system instantiates the HTTPHandler at a later point by
+     *          added a new handler to the yucca server.
+     *          So the factory requires the handler on instantiation and vice versa.
+     *
+     * To solve this problem the handler stores the first instance that was created in this 
+     * static attribute. When called the ModuleCommand tries to access this field.
+     *
+     * Warning: this only works if HTTP config uses a shared instance for _all_ listening ports.
+     *          See the 'sharedHandlerInstance' attribute in the ikrs.httpd.conf file (server
+     *          node).
+     *          If the 'sharedHandlerInstance' is not set Yucca will create different handler
+     *          instances for each 'server' tag. In this case the command will only work
+     *          for the first handler instance created.
+     **/
+    protected static HTTPHandler sharedInstance;
 
+
+    /**
+     * Technically these are all _implemented_ methods, not all supported.
+     *
+     * If a method M is supported or not is configured by the 
+     * DISABLE_METHOD.M directive inside the ikrs.httpd.conf file.
+     **/
     protected static final String[] SUPPORTED_METHODS = new String[] {
 	Constants.HTTP_METHOD_GET,
 	Constants.HTTP_METHOD_POST,
@@ -177,12 +206,22 @@ public class HTTPHandler
      **/
     private DateFormat httpDateFormat;
 
+    /**
+     * A statistics wrapper holding informational runtime info (will be initialized
+     * on system start).
+     **/
+    private HTTPDRuntimeStatistics runtimeStatistics;
+
+
     public HTTPHandler() {
 	super();
 	
 	// Better not override the logger's log level!
 	// It should be trusted that the passed log level is the desired one.
 	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
+
+	// Init the runtime stats wrapper
+	this.runtimeStatistics = new HTTPDRuntimeStatistics( System.currentTimeMillis() );
 	
 
 	this.environment  = new DefaultEnvironment<String,BasicType>( new TreeMapFactory<String,BasicType>(),
@@ -266,6 +305,10 @@ public class HTTPHandler
 	logger.log( Level.INFO,
 		    getClass().getName() + "{init}",
 		    "Initialization done. System ready.");
+
+	// Store first instance
+	if( HTTPHandler.sharedInstance == null )
+	    HTTPHandler.sharedInstance = this;
     }
 
     private void initDefaultDocumentRoot() {
@@ -449,10 +492,28 @@ public class HTTPHandler
     }
 
 
+    /**
+     * Get the handler's configured document root file.
+     *
+     * @return Thhe handler's configured document root file, which should not be null.
+     **/
     public File getDocumentRoot() {
 	return this.documentRoot;
     }
     
+    /**
+     * This is a global flag indicatng if directory listings are allowed or not.
+     *
+     * The ResourceAccessor/FilesystemResourceAccessor uses this method to check
+     * if it should show a requested directory's contents.
+     *
+     * The idea is to make the returned value configurable in future versions.
+     *
+     * @return true If and only if directory listings are allowed. If the method
+     *              returns false no ResourceAccessors should print any directory
+     *              listings (no matter what the local configuration is about)!
+     *              Instead they should raise a SecurityException/403 Forbidden.
+     **/
     public boolean isDirectoryListingAllowed() {
 	return true;
     }
@@ -475,9 +536,9 @@ public class HTTPHandler
 	String keyName = Constants.CKEY_HTTPCONFIG_DISABLE_METHOD_BASE.replaceAll( "\\{HTTP_METHOD\\}", method );
 	BasicType wrp_methodDisabled = this.getGlobalConfiguration().get( keyName );
 
-	// The HTTP method is NOT disabled                                                                                                
-	//  -    if the DISABLE* flag is not present                                                                                      
-	//  - OR if the DISABLE* flag is set to false.                                                                                    
+	// The HTTP method is NOT disabled
+	//  -    if the DISABLE* flag is not present
+	//  - OR if the DISABLE* flag is set to false.
 	try {
 	    
 	    return ( wrp_methodDisabled != null && wrp_methodDisabled.getBoolean() );
@@ -824,6 +885,48 @@ public class HTTPHandler
 
     }
 
+    /**
+     * This method is called by ikrs.http.ModuleCommand.execute().
+     *
+     * It just prints some verbose status information.
+     **/
+    protected void performStatus() {
+
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 "Status: NA (not yet implemented)." 
+			 );
+
+	String indent = "     ";
+	StringBuffer b = new StringBuffer();
+	b.append( "\n--------------------------------------------------------\n" ).
+	    append( indent ).append( "corePoolSize        : " ).
+	    append( this.threadPoolExecutor.getCorePoolSize() ).append( "\n" ).
+
+	    append( indent ).append( "poolSize            : " ).
+	    append( this.threadPoolExecutor.getPoolSize() ).append( "\n" ).
+
+	    append( indent ).append( "activeThreads       : " ).
+	    append( this.threadPoolExecutor.getActiveCount() ).append( "\n" ).
+
+	    append( indent ).append( "\n" ).
+
+	    append( indent ).append( "system started at   : " ).
+	    append( this.getHTTPDateFormat().format(new Date(this.runtimeStatistics.getSystemStartedTime())) ).append( "\n" ).
+
+	    append( indent ).append( "uptime              : " ).
+	    append( Long.toString(this.runtimeStatistics.getUptime_ms()/1000L) ).append( " s\n" );
+	    
+	b.append( "--------------------------------------------------------\n" );
+	
+
+
+	this.logger.log( Level.INFO,
+			 getClass().getName(),
+			 b.toString()
+			 );
+
+    }
     
 
 }

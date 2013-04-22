@@ -5,7 +5,7 @@ package ikrs.httpd;
  * The main purpose of this class is to add a customized CommandFactory
  * to yucca's command factory.
  *
- * By doing thus the HTTPHandler is capable to add new commands to yucca's
+ * By doing this the HTTPHandler is capable to add new commands to yucca's
  * command line.
  *
  * 

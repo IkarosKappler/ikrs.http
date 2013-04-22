@@ -10,6 +10,11 @@ A free tiny java written http server.
 Changes
 =======
 
+[2013-03-22]
+  - Added the HTTPDRuntimeStatistics class.
+  - Added a static HTTPHandler.sharedInstance field.
+  - Extended the HTTPD STATUS command.
+
 [2013-04-11]
   - Built a ReplacingInputStream based on the MultiStopMarkInputStream
     class.

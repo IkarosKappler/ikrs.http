@@ -14,6 +14,7 @@ TO DO:
      - #warnings
      - last error
      - last warning
+ - Make the HTTPHandler.isDisableMethod() method configurable.
 
 [2013-04-10]
  - Check the ikrs.io.MultiStopMarkInputStream.skip(long) method. Is
@@ -646,6 +647,26 @@ HTTPD
     ~~~~~~
     Prints the current status of the HTTPd module.
 
+  - HEXDUMP FORMAT <format>
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    Changes the hexdump output column format. The expected value must
+    be a comma separated integer list, each integer indicating the 
+    respective column list and the number of integers the total number
+    of columns.
+    Example: the format '4,4,0,4,4' would generate a hexdump format
+    	     like this:
+
+                                                    
+    0x00000000  89504e47 0d0a1a0a  0000000d 49484452  .PNG........IHDR
+    0x00000010  00000010 00000010  08060000 001ff3ff  ................
+    0x00000020  61000000 01735247  4200aece 1ce90000  a....sRGB.......
+    0x00000030  0006624b 474400ff  00ff00ff a0bda793  ..bKGD..........
+    0x00000040  00000009 70485973  00000dd7 00000dd7  ....pHYs........
+    0x00000050  0142289b 78000000  0774494d 4507dc0c  .B(.x....tIME...
+    0x00000060  03112534 aaced90e  00000213 49444154  ..%4........IDAT
+    0x00000070  38cba592 bfab5c65  10869f99 6fbedd73  8.....\e....o..s
+    0x00000080  4eb20917 2f04ae08  c1340662 9b267083  N.../....4.b.&p.
+    0x00000090  8db5a6cc 9f10b0f0  cf112d04 ab105258  ..........-...RX
 
 
 LICENSE

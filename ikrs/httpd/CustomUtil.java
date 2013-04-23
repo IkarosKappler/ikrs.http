@@ -309,7 +309,7 @@ public class CustomUtil {
 		String value = token.substring(index+1,token.length()).trim();
 		
 		// Remove quotes?	    
-		if( value.length() >= 2 
+		/*if( value.length() >= 2 
 		    && ( ( value.startsWith("\"") && value.endsWith("\"") )
 			 ||
 			 ( value.startsWith("'") && value.endsWith("'") ) 
@@ -317,6 +317,8 @@ public class CustomUtil {
 
 		    value = value.substring( 1, value.length()-1 );
 		}
+		*/
+		value = stripQuotes( value );
 
 		map.put( key, value );
 	    
@@ -328,7 +330,49 @@ public class CustomUtil {
 	return map;
     }
 
+    public static String stripQuotes( String str ) {
+	if( str == null )
+	    return null;
+	
+	if( str.length() >= 2 
+	    && ( ( str.startsWith("\"") && str.endsWith("\"") )
+		 ||
+		 ( str.startsWith("'") && str.endsWith("'") ) 
+		 ) ) {
+	    
+	    return str.substring( 1, str.length()-1 );
+	} else {
+	    return str;
+	}
+    }
 
+    /*public static String[] splitAtWhitespace( String str ) {
+	if( str == null )
+	    return null;
+	return str.split( "\\s+" );
+	}*/
+
+    public static int[] string2int( String[] splits ) 
+	throws NullPointerException,
+	       NumberFormatException {
+
+	if( splits == null )
+	    return null;
+	int[] arr = new int[ splits.length ];
+	for( int i = 0; i < splits.length; i++ ) {
+
+	    if( splits[i] == null )
+		throw new NullPointerException( "Token at index " + i + " is null and cannot be converted to int." );
+	    
+	    try {
+		arr[i] = Integer.parseInt( splits[i].trim() );
+	    } catch( NumberFormatException e ) {
+		throw new NullPointerException( "Token at index " + i + " does not represent an int." );
+	    }
+	}
+	
+	return arr;
+    }
     
     public static byte[] hex2bytes( String hex ) 
 	throws NumberFormatException {

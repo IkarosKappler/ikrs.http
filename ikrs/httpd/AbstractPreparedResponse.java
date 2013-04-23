@@ -358,6 +358,7 @@ public abstract class AbstractPreparedResponse
 		byte[] buffer = new byte[ 1024 ];
 		int len = -1;
 		// Print the data on stdout?
+		/*
 		ikrs.util.HexDumpOutputStream hexOut = 
 		    new ikrs.util.HexDumpOutputStream( new java.io.OutputStreamWriter( System.out ),
 						       new int[]{ 8, 8, 
@@ -367,6 +368,8 @@ public abstract class AbstractPreparedResponse
 								  8, 8, 
 								  0,     // one separator column
 								  8, 8 });
+		*/
+		ikrs.util.HexDumpOutputStream hexOut = this.getHTTPHandler().createHexDumpOutputStream();
 		long maxHexOutput = 1024*10;  // 10 KB
 		// Read the resource's data chunk by chunk
 		long totalLength = 0L;

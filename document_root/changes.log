@@ -1,4 +1,10 @@
 
+[2013-03-23]
+  - HTTPD command 'HEXDUMP FORMAT' for hexdump output configuration added.
+  - Moved the HexDumpOutputStream creation from AbstractPreparedResponse
+    to HTTPHandler.
+  - Added 'HEXDUMP_FORMAT' to the ikrs.httpd.conf file.
+
 [2013-03-22]
   - Added the HTTPDRuntimeStatistics class.
   - Added a static HTTPHandler.sharedInstance field.

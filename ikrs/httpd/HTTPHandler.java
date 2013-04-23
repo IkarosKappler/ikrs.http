@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.DatagramSocket;
 import java.net.URI;
 import java.net.Socket;
@@ -73,6 +74,7 @@ import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 import ikrs.util.EnvironmentFactory;
 import ikrs.util.FileExtensionKeyMap;
+import ikrs.util.HexDumpOutputStream;
 import ikrs.util.KeyValueStringPair;
 import ikrs.util.MapFactory;
 import ikrs.util.TreeMapFactory;
@@ -580,6 +582,63 @@ public class HTTPHandler
 	return this.httpDateFormat;
     }
 
+    public HexDumpOutputStream createHexDumpOutputStream() {
+	BasicType hexdumpFormat = this.getGlobalConfiguration().get( Constants.CKEY_HTTPCONFIG_HEXDUMP_FORMAT );
+	// System.out.println( "hexdumpFormat=" + hexdumpFormat );
+	int[] columns = null;
+	String str_hexdumpFormat = null;
+	if( hexdumpFormat != null 
+	    && (str_hexdumpFormat = hexdumpFormat.getString()) != null 
+	    && str_hexdumpFormat.length() != 0 ) {
+	    try {
+		String[] splits = str_hexdumpFormat.split( "," );
+		int[] tmp_columns = CustomUtil.string2int( splits ); 
+		for( int i = 0; i < tmp_columns.length; i++ ) {
+		    if( tmp_columns[i] < 0 )
+			throw new IllegalArgumentException( "Hexdump columns must not be negative (at index " + i + ": " +tmp_columns[i]+")." );
+		}
+		columns = tmp_columns;
+	    } catch( NumberFormatException e ) {
+		this.logger.log( Level.WARNING,
+				 getClass().getName() + ".createHexDumpOutputStream()",
+				 "[NumberFormatException] " + e.getMessage() + " Going to use default column set." );
+	    } catch( NullPointerException e ) {
+		this.logger.log( Level.WARNING,
+				 getClass().getName() + ".createHexDumpOutputStream()",
+				 "[NullPointerException] " + e.getMessage() + " Going to use default column set." );
+	    } catch( IllegalArgumentException e ) {
+		this.logger.log( Level.WARNING,
+				 getClass().getName() + ".createHexDumpOutputStream()",
+				 "[IllegalArgumentException] " + e.getMessage() + " Going to use default column set." );
+	    }
+	} else {
+	    this.logger.log( Level.WARNING,
+			     getClass().getName() + ".createHexDumpOutputStream()",
+			     "No hexdump column format specified. Going to use default column set." );
+	}
+	
+	if( columns == null ) {
+	    columns = new int[]{ 8, 8, 
+				 0,     // one separator column
+				 8, 8, 
+				 0, 0,  // two separator columns
+				 8, 8, 
+				 0,     // one separator column
+				 8, 8 };
+	}
+
+	/*
+	System.out.println( "HEXDUMP COLUMNS: " );
+	for( int i = 0; i < columns.length; i++ ) 
+	    System.out.print( " " + columns[i] );
+	System.out.println( "\n" );
+	*/
+	HexDumpOutputStream hexOut = 
+	    new HexDumpOutputStream( new OutputStreamWriter( System.out ),
+				     columns );
+	return hexOut;
+    }
+
     /**
      * Get the server's software name, compatible with the 'Server' header field.
      *
@@ -890,11 +949,47 @@ public class HTTPHandler
      *
      * It just prints some verbose status information.
      **/
-    protected void performStatus() {
+    protected void perform_hexdumpFormat( String formatString ) {
+
+	this.logger.log( Level.FINE,
+			 getClass().getName() + ".perform_hexdumpFormat()",
+			 "hexdumpFormat requested." 
+			 );
+
+	if( formatString == null ) {
+	    this.logger.log( Level.WARNING,
+			     getClass().getName() + ".perform_hexdumpFormat()",
+			     "Cannot set " + Constants.CKEY_HTTPCONFIG_HEXDUMP_FORMAT + " to null."
+			     );
+	    return;
+	} 
+	
+	this.getGlobalConfiguration().put( Constants.CKEY_HTTPCONFIG_HEXDUMP_FORMAT,
+					   new BasicStringType(formatString) );
+
+	String indent = "     ";
+	StringBuffer b = new StringBuffer();
+	b.append( indent ).append( "Format set to: " + formatString );
+	
+
 
 	this.logger.log( Level.INFO,
+			 getClass().getName() + ".perform_hexdumpFormat()",
+			 b.toString()
+			 );
+
+    }
+
+    /**
+     * This method is called by ikrs.http.ModuleCommand.execute().
+     *
+     * It just prints some verbose status information.
+     **/
+    protected void perform_status() {
+
+	this.logger.log( Level.FINE,
 			 getClass().getName(),
-			 "Status: NA (not yet implemented)." 
+			 "Status requested." 
 			 );
 
 	String indent = "     ";

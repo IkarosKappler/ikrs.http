@@ -1,5 +1,12 @@
 package ikrs.io.fileio;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
  * The standard java libraries have no file- and directory- copy routines.
  *
@@ -9,13 +16,6 @@ package ikrs.io.fileio;
  * @date 2012-12-19
  * @version 1.0.0
  **/
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 public class FileCopy {

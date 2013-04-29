@@ -1,13 +1,14 @@
 package ikrs.util;
 
+import java.text.Collator;
+import java.util.Comparator;
+
 /**
  * @author Henning Diesenberg
  * @date 2012-04-24
  * @version 1.0.0
  **/
 
-import java.text.Collator;
-import java.util.Comparator;
 
 public class CaseInsensitiveComparator 
     implements Comparator<String> {

@@ -1,5 +1,22 @@
 package ikrs.httpd.resource;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
+
+import ikrs.httpd.ContentRange;
+import ikrs.httpd.HTTPHandler;
+import ikrs.httpd.ReadOnlyException;
+import ikrs.httpd.Resource;
+import ikrs.httpd.ResourceMetaData;
+import ikrs.util.CustomLogger;
+
+import ikrs.io.ReadLimitInputStream;
+import ikrs.io.fileio.htaccess.HypertextAccessFile;
+
 /**
  * The RangedResource class is a wrapper class that allows to 'cut off' some
  * bytes at the beginning and/or at the end of an existing resource.
@@ -16,24 +33,6 @@ package ikrs.httpd.resource;
  * @date 2013-02-27
  * @version 1.0.0
  **/
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
-
-import ikrs.httpd.ContentRange;
-import ikrs.httpd.HTTPHandler;
-import ikrs.httpd.ReadOnlyException;
-import ikrs.httpd.Resource;
-import ikrs.httpd.ResourceMetaData;
-import ikrs.util.CustomLogger;
-
-//import ikrs.io.BytePositionInputStream;
-import ikrs.io.ReadLimitInputStream;
-import ikrs.io.fileio.htaccess.HypertextAccessFile;
 
 
 public class RangedResource

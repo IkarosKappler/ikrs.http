@@ -1,5 +1,8 @@
 package ikrs.io;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This input stream is an extension of the BytePositionInputStream.
  * 
@@ -11,8 +14,7 @@ package ikrs.io;
  * @version 1.0.0
  **/
 
-import java.io.InputStream;
-import java.io.IOException;
+
 
 public class ReadLimitInputStream 
     extends BytePositionInputStream {

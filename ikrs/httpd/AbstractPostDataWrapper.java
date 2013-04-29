@@ -1,11 +1,5 @@
 package ikrs.httpd;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-10-02
- * @version 1.0.0
- **/
-
 import java.io.InputStream;
 import java.io.IOException;
 // import java.text.ParseException;
@@ -13,6 +7,13 @@ import java.io.IOException;
 import ikrs.httpd.datatype.FormData;
 import ikrs.io.BytePositionInputStream;
 import ikrs.util.CustomLogger;
+
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-10-02
+ * @version 1.0.0
+ **/
 
 
 public abstract class AbstractPostDataWrapper

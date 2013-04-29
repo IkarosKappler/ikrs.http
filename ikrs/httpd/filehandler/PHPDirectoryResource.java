@@ -1,25 +1,5 @@
 package ikrs.httpd.filehandler; 
 
-/**
- * This class is DEPRECATED and should not be used any more (security issues).
- *
- *
- * This class is a mixture of ikrs.http.resource.DirectoryResource and ikrs.http.FileHandler.
- *
- * Due to security reasons it is not recommended to use this class any more:
- *  (i)  You do not know what PHP code will really be executed ... system wide!
- *  (ii) A custom directory listing implementation might show htacess or htpasswd or any
- *       other sensitive data the the users (world wide!).
- *
- * And one more reason: PHP is not necesarily installed on all target systems.
- *
- * @author  Ikaros Kappler
- * @date    2012-10-23
- * @version 1.0.0
- *
- * @deprecated
- **/
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +37,26 @@ import ikrs.httpd.resource.AbstractDirectoryResource;
 import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
+
+/**
+ * This class is DEPRECATED and should not be used any more (security issues).
+ *
+ *
+ * This class is a mixture of ikrs.http.resource.DirectoryResource and ikrs.http.FileHandler.
+ *
+ * Due to security reasons it is not recommended to use this class any more:
+ *  (i)  You do not know what PHP code will really be executed ... system wide!
+ *  (ii) A custom directory listing implementation might show htacess or htpasswd or any
+ *       other sensitive data the the users (world wide!).
+ *
+ * And one more reason: PHP is not necesarily installed on all target systems.
+ *
+ * @author  Ikaros Kappler
+ * @date    2012-10-23
+ * @version 1.0.0
+ *
+ * @deprecated
+ **/
 
 
 public class PHPDirectoryResource

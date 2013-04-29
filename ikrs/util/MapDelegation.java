@@ -1,5 +1,9 @@
 package ikrs.util;
 
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * The map delegation has a (previously passed) core map and all Map's method calls
  * will be directly forwarded to the core map.
@@ -8,11 +12,6 @@ package ikrs.util;
  * @date 2012-09-06
  * @version 1.0.0
  **/
-
-import java.util.AbstractMap;
-import java.util.Map;
-// import java.util.Map.Entry;
-import java.util.Set;
 
 public class MapDelegation<K,V>
     extends AbstractMap<K,V> {

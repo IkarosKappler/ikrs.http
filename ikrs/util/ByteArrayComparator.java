@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.Comparator;
+
 /**
  * A very simple byte array comparator.
  *
@@ -8,7 +10,6 @@ package ikrs.util;
  * @version 1.0.0
  **/
 
-import java.util.Comparator;
 
 public class ByteArrayComparator 
     implements Comparator<byte[]> {

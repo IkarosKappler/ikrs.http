@@ -1,5 +1,10 @@
 package ikrs.httpd;
 
+import java.io.IOException;
+import java.net.URI;
+import java.security.NoSuchAlgorithmException;
+
+
 /**
  * The ETag (entity tag) is sort of a resource hash. It is built of the 
  * resource's name, the resource's size (if available) and the 
@@ -16,11 +21,6 @@ package ikrs.httpd;
  * @date 2013-02-28
  * @version 1.0.0
  **/
-
-
-import java.io.IOException;
-import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 
 
 public class ETag {

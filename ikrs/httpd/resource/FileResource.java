@@ -1,11 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * @author  Ikaros Kappler
- * @date    2012-07-20
- * @version 1.0.0
- **/
-
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -22,6 +16,12 @@ import ikrs.httpd.ReadOnlyException;
 import ikrs.httpd.Resource;
 import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
+
+/**
+ * @author  Ikaros Kappler
+ * @date    2012-07-20
+ * @version 1.0.0
+ **/
 
 
 public class FileResource

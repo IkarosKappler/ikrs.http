@@ -1,5 +1,9 @@
 package ikrs.util;
 
+import java.io.EOFException;
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * This class can be used to read clean CR-LF (0xD, 0xA) line feeded text.
  * Other line breaks will be taken as 'normal' text.
@@ -8,10 +12,6 @@ package ikrs.util;
  * @date 2012-05-21
  * @version 1.0.0
  **/
-
-import java.io.EOFException;
-import java.io.InputStream;
-import java.io.IOException;
 
 
 public class CRLFLineReader {

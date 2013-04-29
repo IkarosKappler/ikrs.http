@@ -1,5 +1,10 @@
 package ikrs.httpd.datatype;
 
+import ikrs.httpd.HTTPHeaders;
+import ikrs.util.KeyValueStringPair;
+
+import java.io.InputStream;
+
 /**
  * 
  *
@@ -9,27 +14,12 @@ package ikrs.httpd.datatype;
  **/
 
 
-import ikrs.httpd.HTTPHeaders;
-import ikrs.util.KeyValueStringPair;
-
-import java.io.InputStream;
 
 public class FormDataItem {
-    //    extends KeyValueStringPair {
 
     private HTTPHeaders headers;
 
     private InputStream inputStream;
-
-    /*public FormDataItem() { // String key, String value ) {
-	super( null, null ); // key, value );
-
-	//this.key    = key;
-	//this.value  = value;
-
-	this.headers = new HTTPHeaders();
-    }
-    */
 
     public FormDataItem( HTTPHeaders headers,
 			 InputStream in ) {

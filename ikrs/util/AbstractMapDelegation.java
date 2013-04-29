@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.*;
+
 /**
  *
  * @author Henning Diesenberg
@@ -7,7 +9,6 @@ package ikrs.util;
  * @version 1.0.0
  **/
 
-import java.util.*;
 
 public abstract class AbstractMapDelegation<K,V>
     implements Map<K,V> {

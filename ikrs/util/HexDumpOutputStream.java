@@ -1,5 +1,11 @@
 package ikrs.util;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+
+import ikrs.io.CircularFIFO;
+
 /**
  * A simple hexadecimal dump class as an OutputStream.
  *
@@ -9,12 +15,6 @@ package ikrs.util;
  * @date 2012-10-29
  * @version 1.0.0
  **/
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
-
-import ikrs.io.CircularFIFO;
 
 
 public class HexDumpOutputStream

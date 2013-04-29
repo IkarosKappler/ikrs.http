@@ -1,14 +1,14 @@
 package ikrs.util.session;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-09-07
- **/
-
 import java.util.TreeMap;
 
 import ikrs.typesystem.*;
 import ikrs.util.*;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-09-07
+ **/
 
 public class TestSessionManager {
 

@@ -1,5 +1,9 @@
 package ikrs.httpd;
 
+import java.util.concurrent.ThreadFactory;
+
+import ikrs.util.CustomLogger;
+
 /**
  * This ThreadFactory implementation creates new HTTPServerThreads.
  *
@@ -7,10 +11,6 @@ package ikrs.httpd;
  * @date 2012-07-16
  * @version 1.0.0
  **/
-
-import java.util.concurrent.ThreadFactory;
-
-import ikrs.util.CustomLogger;
 
 
 public class HTTPServerThreadFactory

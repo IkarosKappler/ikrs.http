@@ -1,16 +1,16 @@
 package ikrs.httpd;
 
+import java.util.logging.Level;
+
+import ikrs.typesystem.BasicType;
+import ikrs.util.DefaultCommand;
+
 /**
  * @author Ikaros Kappler
  * @date 2013-01-09
  * @modified 2013-04-17 Ikaros Kappler (shared handler instance added).
  * @version 1.0.0
  **/
-
-import java.util.logging.Level;
-
-import ikrs.typesystem.BasicType;
-import ikrs.util.DefaultCommand;
 
 
 public class ModuleCommand

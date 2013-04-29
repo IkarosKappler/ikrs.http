@@ -1,13 +1,5 @@
 package ikrs.httpd;
 
-/**
- * This class wraps HTTPHeaderLines together into a list like searchable structure.
- *
- * @author Ikaros Kappler
- * @date 2012-05-21
- * @version 1.0.0
- **/
-
 
 import java.io.EOFException;
 import java.io.InputStream;
@@ -24,6 +16,15 @@ import java.util.TreeSet;
 
 
 import ikrs.util.CaseInsensitiveComparator;
+
+
+/**
+ * This class wraps HTTPHeaderLines together into a list like searchable structure.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-05-21
+ * @version 1.0.0
+ **/
 
 
 public class HTTPHeaders {

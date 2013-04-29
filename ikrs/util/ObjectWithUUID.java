@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.UUID;
+
 /**
  * This is a very small interface for all objects that are associated with an UUID.
  * The final(!) UUID is expected to be part of the object.
@@ -8,8 +10,6 @@ package ikrs.util;
  * @date 2012-05-23
  * @version 1.0.0
  **/
-
-import java.util.UUID;
 
 public interface ObjectWithUUID {
 

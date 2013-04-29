@@ -1,21 +1,5 @@
 package ikrs.httpd.filehandler;
 
-/**
- * The CGI handler is an abstract class implementing some basic methods for 
- * the Common Gateway Interface.
- *
- * Subclasses must implement these methods:
- *  - List<String> buildCGISystemCommand( ... )
- *  - void buildAdditionalCGIEnvironmentVars( ... )
- *  - Resource handleCGIOutput( ... )
- *
- *
- *
- * @author Ikaros Kappler
- * @date 2012-10-12
- * @version 1.0.0
- **/
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -49,6 +33,23 @@ import ikrs.util.Environment;
 import ikrs.util.KeyValueStringPair;
 import ikrs.util.session.Session;
 import ikrs.typesystem.BasicType;
+
+/**
+ * The CGI handler is an abstract class implementing some basic methods for 
+ * the Common Gateway Interface.
+ *
+ * Subclasses must implement these methods:
+ *  - List<String> buildCGISystemCommand( ... )
+ *  - void buildAdditionalCGIEnvironmentVars( ... )
+ *  - Resource handleCGIOutput( ... )
+ *
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-10-12
+ * @version 1.0.0
+ **/
+
 
 public abstract class CGIHandler
     extends AbstractFileHandler {

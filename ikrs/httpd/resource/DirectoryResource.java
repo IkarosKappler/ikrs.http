@@ -1,17 +1,17 @@
 package ikrs.httpd.resource;
 
-/**
- * @author   Ikaros Kappler
- * @date     2012-10-11
- * @version  1.0.0
- **/
-
 import java.io.IOException;
 import java.io.OutputStream;
 
 import ikrs.httpd.Resource;
 import ikrs.util.MIMEType;
 import java.util.UUID;
+
+/**
+ * @author   Ikaros Kappler
+ * @date     2012-10-11
+ * @version  1.0.0
+ **/
 
 
 public interface DirectoryResource

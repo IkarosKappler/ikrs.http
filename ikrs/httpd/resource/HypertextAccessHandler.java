@@ -1,13 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * This class reads and processes the .htaccess and .htpasswd configuration for resource access.
- *
- * @author Ikaros Kappler
- * @date 2012-09-13
- * @version 1.0.0
- **/
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,6 +23,15 @@ import ikrs.httpd.MissingParamException;
 
 import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicStringType;
+
+/**
+ * This class reads and processes the .htaccess and .htpasswd configuration for resource access.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-09-13
+ * @version 1.0.0
+ **/
+
 
 public class HypertextAccessHandler {
 

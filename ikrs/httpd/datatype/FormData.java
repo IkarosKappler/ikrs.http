@@ -1,5 +1,8 @@
 package ikrs.httpd.datatype;
 
+
+import java.util.Set;
+
 /**
  * FormData instances represent lists/maps of named items, each a FormDataItem.
  *
@@ -14,8 +17,6 @@ package ikrs.httpd.datatype;
  * @version 1.0.1
  **/
 
-
-import java.util.Set;
 
 public interface FormData {
 

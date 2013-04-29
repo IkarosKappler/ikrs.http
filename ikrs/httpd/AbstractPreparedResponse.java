@@ -1,13 +1,5 @@
 package ikrs.httpd;
 
-/**
- * This interface is meant to wrap prepared HTTP reply objects.
- *
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
-
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.io.InputStream;
@@ -24,6 +16,14 @@ import ikrs.httpd.AuthorizationException;
 import ikrs.httpd.HeaderFormatException;
 import ikrs.httpd.DataFormatException;
 import ikrs.typesystem.BasicType;
+
+/**
+ * This interface is meant to wrap prepared HTTP reply objects.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 
 public abstract class AbstractPreparedResponse

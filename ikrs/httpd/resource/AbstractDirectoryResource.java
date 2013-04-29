@@ -1,12 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * @author   Ikaros Kappler
- * @date     2012-07-20
- * @modified 2012-10-11
- * @version  1.0.0
- **/
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,6 +28,12 @@ import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
 
+/**
+ * @author   Ikaros Kappler
+ * @date     2012-07-20
+ * @modified 2012-10-11
+ * @version  1.0.0
+ **/
 
 public abstract class AbstractDirectoryResource
     extends AbstractResource 

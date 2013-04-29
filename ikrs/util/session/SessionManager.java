@@ -1,5 +1,8 @@
 package ikrs.util.session;
 
+import java.util.UUID;
+
+
 /**
  * This is a basic session handler interface.
  *
@@ -10,9 +13,6 @@ package ikrs.util.session;
  * @date 2012-09-06
  * @version 1.0.0
  **/
-
-import java.util.UUID;
-
 
 
 public interface SessionManager<K,V,U> {

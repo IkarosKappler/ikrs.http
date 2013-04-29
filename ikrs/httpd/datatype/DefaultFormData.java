@@ -1,13 +1,5 @@
 package ikrs.httpd.datatype;
 
-/**
- * This is the default FormData implementation.
- *
- * @author Ikaros Kappler
- * @date 2012-10-04
- * @version 1.0.0
- **/
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +10,14 @@ import java.util.TreeMap;
 
 import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.KeyValueStringPair;
+
+/**
+ * This is the default FormData implementation.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-10-04
+ * @version 1.0.0
+ **/
 
 
 public class DefaultFormData 

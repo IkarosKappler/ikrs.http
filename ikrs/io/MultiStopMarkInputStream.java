@@ -1,5 +1,11 @@
 package ikrs.io;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * The MultiStopMarkInputStream is an enhancement of the normal 
  * StopMarkInputStream class, it supports a whole set of stop marks
@@ -14,10 +20,6 @@ package ikrs.io;
  * @version 1.0.0
  **/
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MultiStopMarkInputStream 
     extends InputStream {

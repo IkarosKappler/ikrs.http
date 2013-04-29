@@ -1,19 +1,5 @@
 package ikrs.httpd.filehandler;
 
-/**
- * This is a PHP file handler. It passes the requested file to the PHP (php-cgi) interpreter
- * and stores the generated data inside a buffered resource.
- *
- * Future implementations might send the generated data in runtime (without a buffer), but
- * that would require a HTTP handler that does not expect the given data length when the
- * network output starts.
- *
- *
- * @author Ikaros Kappler
- * @date 2012-09-29
- * @version 1.0.0
- **/
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -40,6 +26,21 @@ import ikrs.httpd.datatype.FormData;
 import ikrs.io.BytePositionInputStream;
 import ikrs.util.CustomLogger;
 import ikrs.util.MIMEType;
+
+/**
+ * This is a PHP file handler. It passes the requested file to the PHP (php-cgi) interpreter
+ * and stores the generated data inside a buffered resource.
+ *
+ * Future implementations might send the generated data in runtime (without a buffer), but
+ * that would require a HTTP handler that does not expect the given data length when the
+ * network output starts.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-09-29
+ * @version 1.0.0
+ **/
+
 
 public class PHPHandler
     extends CGIHandler {

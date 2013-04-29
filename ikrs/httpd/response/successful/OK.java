@@ -1,13 +1,5 @@
 package ikrs.httpd.response.successful;
 
-/**
- * This interface is meant to wrap prepared HTTP reply objects.
- *
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
@@ -47,6 +39,14 @@ import ikrs.httpd.resource.RangedResource;
 import ikrs.httpd.response.GeneralPreparedResponse;
 
 import ikrs.typesystem.*;
+
+/**
+ * This interface is meant to wrap prepared HTTP reply objects.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 
 public class OK

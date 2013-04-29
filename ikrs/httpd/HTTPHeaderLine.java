@@ -1,5 +1,16 @@
 package ikrs.httpd;
 
+import java.io.EOFException;
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+
+import ikrs.util.CRLFLineReader;
+import ikrs.util.KeyValuePair;
+import ikrs.util.KeyValueStringPair;
+
+
 /**
  * The HTTPHeaderLine class is very simple datastructure to hold single
  * HTTP header lines (each line represents a key/value pair).
@@ -15,16 +26,6 @@ package ikrs.httpd;
  * @version 1.0.0
  **/
 
-
-import java.io.EOFException;
-import java.io.InputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-
-import ikrs.util.CRLFLineReader;
-import ikrs.util.KeyValuePair;
-import ikrs.util.KeyValueStringPair;
 
 
 public final class HTTPHeaderLine 

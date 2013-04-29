@@ -1,11 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * @autor Ikaros Kappler
- * @date 2012-07-23
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -24,6 +18,14 @@ import ikrs.httpd.HTTPHeaders;
 import ikrs.httpd.UnsupportedFormatException;
 
 import ikrs.typesystem.BasicType;
+
+/**
+ * @autor Ikaros Kappler
+ * @date 2012-07-23
+ * @version 1.0.0
+ **/
+
+
 
 public abstract class AbstractResourceAccessor 
     implements ResourceAccessor {

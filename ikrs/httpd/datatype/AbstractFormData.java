@@ -1,5 +1,7 @@
 package ikrs.httpd.datatype;
 
+import java.util.Set;
+
 /**
  * This is the default abstract FormData super class.
  *
@@ -9,8 +11,6 @@ package ikrs.httpd.datatype;
  * @version 1.0.1
  **/
 
-
-import java.util.Set;
 
 
 public abstract class AbstractFormData 

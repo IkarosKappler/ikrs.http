@@ -1,5 +1,9 @@
 package ikrs.yuccasrv.socketmngr;
 
+import java.net.Socket;
+import java.net.DatagramSocket;
+import java.util.UUID;
+
 /**
  * This abstract class implements all method from the BindListener interface - but
  * it leaves all methos bodies empty.
@@ -15,9 +19,6 @@ package ikrs.yuccasrv.socketmngr;
  * @version 1.0.0
  **/
 
-import java.net.Socket;
-import java.net.DatagramSocket;
-import java.util.UUID;
 
 public abstract class BindAdapter 
     implements BindListener {

@@ -1,11 +1,5 @@
 package ikrs.httpd;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-10-02
- * @version 1.0.0
- **/
-
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +20,12 @@ import ikrs.httpd.datatype.Query;
 import ikrs.io.MultipartMIMETokenizer;
 import ikrs.util.CustomLogger;
 import ikrs.util.KeyValueStringPair;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-10-02
+ * @version 1.0.0
+ **/
 
 
 public class DefaultPostDataWrapper

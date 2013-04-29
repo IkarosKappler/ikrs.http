@@ -1,5 +1,12 @@
 package ikrs.yuccasrv.commandline;
 
+import java.util.Iterator;
+
+import ikrs.typesystem.BasicType;
+import ikrs.util.AbstractCommand;
+import ikrs.util.Command;
+import ikrs.util.CommandStringIncompleteException;
+
 /**
  * This is the default HELP command implementation.
  *
@@ -8,14 +15,6 @@ package ikrs.yuccasrv.commandline;
  * @date 2012-05-09
  * @version 1.0.0
  **/
-
-import java.util.Iterator;
-
-import ikrs.typesystem.BasicType;
-import ikrs.util.AbstractCommand;
-import ikrs.util.Command;
-import ikrs.util.CommandStringIncompleteException;
-
 
 public class CommandHelp
     extends YuccaCommand {

@@ -10,13 +10,16 @@ A free tiny java written http server.
 Changes
 =======
 
-[2013-03-23]
+[2013-04-29]
+  - Added javadocs at ./document_root/docs/
+
+[2013-04-23]
   - HTTPD command 'HEXDUMP FORMAT' for hexdump output configuration added.
   - Moved the HexDumpOutputStream creation from AbstractPreparedResponse
     to HTTPHandler.
   - Added 'HEXDUMP_FORMAT' to the ikrs.httpd.conf file.
 
-[2013-03-22]
+[2013-04-22]
   - Added the HTTPDRuntimeStatistics class.
   - Added a static HTTPHandler.sharedInstance field.
   - Extended the HTTPD STATUS command.
@@ -337,3 +340,369 @@ Changes
 
 [2012-09-03]
   - htaccess 'Basic' authorizaion implemented (apache compatible).
+
+
+
+
+
+The java documentation files are located at ./document_root/docs/ or
+if 'document_root' is your configured {DOCUMENT_ROOT} (the default value)
+the files will be available at http://127.0.0.1:8888/docs/.
+
+
+
+
+
+
+
+
+Important Notes
+===============
+
+Use PHP-CGI instead of PHP-CLI
+------------------------------
+ - To enable PHP install the 'php-cgi' package (not the commandline 
+   interface 'php-cli' or just 'php').
+   Example:
+   sudo apt-get install php5-cgi
+
+
+
+The "File not found" issue
+--------------------------
+ - If the PHP interpreter is prompting on each PHP file you want to run 
+   (using your browser):
+
+   "<b>Security Alert!</b> The PHP CGI cannot be accessed directly"
+
+   The CGI handler requires to set some environment vars for php-cgi. By 
+   default this is not allowed by the 'cgi.force_redirect' directive in 
+   your php.ini (php-cgi, NOT php-cli!).
+   
+   Locate your php-cgi configuration file, something like
+   /etc/php5/cgi/php.ini,  
+   near line ~834
+   ; cgi.force_redirect is necessary to provide security running PHP as 
+   a CGI under
+   ; most web servers.  Left undefined, PHP turns this on by default.  
+   You can
+   ; turn it off here AT YOUR OWN RISK
+   ; **You CAN safely turn this off for IIS, in fact, you MUST.**
+   ; http://php.net/cgi.force-redirect
+   ;cgi.force_redirect = 1
+
+   Now set 'cgi.force_redirect' to 0 to allow modifications to php-cgi's 
+   environment:
+   cgi.force_redirect = 0
+
+
+
+ - If the PHP interpreter is not prompting 
+
+   "No input file specified." (Status: 404 Not Found)
+
+   you have to set the document-root in your php-cgi config file,
+   near line ~804:
+   ; The root of the PHP pages, used only if nonempty.
+   ; if PHP was not compiled with FORCE_REDIRECT, you SHOULD set 
+   doc_root
+   ; if you are running php as a CGI under any web server (other than 
+   IIS)
+   ; see documentation for security issues.  The alternate is to use the
+   ; cgi.force_redirect configuration below
+   ; http://php.net/doc-root
+   doc_root = 
+
+   Now set 'doc_root' to your document root.
+   Example:
+   doc_root = "/home/your_user_name/java/document_root"
+
+   If this does not fix the problem add an additional document-root 
+   directive:
+   server.document_root = "/home/your_user_name/java/document_root"
+   
+
+   Now near line ~850:
+   ; cgi.fix_pathinfo provides *real* PATH_INFO/PATH_TRANSLATED support 
+   for CGI.  PHP's
+   ; previous behaviour was to set PATH_TRANSLATED to SCRIPT_FILENAME, 
+   and to not grok
+   ; what PATH_INFO is.  For more information on PATH_INFO, see the cgi 
+   specs.  Setting
+   ; this to 1 will cause PHP CGI to fix its paths to conform to the 
+   spec.  A setting
+   ; of zero causes PHP to behave as before.  Default is 1.  You should 
+   fix your scripts
+   ; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.
+   ; http://php.net/cgi.fix-pathinfo
+   ;cgi.fix_pathinfo=1
+
+   Set cgi.fix_pathinfo to 1:
+   cgi.fix_pathinfo = 1
+
+   
+   NOTE 1: The ikrs.http.filehandler.CGIHandler class will add an 
+   	   additional security check field
+	   REDIRECT_STATUS = 1
+   	   to the environment vars which will finally fix the "File not 
+	   found" issue.
+
+   NOTE 2: I only changed my config in /etc/php5/cgi/, I left 
+   	   /etc/php5/cli unchanged.
+
+
+
+File-Upload issue: $_FILES is always empty
+------------------------------------------
+
+As soon as PHP (CGI mode) is running there might be the problem of 
+failing file uploads (HTTP POST):
+PHP's $_FILES array is always empty, even if the file data was 
+successfully sent using HTTP POST method.
+  (i)  Does you upload form use method="post" and 
+       enctype="multipart/form-data"? :)
+  (ii) Check your php.ini (in /etc/php5/cgi):
+    - Check if 'file_uploads' is enabled.
+    - Check if 'upload_tmp_dir' is set (to your system's tempfiles 
+      directory or a temp dir of your choice) [near line ~890].
+    - Check if your upload-file size does not exceed 'post_max_size'.
+
+
+
+How to add custom file handlers
+===============================  
+
+There are three basic steps required to add a custom file- or directory 
+handler.
+ (i)   You need to build your own handler class that implements the 
+       ikrs.httpd.FileHandler interface.
+       Optionally you might just want to extend the abstract class 
+       ikrs.httpd.filehandlers.AbstractFileHandler; 
+       in that case you have to override the methods 
+       'boolean requiresExistingFile()' and 'Resource process(...)'.
+
+       If you are not sure what to do just see the example handler in
+       ikrs.httpd.filehandlers.IkarosExampleHandler.
+
+
+ (ii)  You need to bind your handler into the system and assign an alias 
+       name.
+       Do this by editing the {USER_HOME}/.yuccasrv/filehandlers.ini 
+       file; add a new line
+	<your_handler_alias> = <your_handler_class> 
+			       [ <list_of_associated_file_extensions> ]
+		
+       where
+	   - <your_handler_alias>                 can be any name (not including white spaces), but 
+	     					  it should be unique!
+	   - <your_handler_class>                 must be the fully qualified class name of your 
+	     					  handler (with package name!)
+	   - <list_of_associated_file_extensions> Is an optional list of file extensions you want to
+	     					  have associated with you handler BY DEFAULT (global!).
+
+       Example:
+	  IkarosExampleHandler=ikrs.httpd.filehandler.IkarosExampleHandler
+	
+
+ (iii) If you didn't already associate file extensions with your handler you have to do so in the last
+       step. Configure the desired directory(~ies) by the use of htaccess' SetHandler/AddHandler
+       directives.
+         - 'SetHandler <your_handler_alias>' sets your handler for the current directory (and all files
+	   inside and all sub directories).
+	 - AddHandler <your_handler_alias> <list_of_associated_file_extensions>' addy your handler for
+	   the given file extensions).
+
+       Examples:
+	  (a) SetHandler IkarosExampleHandler
+	  (b) AddHandler IkarosExampleHandler .ikrs
+
+
+ Note: file extensions are compared case-insensitive, so '.TXT' would also match '.txt'.
+
+
+
+
+
+Files
+=====
+
+{USER_HOME}/.yuccasrv/
+----------------------
+This is the user specific directory containing all configuration files required to run ikrs.yucca/ikrs.httpd.
+
+
+{USER_HOME}/.yuccasrv/server.xml
+--------------------------------
+ This is the global yucca server configuration file.
+
+
+{USER_HOME}/.yuccasrv/ikrs.httpd.conf
+-------------------------------------
+ ...
+
+{USER_HOME}/.yuccasrv/filehandlers.ini
+--------------------------------------
+ ...
+
+
+
+{DOCUMENT_ROOT}/system/errors/Error.{STATUS_CODE}.html
+------------------------------------------------------
+ The error response files. If the file for a given error code does not 
+ exist the server will send an auto-generated response content.
+
+
+{DOCUMENT_ROOT}/system/styles/directory.list.css
+------------------------------------------------
+ The stylesheet for HTML/XHTML directory listings.
+
+
+
+
+
+Realtime Commands
+=================
+
+
+HELP
+----
+ Prints a short summary of all available commands.
+ Indeed the HELP command could be a bit mor verbose; a more enhanced
+ version might come soon ...
+
+
+
+HTTPD
+-----
+ This is a customized command for the httpd module (added to yucca's
+ bind manager). Currently there is only one sub command, which is not
+ fully implemented:
+  - STATUS
+    ~~~~~~
+    Prints the current status of the HTTPd module.
+
+  - HEXDUMP FORMAT <format>
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    Changes the hexdump output column format. The expected value must
+    be a comma separated integer list, each integer indicating the 
+    respective column list and the number of integers the total number
+    of columns.
+    Example: the format '4,4,0,4,4' would generate a hexdump format
+    	     like this:
+
+                                                    
+    0x00000000  89504e47 0d0a1a0a  0000000d 49484452  .PNG........IHDR
+    0x00000010  00000010 00000010  08060000 001ff3ff  ................
+    0x00000020  61000000 01735247  4200aece 1ce90000  a....sRGB.......
+    0x00000030  0006624b 474400ff  00ff00ff a0bda793  ..bKGD..........
+    0x00000040  00000009 70485973  00000dd7 00000dd7  ....pHYs........
+    0x00000050  0142289b 78000000  0774494d 4507dc0c  .B(.x....tIME...
+    0x00000060  03112534 aaced90e  00000213 49444154  ..%4........IDAT
+    0x00000070  38cba592 bfab5c65  10869f99 6fbedd73  8.....\e....o..s
+    0x00000080  4eb20917 2f04ae08  c1340662 9b267083  N.../....4.b.&p.
+    0x00000090  8db5a6cc 9f10b0f0  cf112d04 ab105258  ..........-...RX
+
+
+LICENSE
+-------
+ Prints the license information.
+
+
+
+LISTEN
+------
+ Add a new listening socket the yucca's bind manager:
+ LISTEN [-p <protocol>] [-b <backlog>] <host> <port>
+
+ If succeeded the bind manager fires a serverCreated() event and yucca
+ will print a bind summary containing the created socket's ID (this 
+ requires the log level to be at least set to Level.INFO; a command for
+ changing the level at runtime will be coming soon).
+ 
+ @See UNLISTEN <socketID>
+
+
+
+LOGLEVEL
+--------
+ Prints or changes the current log level.
+ LOGLEVEL [<level>]
+
+ Valid log levels are: 
+    - SEVERE (highest value)
+    - WARNING
+    - INFO
+    - CONFIG
+    - FINE
+    - FINER
+    - FINEST (lowest value) 
+
+ These are the same values as in java.util.logging.Level (see java docs
+ for further details).
+
+
+
+QUIT
+----
+ This command quits Yucca. This means that all listening sockets will 
+ be released, and the finalize() event will be fired to all running
+ server threads and to all bound listeners (such as the HTTPd module).
+
+
+
+STATUS
+------
+ Prints the current socket manager status summary containing basic 
+ information such as bind addresses, ports, socket IDs, SSL 
+ configuration, protocol information and backlog.
+ 
+ Since version 1.0.3 this command is secure and does not print any
+ sensitive data. 
+
+
+
+UNLISTEN
+--------
+ Releases a listening socket specified by the passed socket ID:
+ UNLISTEN <socketID>
+
+ If you don't know a listening socket's ID just use the STATUS
+ command. The socket ID is the unique number generated when the
+ socket was bound by LISTEN.
+
+
+
+VERSION
+--------
+ Prints the Yucca version number. This command does not take any
+ arguments.
+
+
+
+WARRANTY
+--------
+ Prints the warranty.
+
+
+
+
+
+Tools
+=====
+
+ikrs.httpd.MD5
+-------------
+ A password hash generator for htaccess 'Digest' authorization.
+ Usage: java ikrs.httpd.MD5 -r <realm> [-s <salt>] -u <user> [-p <password>]
+ 	- salt must be 8 characters long.
+
+ Example:
+    > java ikrs.httpd.MD5 -r "My cool realm" -u testuser -p test
+    Generating random salt ... 
+    Your hashed password (line for .htpasswd): 
+    testuser:${ikrs.http.MD5}$xSngy8uB$9f8d6ab4029a6f8ce8fcdbdb7e671490
+
+ Store the last line printed into your .htpasswd file to add the user to the user list (AuthUserFile).
+
+
+   

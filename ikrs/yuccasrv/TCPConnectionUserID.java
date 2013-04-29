@@ -1,5 +1,8 @@
 package ikrs.yuccasrv;
 
+import java.net.InetAddress;
+import java.util.UUID;
+
 /**
  * The TCPConnectionUserID implements the ConnectionUserID interface for the use of incoming TCP connections.
  *
@@ -14,9 +17,6 @@ package ikrs.yuccasrv;
  * @date 2012-09-07
  * @version 1.0.0
  **/
-
-import java.net.InetAddress;
-import java.util.UUID;
 
 
 public class TCPConnectionUserID

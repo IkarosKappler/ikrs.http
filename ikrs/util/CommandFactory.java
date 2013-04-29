@@ -1,5 +1,10 @@
 package ikrs.util;
 
+import java.text.ParseException;
+import java.util.Set;
+
+import ikrs.typesystem.BasicType;
+
 /**
  * This is a factory class to create Command instances.
  *
@@ -11,10 +16,6 @@ package ikrs.util;
  * @version 1.0.0
  **/
 
-import java.text.ParseException;
-import java.util.Set;
-
-import ikrs.typesystem.BasicType;
 
 public interface CommandFactory<C extends Command> {
 

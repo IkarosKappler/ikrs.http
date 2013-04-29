@@ -1,5 +1,11 @@
 package ikrs.httpd;
 
+import java.util.Date;
+
+import ikrs.httpd.HTTPHeaders;
+import ikrs.util.MIMEType;
+
+
 /**
  * The ResourceMetaData is a lightweight class that holds different descriptional
  * resource meta data such as the date of last modification, length (if available)
@@ -11,11 +17,6 @@ package ikrs.httpd;
  * @version 1.0.0
  **/
 
-//import java.net.URI;
-import java.util.Date;
-
-import ikrs.httpd.HTTPHeaders;
-import ikrs.util.MIMEType;
 
 public class ResourceMetaData {
 

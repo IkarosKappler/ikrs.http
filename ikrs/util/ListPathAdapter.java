@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.List;
+
 /**
  * The ListPathAdapter class is a generalized java.util.List based path implementation.
  *
@@ -11,8 +13,6 @@ package ikrs.util;
  * @date 2012-12-11
  * @version 1.0.0
  **/
-
-import java.util.List;
 
 
 public class ListPathAdapter<T>

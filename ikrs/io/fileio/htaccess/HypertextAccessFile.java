@@ -1,15 +1,5 @@
 package ikrs.io.fileio.htaccess;
 
-/**
- * This is a simple class for reading htaccess files.
- *
- * @author Ikaros Kappler
- * @date 2012-09-12
- * @modified 2013-01-03 [merge method added].
- * @modified 2013-01-15 [ErrorDocument map added].
- * @version 1.0.0
- **/
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +23,16 @@ import java.util.regex.Pattern;
 
 import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.FileExtensionKeyMap;
+
+/**
+ * This is a simple class for reading htaccess files.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-09-12
+ * @modified 2013-01-03 [merge method added].
+ * @modified 2013-01-15 [ErrorDocument map added].
+ * @version 1.0.0
+ **/
 
 
 public class HypertextAccessFile {

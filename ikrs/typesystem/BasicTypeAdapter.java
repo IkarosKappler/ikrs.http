@@ -1,13 +1,13 @@
 package ikrs.typesystem;
 
+import java.util.UUID;
+
 /**
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-22
  * @version 1.0.0
  **/
 
-
-import java.util.UUID;
 
 public abstract class BasicTypeAdapter
     implements BasicType {

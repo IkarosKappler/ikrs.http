@@ -1,5 +1,23 @@
 package ikrs.httpd.resource;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+
+import ikrs.httpd.CustomUtil;
+import ikrs.httpd.HTTPHandler;
+import ikrs.httpd.PostDataWrapper;
+import ikrs.httpd.ReadOnlyException;
+import ikrs.util.CustomLogger;
+
+
 /**
  * Processable resources represent system processes that generate any output which will
  * be used as the Resource's output data.
@@ -24,23 +42,6 @@ package ikrs.httpd.resource;
  * @date 2012-09-29
  * @version 1.0.0
  **/
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-
-import ikrs.httpd.CustomUtil;
-import ikrs.httpd.HTTPHandler;
-import ikrs.httpd.PostDataWrapper;
-import ikrs.httpd.ReadOnlyException;
-import ikrs.util.CustomLogger;
 
 
 public class ProcessableResource 

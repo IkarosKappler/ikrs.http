@@ -1,14 +1,5 @@
 package ikrs.httpd.filehandler;
 
-/**
- * A small example handler.
- *
- *
- * @author Ikaros Kappler
- * @date 2013-01-06
- * @version 1.0.0
- **/
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -39,6 +30,16 @@ import ikrs.util.KeyValueStringPair;
 import ikrs.util.MIMEType;
 import ikrs.util.session.Session;
 import ikrs.typesystem.BasicType;
+
+/**
+ * A small example handler.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2013-01-06
+ * @version 1.0.0
+ **/
+
 
 public class IkarosExampleHandler
     extends AbstractFileHandler {

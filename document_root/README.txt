@@ -3,6 +3,9 @@
 
 
 TO DO:
+[2013-04-29] 
+ - Move the HexdumpOutputStream from ikrs.util to ikrs.io.
+
 [2013-04-22]
  - On system start: print some output to show how many columns the hex
    output requires.
@@ -418,6 +421,20 @@ TO DO:
 
  - YUCCA's security manager must be configured (I think anyone can flood
    me right now).
+
+
+
+
+
+
+
+The java documentation files are located at ./document_root/docs/ or
+if 'document_root' is your configured {DOCUMENT_ROOT} (the default value)
+the files will be available at http://127.0.0.1:8888/docs/.
+
+
+
+
 
 
 

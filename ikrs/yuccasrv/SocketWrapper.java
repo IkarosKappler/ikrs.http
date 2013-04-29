@@ -1,18 +1,20 @@
 package ikrs.yuccasrv;
 
+import java.net.Socket;
+
 /**
  * In the first implementation steps I forgot to recognize secure sockets :/
  * 
- * This is just a simple socket wrapper that can containe 'normal' unsecure socket and
+ * This is just a simple socket wrapper that can contain 'normal' unsecure socket and
  * also secure SSL sockets.
  *
  *
  * @author  Ikaros Kappler
  * @date    2012-07-23
  * @version 1.0.0
+ *
+ * @deprecated Socket and SecureSocket are compatible by native Java!
  **/
-
-import java.net.Socket;
 
 
 public class SocketWrapper {

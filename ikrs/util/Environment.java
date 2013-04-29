@@ -1,5 +1,8 @@
 package ikrs.util;
 
+import java.util.Map;
+import java.util.List;
+
 /**
  * The Environment interface prepares a data structure for nested data
  * environments. The full environment will be a tree like structure
@@ -9,9 +12,6 @@ package ikrs.util;
  * @date 2012-04-24
  * @version 1.0.0
  **/ 
-
-import java.util.Map;
-import java.util.List;
 
 public interface Environment<K,V>
     extends Map<K,V> {

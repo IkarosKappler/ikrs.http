@@ -1,21 +1,9 @@
 package ikrs.httpd;
 
-/**
- * The HTTP configuration file(s) have become pretty large so the config handling is
- * now located in an extra class.
- *
- * @author Ikaros Kappler
- * @date 2012-12-11
- * @version 1.0.0
- **/
-
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
-//import java.util.Iterator;
-//import java.util.Map;
 import java.util.logging.Level;
 
 import ikrs.io.fileio.inifile.IniFile;
@@ -25,6 +13,16 @@ import ikrs.util.CustomLogger;
 import ikrs.util.DefaultEnvironmentFactory;
 import ikrs.util.Environment;
 import ikrs.util.TreeMapFactory;
+
+/**
+ * The HTTP configuration file(s) have become pretty large so the config handling is
+ * now located in an extra class.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-12-11
+ * @version 1.0.0
+ **/
+
 
 
 public class HTTPConfiguration {

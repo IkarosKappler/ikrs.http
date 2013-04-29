@@ -1,6 +1,8 @@
 package ikrs.yuccasrv;
 
 /**
+ * The YUCCA constants.
+ *
  * @author Ikaros Kappler
  * @date 2012-03-25
  * @modified 2012-11-28 Ikaros Kappler; SSL constants.

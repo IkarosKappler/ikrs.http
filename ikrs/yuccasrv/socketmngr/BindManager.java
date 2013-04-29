@@ -1,20 +1,5 @@
 package ikrs.yuccasrv.socketmngr;
 
-/**
- * Ths BindManager is the central entity that manages server sockets and their bindings to
- * the system.
- * It additionally accepts incoming connections and passes them to the installed BindListeners.
- *
- * If a server/socket was closed by any reason the manager frees bound resources and removes 
- * the socket from the inner table.
- *
- *
- * @author Ikaros Kappler
- * @date 2012-03-25
- * @version 1.0.0
- **/
-
-
 import java.io.IOException;
 import java.net.*;
 import java.nio.channels.IllegalBlockingModeException;
@@ -43,6 +28,20 @@ import ikrs.yuccasrv.UDPConnectionUserID;
 import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
 import ikrs.util.Environment;
+
+/**
+ * Ths BindManager is the central entity that manages server sockets and their bindings to
+ * the system.
+ * It additionally accepts incoming connections and passes them to the installed BindListeners.
+ *
+ * If a server/socket was closed by any reason the manager frees bound resources and removes 
+ * the socket from the inner table.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-03-25
+ * @version 1.0.0
+ **/
 
 
 public class BindManager 

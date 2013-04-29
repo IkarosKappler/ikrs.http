@@ -1,5 +1,9 @@
 package ikrs.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 /**
  * The byte sequence tokenizer splits a given byte sequence (coming from an inputstream)
  * into a sequence of byte-streams, all seperated by a given separator byte sequence.
@@ -9,10 +13,6 @@ package ikrs.io;
  * @date 2012-10-08
  * @version 1.0.0
  **/
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 
 public class ByteSequenceTokenizer {
 

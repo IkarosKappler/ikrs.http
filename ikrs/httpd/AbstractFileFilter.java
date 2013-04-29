@@ -1,5 +1,7 @@
 package ikrs.httpd;
 
+import java.io.File;
+
 /**
  * An abstract file filter for directory listings and direct file access. 
  *
@@ -12,7 +14,6 @@ package ikrs.httpd;
  * @version 1.0.0
  **/
 
-import java.io.File;
 
 public abstract class AbstractFileFilter
     implements HTTPFileFilter {

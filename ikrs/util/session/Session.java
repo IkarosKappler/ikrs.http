@@ -1,5 +1,10 @@
 package ikrs.util.session;
 
+import java.util.Date;
+import java.util.UUID;
+
+import ikrs.util.Environment;
+
 /**
  * A simple session interface.
  *
@@ -14,10 +19,6 @@ package ikrs.util.session;
  * @version 1.0.0
  **/
 
-import java.util.Date;
-import java.util.UUID;
-
-import ikrs.util.Environment;
 
 
 public interface Session<K,V,U>

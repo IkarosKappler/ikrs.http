@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.logging.Level;
+
 /**
  * The custom logger interface wraps the general Logger method to make logging more
  * customizable.
@@ -8,9 +10,6 @@ package ikrs.util;
  * @date 2012-07-16
  * @version 1.0.0
  **/
-
-
-import java.util.logging.Level;
 
 public interface CustomLogger {
 

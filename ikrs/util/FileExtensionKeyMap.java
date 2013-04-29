@@ -1,5 +1,8 @@
 package ikrs.util;
 
+import java.util.Comparator;
+import java.util.TreeMap;
+
 /**
  * As there is a small issue mapping file extensions in different styles; if you store
  * a file extension ".txt" to this map (key) looking up ".TXT" or "txt" won't retrieve
@@ -15,9 +18,6 @@ package ikrs.util;
  * @version 1.0.0
  *
  **/
-
-import java.util.Comparator;
-import java.util.TreeMap;
 
 public class FileExtensionKeyMap<V>
     extends TreeMap<String,V> {

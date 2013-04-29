@@ -1,5 +1,8 @@
 package ikrs.httpd.datatype;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a simple parser class that splits several header line formats.
  *
@@ -35,8 +38,6 @@ package ikrs.httpd.datatype;
  * @version 1.0.1
  **/
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class HeaderParams {
 

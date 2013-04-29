@@ -1,11 +1,5 @@
 package ikrs.httpd;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-07-29
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
@@ -24,6 +18,13 @@ import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicTypeException;
 
 import ikrs.util.MIMEType;
+
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-07-29
+ * @version 1.0.0
+ **/
 
 
 public class ErrorResponseBuilder

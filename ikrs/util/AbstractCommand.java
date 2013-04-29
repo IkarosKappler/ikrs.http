@@ -1,14 +1,15 @@
 package ikrs.util;
 
+
+import java.util.ArrayList;
+
+import ikrs.typesystem.BasicType;
+
 /**
  * @author Henning Diesenberg
  * @date 2012-05-07
  * @version 1.0.0
  **/
-
-import java.util.ArrayList;
-
-import ikrs.typesystem.BasicType;
 
 public abstract class AbstractCommand
     implements Command {

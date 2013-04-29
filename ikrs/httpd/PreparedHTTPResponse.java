@@ -1,13 +1,5 @@
 package ikrs.httpd;
 
-/**
- * This interface is meant to wrap prepared HTTP reply objects.
- *
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -16,6 +8,15 @@ import ikrs.httpd.AuthorizationException;
 import ikrs.httpd.DataFormatException;
 import ikrs.httpd.HeaderFormatException;
 import ikrs.typesystem.BasicType;
+
+
+/**
+ * This interface is meant to wrap prepared HTTP reply objects.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 public interface PreparedHTTPResponse {
 

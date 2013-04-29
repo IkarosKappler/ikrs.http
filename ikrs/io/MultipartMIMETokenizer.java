@@ -1,5 +1,9 @@
 package ikrs.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 /**
  *  The format of the multipart-body is:
  *  ------------------------------------
@@ -45,9 +49,6 @@ package ikrs.io;
  * @version 1.0.0
  **/
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 
 public class MultipartMIMETokenizer 
     extends ByteSequenceTokenizer {

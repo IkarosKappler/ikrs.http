@@ -1,13 +1,5 @@
 package ikrs.yuccasrv;
 
-/**
- * This is the main class of the Yucca server.
- *
- * @author Ikaros Kappler
- * @date 2012-05-02
- * @version 1.0.0
- **/
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -50,6 +42,13 @@ import ikrs.yuccasrv.socketmngr.BindManager;
 import ikrs.yuccasrv.util.ConfigReader;
 import ikrs.yuccasrv.util.YuccaLogFormatter;
 
+/**
+ * This is the main class of the Yucca server.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-05-02
+ * @version 1.0.0
+ **/
 
 public class Yucca 
     extends Thread

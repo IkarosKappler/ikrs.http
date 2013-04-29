@@ -1,5 +1,16 @@
 package ikrs.io;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import ikrs.util.ByteArrayComparator;
+
+
 /**
  * The ReplacingInputStream is an InputStream implementation that allows to
  * specify a byte sequence replacement map which will be applied directly
@@ -29,16 +40,6 @@ package ikrs.io;
  * @date 2013-04-11
  * @version 1.0.0
  **/
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import ikrs.util.ByteArrayComparator;
 
 public class ReplacingInputStream 
     extends InputStream {

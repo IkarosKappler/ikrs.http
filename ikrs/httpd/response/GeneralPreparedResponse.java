@@ -1,17 +1,5 @@
 package ikrs.httpd.response;
 
-/**
- * This class holds general prepared responses.
- * The response requires:
- *   - STATUS_CODE
- *   
- * Optional is the RESOURCE.
- *
- * @author Ikaros Kappler
- * @date 2012-07-29
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
@@ -41,6 +29,18 @@ import ikrs.httpd.resource.ByteArrayResource;
 
 import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicTypeException;
+
+/**
+ * This class holds general prepared responses.
+ * The response requires:
+ *   - STATUS_CODE
+ *   
+ * Optional is the RESOURCE.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-07-29
+ * @version 1.0.0
+ **/
 
 
 public class GeneralPreparedResponse

@@ -1,14 +1,5 @@
 package ikrs.yuccasrv.commandline;
 
-/**
- * This is the default STATUS command implementation.
- *
- *
- * @author Henning Diesenberg
- * @date 2012-10-30
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -22,6 +13,15 @@ import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.Command;
 import ikrs.util.CommandStringIncompleteException;
 import ikrs.yuccasrv.Constants;
+
+/**
+ * This is the default STATUS command implementation.
+ *
+ *
+ * @author Henning Diesenberg
+ * @date 2012-10-30
+ * @version 1.0.0
+ **/
 
 
 public class CommandStatus

@@ -1,11 +1,5 @@
 package ikrs.httpd;
 
-/**
- * @author  Ikaros Kappler
- * @date    2012-07-20
- * @version 1.0.0
- **/
-
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,6 +9,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import ikrs.io.fileio.htaccess.HypertextAccessFile;
 
+/**
+ * @author  Ikaros Kappler
+ * @date    2012-07-20
+ * @version 1.0.0
+ **/
 
 public interface Resource {
 

@@ -1,17 +1,16 @@
 package ikrs.httpd;
 
+
+import java.util.logging.LogManager;
+import java.util.logging.Level;
+
+import ikrs.util.CustomLogger;
+
 /**
  * @author Ikaros Kappler
  * @date 2012-07-16
  * @version 1.0.0
  **/
-
-
-import java.util.logging.LogManager;
-import java.util.logging.Level;
-
-
-import ikrs.util.CustomLogger;
 
 
 public class HTTPServerThread 

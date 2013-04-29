@@ -1,11 +1,5 @@
 package ikrs.yuccasrv.ui;
 
-/**
- * @author Henning Diesenberg
- * @date 2012-04-23
- * @version 1.0.0
- **/
-
 import java.awt.*;
 import java.awt.event.*;
 import java.net.InetAddress;
@@ -18,6 +12,12 @@ import ikrs.yuccasrv.Constants;
 import ikrs.typesystem.*;
 import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-04-23
+ * @version 1.0.0
+ **/
 
 
 public class NewServerDialog 

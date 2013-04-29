@@ -1,13 +1,5 @@
 package ikrs.httpd;
 
-/**
- * This HTTPRequestDistributor is a wrapper class that processes HTTPRequests on a top level.
- * It reads the HTTP header data and tries to find a suitable handler class to forward the request to.
- *
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
 
 import java.io.EOFException;
 import java.io.InputStream;
@@ -26,6 +18,15 @@ import ikrs.typesystem.BasicNumberType;
 import ikrs.typesystem.BasicType;
 import ikrs.typesystem.BasicStringType;
 import ikrs.yuccasrv.ConnectionUserID;
+
+/**
+ * This HTTPRequestDistributor is a wrapper class that processes HTTPRequests on a top level.
+ * It reads the HTTP header data and tries to find a suitable handler class to forward the request to.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 
 public class HTTPRequestDistributor 

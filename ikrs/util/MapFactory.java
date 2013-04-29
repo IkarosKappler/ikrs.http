@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.Map;
+
 /**
  * This is a simple map factory interface.
  *
@@ -7,8 +9,6 @@ package ikrs.util;
  * @date 2012-04-24
  * @version 1.0.0
  **/ 
-
-import java.util.Map;
 
 public interface MapFactory<K,V> {
 

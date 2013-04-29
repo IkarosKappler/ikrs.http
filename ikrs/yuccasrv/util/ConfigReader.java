@@ -1,5 +1,12 @@
 package ikrs.yuccasrv.util;
 
+
+import java.io.File;
+import java.io.IOException;
+
+import ikrs.typesystem.BasicType;
+import ikrs.util.*;
+
 /**
  * This XML reader was inspired by
  * http://www.java-tips.org/java-se-tips/javax.xml.parsers/how-to-read-xml-file-in-java.html
@@ -9,13 +16,6 @@ package ikrs.yuccasrv.util;
  * @version 1.0.0
  **/
 
-
-import java.io.File;
-import java.io.IOException;
-
-
-import ikrs.typesystem.BasicType;
-import ikrs.util.*;
 
 public class ConfigReader {
     

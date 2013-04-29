@@ -1,11 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * @author  Ikaros Kappler
- * @date    2012-07-20
- * @version 1.0.0
- **/
-
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,6 +15,12 @@ import ikrs.httpd.ResourceMetaData;
 import ikrs.util.CustomLogger;
 
 import ikrs.io.fileio.htaccess.HypertextAccessFile;
+
+/**
+ * @author  Ikaros Kappler
+ * @date    2012-07-20
+ * @version 1.0.0
+ **/
 
 
 public abstract class AbstractResource

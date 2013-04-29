@@ -1,13 +1,5 @@
 package ikrs.io.fileio.htaccess;
 
-/**
- * This is a simple class for checking/reading htpassword files.
- *
- * @author Ikaros Kappler
- * @date 2012-09-12
- * @version 1.0.0
- **/
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +20,13 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This is a simple class for checking/reading htpassword files.
+ *
+ * @author Ikaros Kappler
+ * @date 2012-09-12
+ * @version 1.0.0
+ **/
 
 public class HypertextPasswordFile {
 

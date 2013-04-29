@@ -1,13 +1,5 @@
 package ikrs.yuccasrv.ui;
 
-/**
- * 
- *
- * @author Henning Diesenberg
- * @date 2012-04-23
- * @version 1.0.0
- **/
-
 import java.awt.Container;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -27,6 +19,15 @@ import ikrs.typesystem.*;
 import ikrs.util.Environment;
 import ikrs.yuccasrv.Constants;
 import ikrs.yuccasrv.socketmngr.BindManager;
+
+/**
+ * 
+ *
+ * @author Henning Diesenberg
+ * @date 2012-04-23
+ * @version 1.0.0
+ **/
+
 
 public class ServerManagerDialog
     extends JDialog 

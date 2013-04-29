@@ -1,5 +1,7 @@
 package ikrs.util.session;
 
+import ikrs.util.EnvironmentFactory;
+
 /**
  * This is the default factory class for creating DefaultSessions.
  *
@@ -8,8 +10,6 @@ package ikrs.util.session;
  * @version 1.0.0
  *
  **/
-
-import ikrs.util.EnvironmentFactory;
 
 public class DefaultSessionFactory<K,V,U> 
     implements SessionFactory<K,V,U> {

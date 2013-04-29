@@ -1,15 +1,15 @@
 package ikrs.httpd;
 
+import java.io.InputStream;
+import java.io.IOException;
+
+import ikrs.httpd.datatype.FormData;
+
 /**
  * @author Ikaros Kappler
  * @date 2012-10-02
  * @version 1.0.0
  **/
-
-import java.io.InputStream;
-import java.io.IOException;
-
-import ikrs.httpd.datatype.FormData;
 
 
 public interface PostDataWrapper {

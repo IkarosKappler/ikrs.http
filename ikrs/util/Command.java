@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import ikrs.typesystem.BasicType;
+
 /**
  * This interface should be used to implement the inner representation of 
  * parsed commands.
@@ -8,8 +10,6 @@ package ikrs.util;
  * @date 2012-05-02
  * @version 1.0.0
  **/
-
-import ikrs.typesystem.BasicType;
 
 
 public interface Command {

@@ -1,5 +1,15 @@
 package ikrs.httpd.resource;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import ikrs.httpd.HTTPHandler;
+import ikrs.httpd.ReadOnlyException;
+import ikrs.util.CustomLogger;
+
+
 /**
  * There are cases when it is not predictable how many bytes a data source will produce until
  * the input stream has reached EOF.
@@ -20,15 +30,6 @@ package ikrs.httpd.resource;
  * @date 2012-09-29
  * @version 1.0.0
  **/
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import ikrs.httpd.HTTPHandler;
-import ikrs.httpd.ReadOnlyException;
-import ikrs.util.CustomLogger;
 
 
 public class BufferedResource 

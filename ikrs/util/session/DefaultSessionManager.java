@@ -1,5 +1,11 @@
 package ikrs.util.session;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
+
 /**
  * The DefaultSessionManager is a very simple SessionManager implementation that uses a
  * treemap to find sessions by their ID.
@@ -13,12 +19,6 @@ package ikrs.util.session;
  * @date 2012-09-06
  * @version 1.0.0
  **/
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
 
 
 public class DefaultSessionManager<K,V,U>

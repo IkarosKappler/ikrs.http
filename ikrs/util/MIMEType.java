@@ -1,5 +1,8 @@
 package ikrs.util;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * This is a simple MIME type implementation.
  * The main purpose of this class is a mapping filename extension <-> MIME type.
@@ -9,9 +12,6 @@ package ikrs.util;
  * @version 1.0.0
  * @date 2012-07-29
  **/
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class MIMEType {
 

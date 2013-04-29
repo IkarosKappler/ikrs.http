@@ -1,5 +1,8 @@
 package ikrs.util;
 
+import java.util.Map;
+import java.util.List;
+
 /**
  * The EnvironmentDelegation class is a wrapper for anonymous environments.
  *
@@ -9,10 +12,8 @@ package ikrs.util;
  * @author Henning Diesenberg
  * @date 2012-09-06
  * @version 1.0.0
- **/ 
+ **/
 
-import java.util.Map;
-import java.util.List;
 
 public class EnvironmentDelegation<K,V>
     extends MapDelegation<K,V>

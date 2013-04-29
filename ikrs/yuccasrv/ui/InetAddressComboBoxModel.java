@@ -1,5 +1,12 @@
 package ikrs.yuccasrv.ui;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+
 /**
  * This class populates a combobox list model containing all available local inet addresses
  * on the running system.
@@ -8,13 +15,6 @@ package ikrs.yuccasrv.ui;
  * @date 2012-04-24
  * @version 1.0.0
  **/
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxModel;
 
 
 public class InetAddressComboBoxModel 

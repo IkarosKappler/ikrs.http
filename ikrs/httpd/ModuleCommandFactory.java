@@ -1,5 +1,13 @@
 package ikrs.httpd;
 
+import ikrs.typesystem.BasicType;
+import ikrs.util.AbstractCommand;
+import ikrs.util.DefaultCommandFactory;
+import ikrs.util.Command;
+import ikrs.util.UnknownCommandException;
+import ikrs.util.CommandStringIncompleteException;
+
+
 /**
  * Problem: the ModuleCommand/~Factory would require an HTTPHandler instance to be passed on
  *          system start. But the system instantiates the HTTPHandler at a later point by
@@ -21,13 +29,6 @@ package ikrs.httpd;
  * @modified 2013-04-17 Ikaros Kappler (shared handler instance added).
  * @version 1.0.0
  **/
-
-import ikrs.typesystem.BasicType;
-import ikrs.util.AbstractCommand;
-import ikrs.util.DefaultCommandFactory;
-import ikrs.util.Command;
-import ikrs.util.UnknownCommandException;
-import ikrs.util.CommandStringIncompleteException;
 
 
 public class ModuleCommandFactory

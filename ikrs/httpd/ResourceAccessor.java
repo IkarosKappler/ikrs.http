@@ -1,11 +1,5 @@
 package ikrs.httpd;
 
-/**
- * @author  Ikaros Kappler
- * @date    2012-07-20
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -13,6 +7,12 @@ import java.util.MissingResourceException;
 import java.util.UUID;
 
 import ikrs.typesystem.BasicType;
+
+/**
+ * @author  Ikaros Kappler
+ * @date    2012-07-20
+ * @version 1.0.0
+ **/
 
 
 public interface ResourceAccessor {

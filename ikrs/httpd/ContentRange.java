@@ -1,5 +1,8 @@
 package ikrs.httpd;
 
+import ikrs.util.KeyValuePair;
+
+
 /**
  * This is a wrapper/parser class for the HTTP Content-Range header.
  *
@@ -38,9 +41,6 @@ package ikrs.httpd;
  * @date 2013-02-27
  * @version 1.0.0
  **/
-
-
-import ikrs.util.KeyValuePair;
 
 
 public class ContentRange {

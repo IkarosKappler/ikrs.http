@@ -1,5 +1,16 @@
 package ikrs.httpd.datatype;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import ikrs.util.CaseInsensitiveComparator;
+
+
 /**
  * The Query class is a simple parser that splits a given (raw) request query string
  * and stores it's tokens into a key-value map.
@@ -21,16 +32,6 @@ package ikrs.httpd.datatype;
  * @modified 2013-03-20 Ikaros Kappler [method 'keySet()' added].
  * @version 1.0.1
  **/
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import ikrs.util.CaseInsensitiveComparator;
 
 
 public class Query {

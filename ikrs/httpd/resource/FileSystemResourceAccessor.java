@@ -1,15 +1,5 @@
 package ikrs.httpd.resource;
 
-/**
- * The FileSystemResourceAccessor is the default implementation of ResourceAccessor that handles
- * requests to the document root respective to the file system (the document root is part of the
- * file system).
- *
- * @autor Ikaros Kappler
- * @date 2012-07-23
- * @version 1.0.0
- **/
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -49,6 +39,16 @@ import ikrs.util.MIMEType;
 import ikrs.util.session.Session;
 
 import ikrs.io.fileio.htaccess.HypertextAccessFile;
+
+/**
+ * The FileSystemResourceAccessor is the default implementation of ResourceAccessor that handles
+ * requests to the document root respective to the file system (the document root is part of the
+ * file system).
+ *
+ * @autor Ikaros Kappler
+ * @date 2012-07-23
+ * @version 1.0.0
+ **/
 
 
 public class FileSystemResourceAccessor

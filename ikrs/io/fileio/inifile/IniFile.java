@@ -1,18 +1,5 @@
 package ikrs.io.fileio.inifile;
 
-/**
- * Ths IniFile has basic input/ouput method for reading and writing ini files.
- *
- * I needed this urgently so its functionality is very reduced. A future version should be configurable:
- *  - section format
- *  - key-value separator format
- *  - comment format
- *
- *
- * @author Ikaros Kappler
- * @date 2012-12-12
- * @version 1.0.0
- **/
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +16,20 @@ import ikrs.util.Environment;
 import ikrs.util.EnvironmentFactory;
 import ikrs.util.KeyValuePair;
 import ikrs.util.TreeMapFactory;
+
+/**
+ * Ths IniFile has basic input/ouput method for reading and writing ini files.
+ *
+ * I needed this urgently so its functionality is very reduced. A future version should be configurable:
+ *  - section format
+ *  - key-value separator format
+ *  - comment format
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-12-12
+ * @version 1.0.0
+ **/
 
 
 public class IniFile {

@@ -1,17 +1,17 @@
 package ikrs.httpd;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
 import java.util.UUID;
 
 import ikrs.typesystem.BasicType;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 
 public abstract class AbstractResponseBuilder

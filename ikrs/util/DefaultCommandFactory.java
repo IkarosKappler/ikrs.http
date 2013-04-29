@@ -1,11 +1,5 @@
 package ikrs.util;
 
-/**
- * @author Henning Diesenberg
- * @date 2012-05-07
- * @version 1.0.0
- **/
-
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Set;
@@ -13,6 +7,12 @@ import java.util.TreeSet;
 
 import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
+
+/**
+ * @author Henning Diesenberg
+ * @date 2012-05-07
+ * @version 1.0.0
+ **/
 
 
 public class DefaultCommandFactory

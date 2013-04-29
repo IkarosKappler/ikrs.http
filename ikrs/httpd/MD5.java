@@ -1,5 +1,11 @@
 package ikrs.httpd;
 
+import java.io.Console;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * This a customized MD5 wrapper.
  *
@@ -7,12 +13,6 @@ package ikrs.httpd;
  * @date 2012-09-27
  * @version 1.0.0
  **/
-
-import java.io.Console;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class MD5 {
 

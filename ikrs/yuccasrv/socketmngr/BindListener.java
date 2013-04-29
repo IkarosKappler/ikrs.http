@@ -1,5 +1,11 @@
 package ikrs.yuccasrv.socketmngr;
 
+import java.net.Socket;
+import java.net.DatagramSocket;
+import java.util.UUID;
+
+import ikrs.yuccasrv.ConnectionUserID;
+
 /**
  * This interface declares all listener methods to receive events
  * from the bind manager (server opened, incoming connection, server error,
@@ -9,12 +15,6 @@ package ikrs.yuccasrv.socketmngr;
  * @date 2012-04-23
  * @version 1.0.0
  **/
-
-import java.net.Socket;
-import java.net.DatagramSocket;
-import java.util.UUID;
-
-import ikrs.yuccasrv.ConnectionUserID;
 
 
 public interface BindListener {

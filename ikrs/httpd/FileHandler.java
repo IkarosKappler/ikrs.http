@@ -1,5 +1,12 @@
 package ikrs.httpd;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
+
+import ikrs.util.CustomLogger;
+
 /**
  * This FileHandler interface is meant for HTTP resources that represent executable files (in any way)
  * inside the document root (such as CGI scripts, system commands, executables, ...).
@@ -18,13 +25,6 @@ package ikrs.httpd;
  * @modified 2013-01-07 [new method: requiresExistingFile()]
  * @version 1.0.0
  **/
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.UUID;
-
-import ikrs.util.CustomLogger;
 
 public interface FileHandler {
 

@@ -1,18 +1,18 @@
 package ikrs.httpd;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-07-16
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
 import java.util.UUID;
 
 import ikrs.typesystem.BasicType;
-//import ikrs.yuccasrv.ConnectionUserID;
+
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-07-16
+ * @version 1.0.0
+ **/
 
 public interface ResponseBuilder {
 

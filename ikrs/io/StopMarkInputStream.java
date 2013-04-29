@@ -1,5 +1,12 @@
 package ikrs.io;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
+import ikrs.io.CircularFIFO;
+
+
 /**
  * The StopMarkInputStream is an input stream wrapper class that reads bytes from the
  * underlying inputstream until a given stop-mark (byte sequence) is detected or EOF
@@ -13,12 +20,6 @@ package ikrs.io;
  * @modified 2013-04-10 Ikaros Kappler (stopMarkReached() issue fixed).
  * @version 1.0.0
  **/
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-
-import ikrs.io.CircularFIFO;
 
 
 public class StopMarkInputStream 

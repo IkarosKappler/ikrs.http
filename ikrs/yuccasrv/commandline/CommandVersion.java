@@ -1,14 +1,5 @@
 package ikrs.yuccasrv.commandline;
 
-/**
- * This is the default VERSION command implementation.
- *
- *
- * @author Ikaros Kappler
- * @date 2013-03-09
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
@@ -26,6 +17,15 @@ import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 import ikrs.util.TreeMapFactory;
 import ikrs.yuccasrv.Constants;
+
+/**
+ * This is the default VERSION command implementation.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2013-03-09
+ * @version 1.0.0
+ **/
 
 
 public class CommandVersion

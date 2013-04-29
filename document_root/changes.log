@@ -1,11 +1,14 @@
 
-[2013-03-23]
+[2013-04-29]
+  - Added javadocs at ./document_root/docs/
+
+[2013-04-23]
   - HTTPD command 'HEXDUMP FORMAT' for hexdump output configuration added.
   - Moved the HexDumpOutputStream creation from AbstractPreparedResponse
     to HTTPHandler.
   - Added 'HEXDUMP_FORMAT' to the ikrs.httpd.conf file.
 
-[2013-03-22]
+[2013-04-22]
   - Added the HTTPDRuntimeStatistics class.
   - Added a static HTTPHandler.sharedInstance field.
   - Extended the HTTPD STATUS command.

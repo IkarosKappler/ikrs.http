@@ -1,17 +1,17 @@
 package ikrs.typesystem;
 
+import java.util.ArrayList;
+
 /**
  * The BasicArrayType is a not so basic type class with the capability to wrap a set to BasicType
  * instances together into a linear array-like list.
  *
  * All access methods guarantee constant runtime, so the class does not support item removal.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-09-21
  * @version 1.0.0
  **/
-
-import java.util.ArrayList;
 
 public class BasicArrayType
     extends BasicTypeAdapter

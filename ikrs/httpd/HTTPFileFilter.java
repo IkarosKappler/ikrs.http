@@ -1,5 +1,7 @@
 package ikrs.httpd;
 
+import java.io.File;
+
 /**
  * A file filter for directory listings and direct file access. 
  *
@@ -11,8 +13,6 @@ package ikrs.httpd;
  * @date 2012-09-28
  * @version 1.0.0
  **/
-
-import java.io.File;
 
 public interface HTTPFileFilter {
 

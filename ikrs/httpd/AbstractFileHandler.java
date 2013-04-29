@@ -1,5 +1,12 @@
 package ikrs.httpd;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
+
+import ikrs.util.CustomLogger;
+
 /**
  * This is a general abstract FileHandler implementation. Classes implementing the FileHandler 
  * interface should extend this class.
@@ -9,14 +16,6 @@ package ikrs.httpd;
  * @date 2012-09-29
  * @version 1.0.0
  **/
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.UUID;
-
-
-import ikrs.util.CustomLogger;
 
 public abstract class AbstractFileHandler
     implements FileHandler {

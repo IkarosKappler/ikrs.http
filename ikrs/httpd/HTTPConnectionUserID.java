@@ -1,5 +1,8 @@
 package ikrs.httpd;
 
+
+import ikrs.yuccasrv.ConnectionUserID;
+
 /**
  * This is the internally used HTTPConnectionUserID implementation.
  *
@@ -9,8 +12,6 @@ package ikrs.httpd;
  * @date 2012-09-28
  * @version 1.0.0
  **/
-
-import ikrs.yuccasrv.ConnectionUserID;
 
 
 public class HTTPConnectionUserID

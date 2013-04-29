@@ -1,5 +1,7 @@
 package ikrs.util;
 
+import java.util.Map;
+
 /**
  * This is a simple model based map factory implementation.
  * It uses the Map-class's newInstance()-method to create new instanced.
@@ -8,8 +10,6 @@ package ikrs.util;
  * @date 2012-09-07
  * @version 1.0.0
  **/ 
-
-import java.util.Map;
 
 public class ModelBasedMapFactory<K,V>
     implements MapFactory<K,V> {

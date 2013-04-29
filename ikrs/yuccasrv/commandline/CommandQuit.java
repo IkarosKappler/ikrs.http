@@ -1,5 +1,10 @@
 package ikrs.yuccasrv.commandline;
 
+import ikrs.typesystem.BasicType;
+import ikrs.util.AbstractCommand;
+import ikrs.util.Command;
+import ikrs.util.CommandStringIncompleteException;
+
 /**
  * This is the default QUIT command implementation.
  *
@@ -9,11 +14,6 @@ package ikrs.yuccasrv.commandline;
  * @version 1.0.0
  **/
 
-
-import ikrs.typesystem.BasicType;
-import ikrs.util.AbstractCommand;
-import ikrs.util.Command;
-import ikrs.util.CommandStringIncompleteException;
 
 public class CommandQuit
     extends YuccaCommand {

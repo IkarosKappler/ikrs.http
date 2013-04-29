@@ -1,5 +1,9 @@
 package ikrs.io;
 
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
+
+
 /**
  * The CircularFIFO implements an ... ehm ... yes, a circular FIFO buffer.
  *
@@ -8,9 +12,6 @@ package ikrs.io;
  * @version 1.0.0
  **/
 
-
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 
 public class CircularFIFO {
 

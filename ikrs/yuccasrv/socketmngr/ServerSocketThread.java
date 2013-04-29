@@ -1,15 +1,5 @@
 package ikrs.yuccasrv.socketmngr;
 
-/**
- * The ServerSocketThread class implements a Runnable object to wrap the
- * basic server into a concurrent thread.
- *
- *
- * @author Ikaros Kappler
- * @date 2012-04-22
- * @version 1.0.0
- **/
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,6 +35,15 @@ import ikrs.util.Environment;
 import ikrs.yuccasrv.Constants;
 import ikrs.yuccasrv.Yucca;
 
+/**
+ * The ServerSocketThread class implements a Runnable object to wrap the
+ * basic server into a concurrent thread.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2012-04-22
+ * @version 1.0.0
+ **/
 
 
 public class ServerSocketThread

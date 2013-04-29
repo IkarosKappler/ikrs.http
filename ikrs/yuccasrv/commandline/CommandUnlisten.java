@@ -1,14 +1,5 @@
 package ikrs.yuccasrv.commandline;
 
-/**
- * This is the default LISTEN command implementation.
- *
- *
- * @author Henning Diesenberg
- * @date 2012-05-09
- * @version 1.0.0
- **/
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -23,6 +14,14 @@ import ikrs.util.Command;
 import ikrs.util.CommandStringIncompleteException;
 import ikrs.yuccasrv.Constants;
 
+/**
+ * This is the default LISTEN command implementation.
+ *
+ *
+ * @author Henning Diesenberg
+ * @date 2012-05-09
+ * @version 1.0.0
+ **/
 
 public class CommandUnlisten
     extends YuccaCommand {

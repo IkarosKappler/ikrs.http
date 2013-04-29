@@ -1,5 +1,20 @@
 package ikrs.httpd.resource;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
+
+import ikrs.httpd.HTTPHandler;
+import ikrs.httpd.ReadOnlyException;
+import ikrs.httpd.Resource;
+import ikrs.httpd.ResourceMetaData;
+import ikrs.util.CustomLogger;
+
+import ikrs.io.fileio.htaccess.HypertextAccessFile;
+
 /**
  * The ResourceDelegation is an abstract wrapper class that holds an internal
  * Resource instance. All methods are implemented and just redirect the calls
@@ -16,21 +31,6 @@ package ikrs.httpd.resource;
  * @date 2013-02-27
  * @version 1.0.0
  **/
-
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock; 
-
-import ikrs.httpd.HTTPHandler;
-import ikrs.httpd.ReadOnlyException;
-import ikrs.httpd.Resource;
-import ikrs.httpd.ResourceMetaData;
-import ikrs.util.CustomLogger;
-
-import ikrs.io.fileio.htaccess.HypertextAccessFile;
 
 
 public abstract class ResourceDelegation

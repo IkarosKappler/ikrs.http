@@ -1,11 +1,5 @@
 package ikrs.yuccasrv;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-05-09
- * @version 1.0.0
- **/
-
 import java.net.Socket;
 import java.net.DatagramSocket;
 import java.util.UUID;
@@ -16,6 +10,11 @@ import ikrs.util.ObjectWithUUID;
 import ikrs.yuccasrv.socketmngr.BindListener;
 import ikrs.yuccasrv.socketmngr.BindManager;
 
+/**
+ * @author Ikaros Kappler
+ * @date 2012-05-09
+ * @version 1.0.0
+ **/
 
 public abstract class ConnectionHandler
     implements BindListener,

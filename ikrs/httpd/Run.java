@@ -1,5 +1,7 @@
 package ikrs.httpd;
 
+import ikrs.yuccasrv.Yucca;
+
 /**
  * This class is a wrapper for the Yucca main class.
  * The main purpose of this class is to add a customized CommandFactory
@@ -14,8 +16,6 @@ package ikrs.httpd;
  * @version 1.0.0
  **/
 
-
-import ikrs.yuccasrv.Yucca;
 
 public class Run {
 

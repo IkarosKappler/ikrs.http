@@ -1,5 +1,11 @@
 package ikrs.yuccasrv.socketmngr;
 
+import java.io.IOException;
+import java.net.*;
+import java.nio.channels.IllegalBlockingModeException;
+
+//import ikrs.typesystem.BasicType;
+
 /**
  * This interface declares all listener methods that a required to receive
  * all important server socket events.
@@ -9,12 +15,6 @@ package ikrs.yuccasrv.socketmngr;
  * @date 2012-04-22
  * @version 1.0.0
  **/
-
-import java.io.IOException;
-import java.net.*;
-import java.nio.channels.IllegalBlockingModeException;
-
-//import ikrs.typesystem.BasicType;
 
 
 public interface ServerSocketThreadObserver {

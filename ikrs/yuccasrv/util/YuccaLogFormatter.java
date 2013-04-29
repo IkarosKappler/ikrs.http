@@ -1,5 +1,9 @@
 package ikrs.yuccasrv.util;
 
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.SimpleFormatter;
+
 /**
  * This is a custom Logger subclass that generate more verbose log messages than
  * the SimpleFormatter does.
@@ -9,10 +13,6 @@ package ikrs.yuccasrv.util;
  * @date 2012-05-09
  * @version 1.0.0
  **/
-
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-import java.util.logging.SimpleFormatter;
 
 
 public class YuccaLogFormatter

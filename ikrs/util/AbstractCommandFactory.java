@@ -1,16 +1,16 @@
 package ikrs.util;
 
-/**
- * @author Ikaros Kappler
- * @date 2012-05-07
- * @version 1.0.0
- **/
-
 import java.text.ParseException;
 import java.util.Set;
 
 import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
+
+/**
+ * @author Ikaros Kappler
+ * @date 2012-05-07
+ * @version 1.0.0
+ **/
 
 
 public abstract class AbstractCommandFactory<C extends Command>

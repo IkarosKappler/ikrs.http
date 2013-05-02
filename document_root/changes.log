@@ -1,4 +1,25 @@
 
+
+[2013-05-02]
+  - Made the Headers-to-CGI mapping configurable (in the 
+    ikrs.httpd.conf file).
+    The mapped headers are in the 'cgi_map_headers' section.
+    Example:
+     [cgi_map_headers]
+     Accept                   = On
+     Accept-Charset 	      = On
+     Accept-Encoding          = On
+     Accept-Language 	      = On
+     Conncection 	      = On
+     Cookie		      = On
+     Host 		      = On
+     Referer 		      = On
+     User-Agent 	      = On
+    By the way ... these are the default headers that have to be mapped
+    by the CGI1.1 specification.
+    (See RFC 3875 http://www.ietf.org/rfc/rfc3875).
+
+
 [2013-04-29]
   - Added javadocs at ./document_root/docs/
 

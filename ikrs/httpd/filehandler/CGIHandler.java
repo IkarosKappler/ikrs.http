@@ -36,12 +36,12 @@ import ikrs.typesystem.BasicType;
 
 /**
  * The CGI handler is an abstract class implementing some basic methods for 
- * the Common Gateway Interface.
- *
- * Subclasses must implement these methods:
- *  - List<String> buildCGISystemCommand( ... )
- *  - void buildAdditionalCGIEnvironmentVars( ... )
- *  - Resource handleCGIOutput( ... )
+ * the Common Gateway Interface.<br/>
+ * <br/>
+ * Subclasses must implement these methods:<br/>
+ *  - List<String> buildCGISystemCommand( ... )<br/>
+ *  - void buildAdditionalCGIEnvironmentVars( ... )<br/>
+ *  - Resource handleCGIOutput( ... )<br/>
  *
  *
  *
@@ -81,7 +81,7 @@ public abstract class CGIHandler
 
 
 
-    private Set<String> includeHeadersSet;
+    private Set<String> defaultIncludeHeadersSet;
 
 
     public CGIHandler() 
@@ -89,19 +89,19 @@ public abstract class CGIHandler
 
 	super();
 
-	this.includeHeadersSet = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
+	this.defaultIncludeHeadersSet = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
 
 	// Init the HTTP header set that should be included into the CGI environment by default.
-	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_CHARSET );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_ENCODING );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_LANGUAGE );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_CONNECTION );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_COOKIE );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_HOST );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_REFERER );
-	this.includeHeadersSet.add( HTTPHeaders.NAME_USER_AGENT );
-
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_ACCEPT );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_CHARSET );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_ENCODING );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_ACCEPT_LANGUAGE );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_CONNECTION );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_COOKIE );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_HOST );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_REFERER );
+	this.defaultIncludeHeadersSet.add( HTTPHeaders.NAME_USER_AGENT );
+	
     }
 
     /**
@@ -126,10 +126,28 @@ public abstract class CGIHandler
      * @return The HTTP-include-into-CGI set with HTTP headers that should be mapped into the CGI environment.
      *         The returned set is never null.
      **/
-    protected Set<String> getIncludeHeadersSet() {
-	return this.includeHeadersSet;
+    protected Set<String> getDefaultIncludeHeadersSet() {
+	/*
+	Set<String> tmp = this.getHTTPHandler().getCGIMapHeadersSet();
+	if( tmp == null )
+	    return this.defaultIncludeHeadersSet;
+	else
+	    return this.getHTTPHandler().getCGIMapHeadersSet();  
+	*/
+	
+	return this.defaultIncludeHeadersSet;
     }
     
+
+    private boolean mapHeaderToCGIEnvironment( String headerName ) {
+	Boolean b = this.getHTTPHandler().mapHeaderToCGIEnvironment( headerName );  // may return null!
+	
+	// If null, no configured header section was found
+	if( b == null )
+	    return this.defaultIncludeHeadersSet.contains( headerName );
+	else
+	    return b.booleanValue();
+    }
 
     //--- BEGIN --------- These methods must be implemented by subclasses --------------------------
     /**
@@ -426,7 +444,8 @@ public abstract class CGIHandler
 		continue;
 
 	    // The header must be explicitly allowed to be included into the CGI environment! (security reason)
-	    if( !this.includeHeadersSet.contains(key) )
+	    //if( !this.getIncludeHeadersSet.contains(key) )
+	    if( !this.mapHeaderToCGIEnvironment(key) )
 		continue;
 
 	    key               = key.toUpperCase();

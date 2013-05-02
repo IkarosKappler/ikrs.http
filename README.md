@@ -6,6 +6,19 @@ A free tiny java written http server.
 
 
 
+Note: I started to write this piece of software in April 2012.
+      I'm still working on this project and I'm doing this just for fun 
+      but with passion ^^
+      
+      I cannot afford a testing team so there will still be some errors, 
+      bugs and faulty methods. If you find one feel free to contact me 
+      or better write an issue report.
+      I will fix the issue as soon as possible.
+
+
+
+
+
 
 Changes
 =======

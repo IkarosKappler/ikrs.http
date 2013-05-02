@@ -47,8 +47,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -68,6 +70,7 @@ import ikrs.yuccasrv.socketmngr.BindManager;
 
 import ikrs.typesystem.*;
 
+import ikrs.util.CaseInsensitiveComparator;
 import ikrs.util.CustomLogger;
 import ikrs.util.DefaultCustomLogger;
 import ikrs.util.DefaultEnvironment;
@@ -196,6 +199,12 @@ public class HTTPHandler
      **/
     private Map<Integer,URI> errorDocumentMap;
 
+    /**
+     * A set (not case sensitive entries) containing all HTTP header names that
+     * should be mapped to the CGI environment.
+     **/
+    private Set<String> cgiMapHeaders;
+
 
     /**
      * A DateFormat instance for getting Date object in the required HTTP Date
@@ -299,6 +308,7 @@ public class HTTPHandler
 	this.resourceAccessor   = new FileSystemResourceAccessor( this, this.logger );
 	
 	this.errorDocumentMap   = Collections.synchronizedMap( new TreeMap<Integer,URI>() );
+	this.cgiMapHeaders      = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
 	
 
 	// Pre start core thread?
@@ -749,6 +759,28 @@ public class HTTPHandler
      **/
     protected Map<Integer,URI> getErrorDocumentMap() {
 	return this.errorDocumentMap;
+    }
+
+    /**
+     * This method returns the internal Header-to-CGI mapping set.
+     *
+     * The returned map is never null and its comparator is not case-sensitive.
+     **/
+    protected Set<String> getCGIMapHeadersSet() {
+	return this.cgiMapHeaders;
+    }
+
+    /**
+     * This method indicates if a given HTTP header should be mapped to the
+     * CGI environment or not.
+     *
+     * If there is no configured header section (for CGI) the method returns
+     * null!
+     **/ 
+    public Boolean mapHeaderToCGIEnvironment( String headerName ) {
+	if( this.cgiMapHeaders == null )
+	    return null;
+	return new Boolean( headerName != null && this.cgiMapHeaders.contains(headerName) );
     }
 
     //---BEGIN-------------------- RejectedExcecutionHandler Implementation -------------------------

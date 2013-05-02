@@ -3,8 +3,17 @@
 
 
 TO DO:
+[2013-05-02]
+ - Implement the HTTPConnectionUserID.toString() method so that equal
+   IDs have equal string representations.
+
+[2013-04-30]
+ - [DONE 2013-05-02]
+   Make the Headers-to-CGI mapping configurable (in the 
+   ikrs.httpd.conf file).
+
 [2013-04-29] 
- - Move the HexdumpOutputStream from ikrs.util to ikrs.io.
+ - Move the HexdumpOutputStream from ikrs.util to ikrs.io?
 
 [2013-04-22]
  - On system start: print some output to show how many columns the hex
@@ -433,7 +442,11 @@ if 'document_root' is your configured {DOCUMENT_ROOT} (the default value)
 the files will be available at http://127.0.0.1:8888/docs/.
 
 
-
+Note: Some people asked: "Why port 8888?".
+      For all who wonder about the strange port number; it's an adaption 
+      of the 80/8080 HTTP port numbers (default and default alternative
+      port).
+      Alertá, alertá, antifascista!
 
 
 

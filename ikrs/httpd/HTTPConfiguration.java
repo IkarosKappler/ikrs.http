@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+//import java.i
 import java.util.logging.Level;
 
 import ikrs.io.fileio.inifile.IniFile;
@@ -84,20 +87,20 @@ public class HTTPConfiguration {
 
     /**
      * This method reads the passed HTTP settings from the cnfiguration environment and applies them
-     * to the HTTP handler. If the passed settings environment is null the method does nothing.
-     *
-     * The passed configuration comes from an XML configuration file parsed by the yucca server.
-     * The structure is like this:
-     *
-     * <server name="My HTTP Server" handlerClass="ikrs.http.HTTPHandler">
-     *   <httpConfig>
-     *     <httpSettings configFile=".yuccasrv/ikrs.httpd.conf" />
-     *     <fileHandlers configFile=".yuccasrv/filehandlers.ini" />
-     *     ...
-     *   </httpConfig>
-     *   ...
-     * </server>
-     *
+     * to the HTTP handler. If the passed settings environment is null the method does nothing.<br/>
+     * <br/>
+     * The passed configuration comes from an XML configuration file parsed by the yucca server.<br/>
+     * The structure is like this:<br/>
+     * <br/>
+     * &lt;server name="My HTTP Server" handlerClass="ikrs.http.HTTPHandler"&gt;<br/>
+     *   &lt;httpConfig&gt;<br/>
+     *     &lt;httpSettings configFile=".yuccasrv/ikrs.httpd.conf" /&gt;</br>
+     *     &lt;fileHandlers configFile=".yuccasrv/filehandlers.ini" /&gt;</br>
+     *     ...<br/>
+     *   &lt;/httpConfig&gt;<br/>
+     *   ...<br/>
+     * &lt;/server&gt;<br/>
+     * <br/>
      *
      * @param httpSettings The HTTP settings to apply.
      * @throws ConfigurationException If the passed settings contain any malformed or bad entries or is
@@ -208,15 +211,17 @@ public class HTTPConfiguration {
 	this.configureDocumentRoot();
 	this.configureSessionTimeout();
 	this.configureErrorDocuments();
+	this.configureCGIHeaderMap();
 
 	// The settings are now already applied :)
 	this.getLogger().log( Level.INFO, 
 			      getClass().getName() + "loadConfigurationFile(...)",
 			      "Config file loaded." );
-
 	
 
     }
+
+    
 
 
     private void configureDocumentRoot() {
@@ -252,23 +257,6 @@ public class HTTPConfiguration {
     private void configureErrorDocuments() {
 
 	// Find default ERROR_DOCUMENT settings
-	/*
-	Iterator<Map.Entry<String,BasicType>> configIter = this.getHandler().getGlobalConfiguration().entrySet().iterator();
-	while( configIter.hasNext() ) {
-
-	    Map.Entry<String,BasicType> entry = configIter.next();
-	    String key = entry.getKey();
-	    if( key == null ) {
-		// This should not happen
-		continue;
-	    }
-
-
-	    if( key.toUpperCase().startsWith(Constants.
-
-	}
-	*/
-
 	for( int statusCode = 300; statusCode < 599; statusCode++ ) {
 
 	    // Build key.
@@ -305,6 +293,55 @@ public class HTTPConfiguration {
 
 	}
 
+    }
+
+    private void configureCGIHeaderMap() {
+
+	// Find the child environment for the 'cgi_map_headers' section
+	Environment<String,BasicType> cgiHeaderMap = 
+	    this.getHandler().getGlobalConfiguration().getChild( Constants.CKEY_HTTPCONFIG_SECTION_CGI_MAP_HEADERS );
+	if( cgiHeaderMap == null ) {
+
+	     this.getLogger().log( Level.WARNING, 
+			      getClass().getName() + ".configureCGIHeaderMap(...)",
+			      "The HTTP config has no '" + Constants.CKEY_HTTPCONFIG_SECTION_CGI_MAP_HEADERS + "' section. No headers will be mapped to the CGI enviroment." );
+	     return;
+
+	}
+
+	Iterator<Map.Entry<String,BasicType>> iter = cgiHeaderMap.entrySet().iterator();
+	while( iter.hasNext() ) {
+
+	    Map.Entry<String,BasicType> entry = iter.next();
+	    if( entry.getKey() == null 
+		|| entry.getKey().length() == 0 
+		|| entry.getValue() == null 
+		|| !entry.getValue().getBoolean() ) {
+
+		continue;
+	    }
+
+	    this.getHandler().getCGIMapHeadersSet().add( entry.getKey() );
+
+	}
+
+	this.getLogger().log( Level.INFO, 
+			      getClass().getName() + ".configureCGIHeaderMap(...)",
+			      "Set up cgiHeaderMap: " + this.getHandler().getCGIMapHeadersSet() );
+	/*
+	Set<String> includeHeaderSet = new TreeSet<String>( CaseInsensitiveComparator.sharedInstance );
+	    
+	BasicType wrp_documentRoot = this.getHandler().getGlobalConfiguration().get( Constants.CKEY_HTTPCONFIG_DOCUMENT_ROOT );
+	if( wrp_documentRoot != null ) {
+
+	    String documentRoot = CustomUtil.processCustomizedFilePath( wrp_documentRoot.getString() );
+	    this.getLogger().log( Level.INFO, 
+			      getClass().getName() + ".loadConfigurationFile(...)",
+			      "Set up DOCUMENT_ROOT to '" + documentRoot + "' ..." );
+	    this.getHandler().setDocumentRoot( new File(documentRoot) );
+
+	}
+	*/
     }
 
 

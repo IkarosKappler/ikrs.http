@@ -9,7 +9,7 @@ import java.util.List;
  * The passed environment will become the underlying core and method calls to the
  * delegation's environment-methods will be directly forwarded to the core.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-09-06
  * @version 1.0.0
  **/

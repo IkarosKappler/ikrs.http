@@ -18,7 +18,7 @@ import ikrs.yuccasrv.Constants;
  * This is the default STATUS command implementation.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-10-30
  * @version 1.0.0
  **/

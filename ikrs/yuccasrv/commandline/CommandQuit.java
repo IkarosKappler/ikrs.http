@@ -9,7 +9,7 @@ import ikrs.util.CommandStringIncompleteException;
  * This is the default QUIT command implementation.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-09
  * @version 1.0.0
  **/

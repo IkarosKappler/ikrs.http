@@ -18,7 +18,7 @@ import org.w3c.dom.Text;
  * This XML reader was inspired by
  * http://www.java-tips.org/java-se-tips/javax.xml.parsers/how-to-read-xml-file-in-java.html
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-24
  * @version 1.0.0
  **/

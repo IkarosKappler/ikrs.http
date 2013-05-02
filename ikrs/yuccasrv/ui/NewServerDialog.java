@@ -14,7 +14,7 @@ import ikrs.util.DefaultEnvironment;
 import ikrs.util.Environment;
 
 /**
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-23
  * @version 1.0.0
  **/

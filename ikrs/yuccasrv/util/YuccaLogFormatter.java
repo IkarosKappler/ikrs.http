@@ -9,7 +9,7 @@ import java.util.logging.SimpleFormatter;
  * the SimpleFormatter does.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-09
  * @version 1.0.0
  **/

@@ -8,7 +8,7 @@ import java.io.IOException;
  * This class can be used to read clean CR-LF (0xD, 0xA) line feeded text.
  * Other line breaks will be taken as 'normal' text.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-21
  * @version 1.0.0
  **/

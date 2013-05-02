@@ -6,7 +6,7 @@ import java.util.UUID;
  * This is a very small interface for all objects that are associated with an UUID.
  * The final(!) UUID is expected to be part of the object.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-23
  * @version 1.0.0
  **/

@@ -22,7 +22,7 @@ import ikrs.yuccasrv.Constants;
  * This is the default LISTEN command implementation.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-09
  * @version 1.0.0
  **/

@@ -23,7 +23,7 @@ import ikrs.yuccasrv.socketmngr.BindManager;
 /**
  * 
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-23
  * @version 1.0.0
  **/

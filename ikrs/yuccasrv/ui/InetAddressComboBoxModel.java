@@ -11,7 +11,7 @@ import javax.swing.ComboBoxModel;
  * This class populates a combobox list model containing all available local inet addresses
  * on the running system.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-24
  * @version 1.0.0
  **/

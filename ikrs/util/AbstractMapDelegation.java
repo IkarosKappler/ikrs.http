@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-02
  * @version 1.0.0
  **/

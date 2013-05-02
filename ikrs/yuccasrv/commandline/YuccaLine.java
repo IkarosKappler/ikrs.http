@@ -3,7 +3,7 @@ package ikrs.yuccasrv.commandline;
 /**
  * This is the serverside command line.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-07
  * @version 1.0.0
  **/

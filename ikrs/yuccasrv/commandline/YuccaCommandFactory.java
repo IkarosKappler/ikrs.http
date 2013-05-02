@@ -1,7 +1,7 @@
 package ikrs.yuccasrv.commandline;
 
 /**
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-07
  * @version 1.0.0
  **/

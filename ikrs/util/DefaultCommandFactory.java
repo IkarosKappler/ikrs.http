@@ -9,7 +9,7 @@ import ikrs.typesystem.BasicStringType;
 import ikrs.typesystem.BasicType;
 
 /**
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-07
  * @version 1.0.0
  **/

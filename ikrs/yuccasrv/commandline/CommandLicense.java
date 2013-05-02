@@ -20,7 +20,7 @@ import ikrs.yuccasrv.Constants;
  * It just prints the contents of the license.txt file into stdout.
  *
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-12-17
  * @version 1.0.0
  **/

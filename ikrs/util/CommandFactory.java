@@ -11,7 +11,7 @@ import ikrs.typesystem.BasicType;
  * Some CommandFactories might also be capable to parse Commands
  * from a given String.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-05-07
  * @version 1.0.0
  **/

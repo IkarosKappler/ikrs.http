@@ -8,7 +8,7 @@ import java.util.List;
  * environments. The full environment will be a tree like structure
  * with a base environment in the root.
  *
- * @author Henning Diesenberg
+ * @author Ikaros Kappler
  * @date 2012-04-24
  * @version 1.0.0
  **/ 

@@ -23,6 +23,13 @@ Note: I started to write this piece of software in April 2012.
 Changes
 =======
 
+[2013-05-08]
+   Added more runtime statistics:
+     - #requests
+     - #errors
+     - #warnings
+    Note: last error and last warning dropped (mind the logger)]
+
 [2013-04-29]
   - Added javadocs at ./document_root/docs/
 

@@ -229,7 +229,8 @@ public class HTTPHandler
 	
 	// Better not override the logger's log level!
 	// It should be trusted that the passed log level is the desired one.
-	this.logger = new DefaultCustomLogger( Constants.NAME_DEFAULT_LOGGER );
+	this.logger = new HTTPLogger( Constants.NAME_DEFAULT_LOGGER,
+				      this );
 
 	// Init the runtime stats wrapper
 	this.runtimeStatistics = new HTTPDRuntimeStatistics( System.currentTimeMillis() );
@@ -503,6 +504,14 @@ public class HTTPHandler
 	return this.environment.getChild( Constants.EKEY_GLOBALCONFIGURATION );
     }
 
+    /**
+     * Get the runtime statistics for this handler.
+     *
+     * The returned object is never null.
+     **/
+    protected HTTPDRuntimeStatistics getRuntimeStatistics() {
+	return this.runtimeStatistics;
+    }
 
     /**
      * Get the handler's configured document root file.
@@ -1026,7 +1035,7 @@ public class HTTPHandler
 
 	String indent = "     ";
 	StringBuffer b = new StringBuffer();
-	b.append( "\n--------------------------------------------------------\n" ).
+	b.append( "\n--- Status ------------------------------------------------\n" ).
 	    append( indent ).append( "corePoolSize        : " ).
 	    append( this.threadPoolExecutor.getCorePoolSize() ).append( "\n" ).
 
@@ -1042,9 +1051,36 @@ public class HTTPHandler
 	    append( this.getHTTPDateFormat().format(new Date(this.runtimeStatistics.getSystemStartedTime())) ).append( "\n" ).
 
 	    append( indent ).append( "uptime              : " ).
-	    append( Long.toString(this.runtimeStatistics.getUptime_ms()/1000L) ).append( " s\n" );
+	    append( Long.toString(this.runtimeStatistics.getUptime_ms()/1000L) ).append( " s\n" ).
+
+	    append( indent ).append( "#requests           : " ).
+	    append( this.getRuntimeStatistics().getHTTPRequestCount() ).append( "\n" ).
 	    
-	b.append( "--------------------------------------------------------\n" );
+	    append( "\n" );
+
+	b.append( "--- Logged events -----------------------------------------\n" ).
+	    append( indent ).append( "FINEST             : " ).
+	    append( this.getRuntimeStatistics().getReportedFinestCount() ).append( "\n" ).
+	    
+	    append( indent ).append( "FINER              : " ).
+	    append( this.getRuntimeStatistics().getReportedFinerCount() ).append( "\n" ).
+
+	    append( indent ).append( "FINE               : " ).
+	    append( this.getRuntimeStatistics().getReportedFineCount() ).append( "\n" ).
+
+	    append( indent ).append( "CONFIG             : " ).
+	    append( this.getRuntimeStatistics().getReportedConfigCount() ).append( "\n" ).
+
+	    append( indent ).append( "INFO               : " ).
+	    append( this.getRuntimeStatistics().getReportedInfoCount() ).append( "\n" ).
+
+	    append( indent ).append( "WARNING            : " ).
+	    append( this.getRuntimeStatistics().getReportedWarningCount() ).append( "\n" ).
+
+	    append( indent ).append( "SEVERE             : " ).
+	    append( this.getRuntimeStatistics().getReportedSevereCount() ).append( "\n" );
+	    
+	b.append( "--- END Status --------------------------------------------\n" );
 	
 
 

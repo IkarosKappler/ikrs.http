@@ -30,9 +30,22 @@ public class HTTPServerThreadFactory
     
     //--- BEGIN ---------------------- ThreadFactory implementation ----------------
     public HTTPServerThread newThread( Runnable r ) {
+	
+	// Create new thread
+	HTTPServerThread t = new HTTPServerThread( this.handler,
+						   this.logger,
+						   r );
+
+	// Log event
+	this.handler.getRuntimeStatistics().reportHTTPRequest();
+	
+	/*
 	return new HTTPServerThread( this.handler,
 				     this.logger,
 				     r );
+	*/
+	
+	return t;
     }
     //--- END ------------------------ ThreadFactory implementation ----------------
 

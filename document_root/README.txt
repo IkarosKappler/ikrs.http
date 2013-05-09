@@ -18,9 +18,12 @@ TO DO:
 [2013-04-22]
  - On system start: print some output to show how many columns the hex
    output requires.
- - Try to find the exact width for stdout before line breaks are 
+ - [DROPPED 2013-05-09; this is not possible with the default packages]
+   Try to find the exact width for stdout before line breaks are 
    enforced.
- - Add more runtime statistics:
+ - [DONE; 2013-05-08; last error and last warning dropped (mind the 
+   logger)]
+   Add more runtime statistics:
      - #requests
      - #errors
      - #warnings

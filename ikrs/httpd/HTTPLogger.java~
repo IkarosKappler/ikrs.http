@@ -1,0 +1,13 @@
+package ikrs.httpd;
+
+/**
+ * A listenable extension of the default ikrs.util.CustomLogger class.
+ *
+ * @author Ikaros Kappler
+ * @date 2013-05-08
+ * @version 1.0.0
+ **/
+
+
+public class HTTPLogger
+    extends

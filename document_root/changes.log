@@ -1,5 +1,13 @@
 
 
+[2013-05-08]
+   Added more runtime statistics:
+     - #requests
+     - #errors
+     - #warnings
+    Note: last error and last warning dropped (mind the logger)]
+
+
 [2013-05-02]
   - Made the Headers-to-CGI mapping configurable (in the 
     ikrs.httpd.conf file).

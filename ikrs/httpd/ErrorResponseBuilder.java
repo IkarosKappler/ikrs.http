@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.UUID;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import ikrs.httpd.resource.ByteArrayResource;
+// import ikrs.httpd.resource.FileResource;
 import ikrs.httpd.response.GeneralPreparedResponse;
+import ikrs.httpd.resource.ReplacingResource;
 import ikrs.httpd.response.successful.OK;
 
 import ikrs.typesystem.BasicStringType;
@@ -23,7 +26,8 @@ import ikrs.util.MIMEType;
 /**
  * @author Ikaros Kappler
  * @date 2012-07-29
- * @version 1.0.0
+ * @modified 2013-05-12 Ikaros Kappler (error document placeholder processing added).
+ * @version 1.0.1
  **/
 
 
@@ -32,10 +36,30 @@ public class ErrorResponseBuilder
     implements ResponseBuilder {
 
     /**
+     * The default error document placeholder/replacement map.
+     **/
+    // private Map<byte[],byte[]> errorDocumentReplacementMap;
+
+    
+    /**
      * The constructor.
      **/
     public ErrorResponseBuilder( HTTPHandler handler ) {
-	super( handler );	
+	super( handler );
+
+	/*
+	this.errorDocumentReplacementMap = TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );
+	
+	this.errorDocumentReplacementMap.put( new String("%{STATUS_CODE}%").getBytes("UTF-8"),
+					      new String("500").getBytes("UTF-8") 
+					      );
+	this.errorDocumentReplacementMap.put( new String("%{REASON_PHRASE}%").getBytes("UTF-8"),
+					      new String("Iternal Server Error").getBytes("UTF-8") 
+					      );
+	this.errorDocumentReplacementMap.put( new String("%{ERROR_MESSAGE}%").getBytes("UTF-8"),
+					      new String("I encountered an internal server error.").getBytes("UTF-8") 
+					      );
+	*/
     }
 
 
@@ -251,14 +275,37 @@ public class ErrorResponseBuilder
 						       "Trying to get error file resource '" + uri.getPath() + "' from resource accessor."
 						       );
 
-		//URI uri = new URI( errorFilePath );
-		resource = this.getHTTPHandler().getResourceAccessor().locate( uri,
-									       headers,
-									       null,  // postData
-									       null,  // additionalSettings
-									       null,  // optionalReturnSettings
-									       sessionID
-									       );
+		// URI testURI = new URI( "/system/errors/_GenericError.template.html" );		
+		Resource tmpFileResource = this.getHTTPHandler().getResourceAccessor().locate( uri,
+											       headers,
+											       null,  // postData
+											       null,  // additionalSettings
+											       null,  // optionalReturnSettings
+											       sessionID
+											    );
+
+		// The resource holds the error document now; it is part of the error
+		// document concept that it may contain placeholders.
+		tmpFileResource.open( true ); // open in read-only mode
+
+		Map<byte[],byte[]> errorDocumentReplacementMap = new TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );
+		
+		errorDocumentReplacementMap.put( new String("{STATUS_CODE}").getBytes("UTF-8"),
+						 Integer.toString(statusCode).getBytes("UTF-8") );
+		errorDocumentReplacementMap.put( new String("{REASON_PHRASE}").getBytes("UTF-8"),
+						 (reasonPhrase==null?new byte[0]:reasonPhrase.getBytes("UTF-8")) );
+		errorDocumentReplacementMap.put( new String("{ERROR_MESSAGE}").getBytes("UTF-8"),
+						 (errorMessage==null?new byte[0]:errorMessage.getBytes("UTF-8")) );
+		resource = new ReplacingResource( this.getHTTPHandler(),
+						  this.getHTTPHandler().getLogger(),
+						  tmpFileResource.getInputStream(),						  
+						  true,    // use fair locks?
+						  errorDocumentReplacementMap
+						  );
+		resource.getMetaData().setMIMEType( tmpFileResource.getMetaData().getMIMEType() );
+
+		tmpFileResource.close();
+		
 
 
 	    } catch( MissingResourceException e ) {
@@ -274,8 +321,26 @@ public class ErrorResponseBuilder
 						  true // useFairLocks?
 						  );
 		// Overwrite the MIME type (the resource think's it is raw binary data)
-		resource.getMetaData().setMIMEType( errorDocumentMIMEType );   // new MIMEType("text/plain") );
-	    }
+		errorDocumentMIMEType = new MIMEType("text/plain");
+		resource.getMetaData().setMIMEType( errorDocumentMIMEType ); 
+
+	    } catch( IOException e ) {
+		
+		// File not found -> use raw message
+		this.getHTTPHandler().getLogger().log( Level.WARNING,
+						       getClass().getName() + ".buildPreparedErrorResponse(...)",
+						       "[IOException] Failed to read from file resource '" + (uri!=null?uri.getPath():"null") + "': " + e.getMessage()
+						       );		
+		resource = new ByteArrayResource( this.getHTTPHandler(),
+						  this.getHTTPHandler().getLogger(),
+						  errorMessage.getBytes(), 
+						  true // useFairLocks?
+						  );
+		// Overwrite the MIME type (the resource think's it is raw binary data)
+		errorDocumentMIMEType = new MIMEType("text/plain");
+		resource.getMetaData().setMIMEType( errorDocumentMIMEType ); 
+	    } 
+
 
 
 	    // Switch some additional error headers (required)

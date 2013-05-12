@@ -176,15 +176,16 @@ public class DefaultConnectionUserID {
 	return toString( new StringBuffer() ).toString();
     }
 
-
     public StringBuffer toString( StringBuffer b ) {
 
+	
 	b.append( getClass().getName() ).append( "={ " ).
 	    append( "serverID=" ).append( this.serverID ).
 	    append( ", localAddress=" ).append( this.localAddress ).
 	    append( ", localPort=" ).append( this.localPort ).
 	    append( ", remoteAddress=" ).append( this.remoteAddress ).
 	    append( " }" );
+	
 	
 	return b;
     }

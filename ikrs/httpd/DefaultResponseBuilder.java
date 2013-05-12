@@ -380,7 +380,7 @@ public class DefaultResponseBuilder
 	if( optionalReturnSettings != null )
 	    newAdditionals.putAll( optionalReturnSettings );
 
-	Map<String,BasicType> additionals = new TreeMap<String,BasicType>();
+	// Map<String,BasicType> additionals = new TreeMap<String,BasicType>();  // Huh?
 	newAdditionals.put( "statusCode",    new BasicNumberType(statusCode) );
 	newAdditionals.put( "reasonPhrase",  new BasicStringType(reasonPhrase) );
 	newAdditionals.put( "errorMessage",  new BasicStringType(errorMessage) );

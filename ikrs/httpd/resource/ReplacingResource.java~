@@ -11,51 +11,34 @@ import ikrs.util.CustomLogger;
 
 
 /**
- * There are cases when it is not predictable how many bytes a data source will produce until
- * the input stream has reached EOF.
- * But for HTTP resources it is not acceptable to return an unprecise or aproximate value for
- * Resource.getLength() because this value will be stored in the HTTP resonse's header data
- * for the 'Content-Length' field (as soon as the data output started the header field was 
- * sent and cannot be modified any more)!
+ * ... zwei Fliegen mit einem Streich gewonnen.
  *
- * For those unpredictable cases we need buffered resources that load the _complete_ data into
- * an internal buffer to gain the exact number of bytes.
- *
- * Handle with care! Some underlying resources might hold a large number of bytes which might
- * cause out-of-memory errors or stack overflows when this BufferedResource tries to allocate
- * enought memory to store the data.
- 
  *
  * @author Ikaros Kappler
- * @date 2012-09-29
+ * @date 2013-05-11
  * @version 1.0.0
  **/
 
 
-public class BufferedResource 
-    extends AbstractResource {
+public class ReplacingResource 
+    extends BufferedResource {
 
     /**
-     * The passed input stream (must not be null).
+     * This is the resource that was passed to the constructor.
+     *
+     * It will be stored until open() is called; then the
      **/
-    private InputStream in;
-
-    /**
-     * This will be the underlying resource holding all my bytes :)
-     **/
-    private ByteArrayResource byteArrayResource;
-    
+    private Resource inputResource;
 
 
     /**
      * Create a new BufferedResource.
      *
-     * @param handler      The HTTPHandler (may be null if not available).
      * @param logger       A custom logger to write log messages to (must not be null).
-     * @param in           The input stream to read the data for buffering from.
+     * @param pb           The process builder to use (must not be null).
      * @param useFairLocks If set to true the class will use fair read locks (writing isn't
      *                     possible at all with this class).
-     * @throws NullPointerException If logger or the input stream is null.
+     * @throws NullPointerException If logger or pb is null.
      **/
     public BufferedResource( HTTPHandler handler,
 			     CustomLogger logger,

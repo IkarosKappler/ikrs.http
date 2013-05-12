@@ -80,6 +80,15 @@ public class HTTPConnectionUserID
 	    return -1;
 	}
     }
+
+
+    /**
+     * Converts this connection user ID to a string, where the strings
+     * are equal if (and only if) both ID are equal.
+     **/
+    public String toString() {
+	return this.connectionUserID.toString();
+    }
     
 
 }

@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.DatagramSocket;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -756,7 +757,41 @@ public class HTTPHandler
      * @return The error document (URI) for the passed error code.
      **/
     public URI getDefaultErrorDocumentURI( Integer statusCode ) {
-	return this.errorDocumentMap.get( statusCode );
+
+	URI errorDocumentURI = this.errorDocumentMap.get( statusCode );
+	
+	// Error document defined for given status code?
+	if( errorDocumentURI != null )
+	    return errorDocumentURI;
+
+
+	// Error document is not defined.
+	// Try to fetch the DEFAULT error document instead
+	String ckey = Constants.CKEY_HTTPCONFIG_ERROR_DOCUMENT_BASE.replaceAll( "\\{STATUS_CODE\\}", 
+										"DEFAULT" );
+
+	// Try to locate key in global configuration
+	BasicType wrp_defaultErrorDocumentURI = this.getGlobalConfiguration().get( ckey );
+	if( wrp_defaultErrorDocumentURI != null ) {
+	    
+	    try {
+
+		return new URI( wrp_defaultErrorDocumentURI.getString() );
+
+	    } catch( URISyntaxException e ) {
+
+		this.getLogger().log( Level.WARNING,
+				      getClass().getName() + ".getDefaultErrorDocumentURI(" + statusCode + ")",
+				      "The configured default error document (" + ckey + ") contains a malformed URI: " + wrp_defaultErrorDocumentURI.getString() + "." );
+
+		return null;
+
+	    }
+	}
+
+	
+	// Even the default error document is not specified
+	return null;
     }
     
 

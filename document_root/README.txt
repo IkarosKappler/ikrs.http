@@ -663,6 +663,10 @@ This is the user specific directory containing all configuration files required 
  The error response files. If the file for a given error code does not 
  exist the server will send an auto-generated response content.
 
+ There is also a default error document for the case a passed status
+ code does has no matching error document: 
+ the GenericError.template.html file.
+
 
 {DOCUMENT_ROOT}/system/styles/directory.list.css
 ------------------------------------------------

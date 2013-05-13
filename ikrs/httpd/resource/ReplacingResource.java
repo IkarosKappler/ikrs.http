@@ -68,7 +68,7 @@ public class ReplacingResource
     public static void main( String[] argv ) {
 
 	
-	String filename = "document_root/system/errors/_GenericError.template.html";
+	String filename = "document_root/system/errors/GenericError.template.html";
 	CustomLogger logger = new ikrs.util.DefaultCustomLogger("test");
 
 	Map<byte[],byte[]> replacementMap = new java.util.TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );

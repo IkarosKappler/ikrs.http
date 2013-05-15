@@ -7,8 +7,9 @@ import java.util.Set;
  *
  * @author Ikaros Kappler
  * @date 2012-10-04
- * @modified 2013-03-20 Ikaros Kappler [method 'keySet()' added].
- * @version 1.0.1
+ * @modified 2013-03-20 Ikaros Kappler (method 'keySet()' added).
+ * @modified 2013-05-13 Ikaros Kappler (multipart boundary re-added).
+ * @version 1.0.2
  **/
 
 
@@ -16,7 +17,7 @@ import java.util.Set;
 public abstract class AbstractFormData 
     implements FormData {
    
-    //private String multipartBoundary;
+    private String multipartBoundary;
     
     //private FormData successor;
 
@@ -26,6 +27,16 @@ public abstract class AbstractFormData
     public AbstractFormData() {
 	super();
 
+    }
+
+    /**
+     * Constructs a new AbstractFormDate instance with an intitially set
+     * boundary (may be null).
+     **/
+    protected AbstractFormData( String boundary ) {
+	super();
+
+	this.setMultipartBoundary( boundary );
     }
 
     //--- BEGIN ---------------------- FormData implementation -------------------
@@ -76,9 +87,9 @@ public abstract class AbstractFormData
      *
      * @return The multipart boundary, if present; null otherwise.
      **/
-    //public String getMultipartBoundary() {
-    //	return this.multipartBoundary;
-    //}
+    public String getMultipartBoundary() {
+    	return this.multipartBoundary;
+    }
 
     /**
      * If the whole post data was sent via Content-Type=multipart/form-data
@@ -99,12 +110,8 @@ public abstract class AbstractFormData
     /**
      * Sets the multipart boundary to the new value (may also be null).
      **/
-    /*protected String setMultipartBoundary( String boundary) {
+    protected void setMultipartBoundary( String boundary) {
 	this.multipartBoundary = boundary;
     }
-
-    protected FormData getSuccessor() {
-	return this.successor;
-	}*/
 
 }

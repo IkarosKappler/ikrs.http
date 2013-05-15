@@ -378,7 +378,7 @@ public class MultiStopMarkInputStream
 	    System.out.println( "Stop marks: " );
 	    for( int i = 0; i < stopMarks.length; i++ ) {
 		System.out.println( " [" + i + "] " + stopMarks[i] );
-		stopMarkList.add( stopMarks[i].getBytes("UTF-8") );
+		stopMarkList.add( stopMarks[i].getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 	    }
 	    System.out.println( "\n" );
 	    System.out.println( " data: " + data );
@@ -386,7 +386,7 @@ public class MultiStopMarkInputStream
 	     
 
 	    MultiStopMarkInputStream in = 
-		new MultiStopMarkInputStream( new java.io.ByteArrayInputStream(data.getBytes("UTF-8")),
+		new MultiStopMarkInputStream( new java.io.ByteArrayInputStream(data.getBytes(java.nio.charset.StandardCharsets.UTF_8.name())),
 					      stopMarkList );
 	    
 	    int i = 0;

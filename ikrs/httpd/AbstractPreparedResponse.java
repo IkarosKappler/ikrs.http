@@ -285,7 +285,7 @@ public abstract class AbstractPreparedResponse
 	
 	OutputStream out = this.getSocket().getOutputStream();
 
-	Charset charset = Charset.forName("UTF-8");
+	Charset charset = java.nio.charset.StandardCharsets.UTF_8; // Charset.forName(java.nio.charset.StandardCharsets.UTF_8.name());
 
 
 	// Do the generated headers have a status line set?

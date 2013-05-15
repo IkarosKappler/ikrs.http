@@ -4,11 +4,13 @@ ikrs.httpd
 A free tiny java written http server.
 
 
+Current Yucca version:      1.0.0.alpha
+Current ikrs.httpd version: 1.0.13.alpha
 
 
 Note: I started to write this piece of software in April 2012.
       I'm still working on this project and I'm doing this just for fun 
-      but with passion ^^
+      but with passion.
       
       I cannot afford a testing team so there will still be some errors, 
       bugs and faulty methods. If you find one feel free to contact me 
@@ -22,6 +24,13 @@ Note: I started to write this piece of software in April 2012.
 
 Changes
 =======
+
+[2013-05-15]
+  - The literals "ISO-8859-1" and "UTF-8" were restored in global
+    constants and replaced in all source code files by the
+    java.nio.charset.StandardCharsets.*.name() values.
+    This is why the new version only runs with java 7 (was java 6
+    before).
 
 [2013-05-13]
   - Made the default error document configurable via 

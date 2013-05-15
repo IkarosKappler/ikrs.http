@@ -90,8 +90,8 @@ public class DefaultPostDataWrapper
 	// This should be adapted to some general HeaderParams instance
 	HeaderParams headerParams           = new HeaderParams( HTTPHeaders.NAME_CONTENT_TYPE, hdr_contentType ); 
 	String param_contentType            = headerParams.getMainToken();
-	String param_contentType_addonKey   = headerParams.getToken( param_contentType, false, 1, 0 ); // "boundary", false, 1 );
-	String param_contentType_addonValue = headerParams.getToken( param_contentType, false, 1, 1 ); // "boundary", false, 1 );
+	String param_contentType_addonKey   = headerParams.getToken( param_contentType, false, 1, 0 ); 
+	String param_contentType_addonValue = headerParams.getToken( param_contentType, false, 1, 1 ); 
 	this.getLogger().log( Level.INFO,
 			      getClass().getName() + ".readFormData()",
 			      "param_contentType=" + param_contentType + ", param_contentType_addonKey=" + param_contentType_addonKey + ", param_contentType_addonValue=" + param_contentType_addonValue );
@@ -170,7 +170,8 @@ public class DefaultPostDataWrapper
 
 	    // Default charset is ISO-8859-1.
 	    // This is ugly. I want to use UTF-8 :((
-	    acceptEncoding = "ISO-8859-1";  
+	    //acceptEncoding = "ISO-8859-1";  
+	    acceptEncoding = java.nio.charset.StandardCharsets.ISO_8859_1.name();
 	    this.getLogger().log( Level.INFO,
 				  getClass().getName() + ".readFormData_wwwFormURLEncoded()",
 				  "The header" + HTTPHeaders.NAME_ACCEPT_CHARSET + " is not present. Using default value '" + acceptEncoding + "'." );
@@ -321,7 +322,7 @@ public class DefaultPostDataWrapper
 								     boundary   // Use the raw boundary from the headers here!
 								     );
 	    ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream( 128 );
-	    FormData formData = new DefaultFormData();
+	    FormData formData = new DefaultFormData( boundary );
 
 
 	    InputStream token;

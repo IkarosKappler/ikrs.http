@@ -227,6 +227,7 @@ public abstract class BasicTypeAdapter
 	return null;
     }
 
+    /*
     public BasicType setArrayElementAt( int index,
 					BasicType item )
 	throws BasicTypeException,
@@ -241,6 +242,7 @@ public abstract class BasicTypeAdapter
 
 	throwDefaultAdapterException();
     }
+    */
 
 
 
@@ -300,7 +302,7 @@ public abstract class BasicTypeAdapter
 	    try { return this.equals((BasicArrayType)t); }
 	    catch( BasicTypeException e ) { return false; } 
 	    catch( ClassCastException e ) { 
-		throw new RuntimeException( "Failed to compare two BasicArrayTypes: " + e.getMessage(), e );
+		return false;  // throw new RuntimeException( "Failed to compare two BasicArrayTypes: " + e.getMessage(), e );
 	    }
 
 	} else {

@@ -459,12 +459,12 @@ public class HypertextAccessHandler {
 	    MessageDigest messageDigest = MessageDigest.getInstance( chl_algorithm );
 	    String A2              = headers.getRequestMethod() + ":" + chl_uri;
 	    // The HA2_bytes contains 16 raw MD5 bytes (!), NOT characters!
-	    byte[] HA2_bytes       = messageDigest.digest( A2.getBytes("UTF-8") ); 
+	    byte[] HA2_bytes       = messageDigest.digest( A2.getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) ); 
 
 
 	    String HA2             = CustomUtil.bytes2hexString(HA2_bytes);
 	    String finalHash_seed  = HA1 + ":" + chl_nonce + ":" + HA2;
-	    byte[] finalHash_bytes = messageDigest.digest( finalHash_seed.getBytes("UTF-8") );
+	    byte[] finalHash_bytes = messageDigest.digest( finalHash_seed.getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 	    String finalHash       = CustomUtil.bytes2hexString(finalHash_bytes);
 
 
@@ -543,7 +543,7 @@ public class HypertextAccessHandler {
 	    // On Unix systems usually the password's hashes are MD5 encrypted (what about windows?)
 	    MessageDigest messageDigest = MessageDigest.getInstance( hashAlgorithm );
 	    // The incomingMD5Bytes contains 16 raw MD5 bytes (!), NOT characters!
-	    byte[] incomingMD5Bytes     = messageDigest.digest( new String(authPassData).getBytes("UTF-8") ); 
+	    byte[] incomingMD5Bytes     = messageDigest.digest( new String(authPassData).getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) ); 
 
 	
 	    String fileMD5     = new String( filePassData );

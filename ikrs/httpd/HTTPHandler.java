@@ -494,7 +494,8 @@ public class HTTPHandler
     private void initGlobalConfiguration( int sessionTimeout_seconds) {
 	Environment<String,BasicType> gconfig = this.environment.createChild( Constants.EKEY_GLOBALCONFIGURATION );
 	gconfig.put( Constants.KEY_SESSIONTIMEOUT, new BasicNumberType(sessionTimeout_seconds) );
-	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
+	// gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType("utf-8") ); // iso-8859-1") );
+	gconfig.put( Constants.KEY_DEFAULTCHARACTERSET, new BasicStringType(java.nio.charset.StandardCharsets.UTF_8.name()) );
 	// ...
 
 	if( this.getSessionManager() != null )

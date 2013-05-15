@@ -52,7 +52,7 @@ public class Query {
 	throws NullPointerException,
 	       UnsupportedEncodingException {
 
-	this( rawQueryString, "UTF-8", false );
+	this( rawQueryString, java.nio.charset.StandardCharsets.UTF_8.name(), false );
     }
 
 
@@ -227,7 +227,7 @@ public class Query {
 
     public static void main( String[] argv ) {
 
-	String encoding = "ISO-8859-1"; // "UTF-8"
+	String encoding = java.nio.charset.StandardCharsets.ISO_8859_1.name(); // "ISO-8859-1"; // "UTF-8"
 	String str = "my_text_A=This+is+my+very+nice+test+%28B%29.&my_text_B=+++++++++++++Ein+ganz+toller+Text+mit+%C4+Umlauten+und+%DFonderzeichen.%0D%0A%09+++++Sogar+Zeilenumbr%FCche+gibt%27s.%0D%0A%09+++++Und+%26-Zeichen.%0D%0A++&my_file=favicon.ico";
 	
 	try {

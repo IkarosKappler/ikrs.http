@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import ikrs.httpd.resource.ByteArrayResource;
-// import ikrs.httpd.resource.FileResource;
 import ikrs.httpd.response.GeneralPreparedResponse;
 import ikrs.httpd.resource.ReplacingResource;
 import ikrs.httpd.response.successful.OK;
@@ -34,12 +33,6 @@ import ikrs.util.MIMEType;
 public class ErrorResponseBuilder
     extends AbstractResponseBuilder
     implements ResponseBuilder {
-
-    /**
-     * The default error document placeholder/replacement map.
-     **/
-    // private Map<byte[],byte[]> errorDocumentReplacementMap;
-
     
     /**
      * The constructor.
@@ -47,19 +40,6 @@ public class ErrorResponseBuilder
     public ErrorResponseBuilder( HTTPHandler handler ) {
 	super( handler );
 
-	/*
-	this.errorDocumentReplacementMap = TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );
-	
-	this.errorDocumentReplacementMap.put( new String("%{STATUS_CODE}%").getBytes("UTF-8"),
-					      new String("500").getBytes("UTF-8") 
-					      );
-	this.errorDocumentReplacementMap.put( new String("%{REASON_PHRASE}%").getBytes("UTF-8"),
-					      new String("Iternal Server Error").getBytes("UTF-8") 
-					      );
-	this.errorDocumentReplacementMap.put( new String("%{ERROR_MESSAGE}%").getBytes("UTF-8"),
-					      new String("I encountered an internal server error.").getBytes("UTF-8") 
-					      );
-	*/
     }
 
 
@@ -290,12 +270,12 @@ public class ErrorResponseBuilder
 
 		Map<byte[],byte[]> errorDocumentReplacementMap = new TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );
 		
-		errorDocumentReplacementMap.put( new String("{STATUS_CODE}").getBytes("UTF-8"),
-						 Integer.toString(statusCode).getBytes("UTF-8") );
-		errorDocumentReplacementMap.put( new String("{REASON_PHRASE}").getBytes("UTF-8"),
-						 (reasonPhrase==null?new byte[0]:reasonPhrase.getBytes("UTF-8")) );
-		errorDocumentReplacementMap.put( new String("{ERROR_MESSAGE}").getBytes("UTF-8"),
-						 (errorMessage==null?new byte[0]:errorMessage.getBytes("UTF-8")) );
+		errorDocumentReplacementMap.put( new String("{STATUS_CODE}").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+						 Integer.toString(statusCode).getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
+		errorDocumentReplacementMap.put( new String("{REASON_PHRASE}").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+						 (reasonPhrase==null?new byte[0]:reasonPhrase.getBytes(java.nio.charset.StandardCharsets.UTF_8.name())) );
+		errorDocumentReplacementMap.put( new String("{ERROR_MESSAGE}").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+						 (errorMessage==null?new byte[0]:errorMessage.getBytes(java.nio.charset.StandardCharsets.UTF_8.name())) );
 		resource = new ReplacingResource( this.getHTTPHandler(),
 						  this.getHTTPHandler().getLogger(),
 						  tmpFileResource.getInputStream(),						  

@@ -167,7 +167,7 @@ public class IkarosExampleHandler
 	//   MIMEType mimeType = new MIMEType( "text/plain" );
 	MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
 	resource.getMetaData().setMIMEType( mimeType );
-	resource.getMetaData().setCharsetName( "UTF-8" );
+	resource.getMetaData().setCharsetName( java.nio.charset.StandardCharsets.UTF_8.name() );
 		
 	return resource;
     }

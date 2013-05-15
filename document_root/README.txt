@@ -1,10 +1,24 @@
 
 
 
-
 TO DO:
+[2013-05-13]
+ - [DONE 2013-05-15]
+   The literals "ISO-8859-1" and "UTF-8" should be stored in global
+   constants and replaced in all source code files.
+ - Rediscuss the BasicArrayType class.
+ - The BasicType parser (conversion from string) still does not 
+   recognize arrays.
+ - Find a way to store the input stream length in each form data item
+   (if available); actually the input stream data is already buffered
+   inside an ByteArrayInputStream.
+ - The method ikrs.httpd.datatypes.DefaultFormData.get(String) misses
+   a real search algorithm; currently it always return null!
+ - Add the system requirements to the docs (jdk7 is required).
+
 [2013-05-12]
- - Bind the GenericError.template.html document and make it 
+ - [DONE 2013-05-13]
+   Bind the GenericError.template.html document and make it 
    configurable. It should be used by the ErrorResponseBuilder if
    no configured error document is available (or configured but not 
    found).

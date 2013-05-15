@@ -839,7 +839,8 @@ public class HypertextAccessFile {
 	if( split[1].equalsIgnoreCase("On") ) {
 
 	    // See: http://httpd.apache.org/docs/2.2/de/mod/core.html
-	    this.defaultCharset = "iso-8859-1";
+	    // this.defaultCharset = "iso-8859-1";
+	    this.defaultCharset = java.nio.charset.StandardCharsets.ISO_8859_1.name();
 
 	} else if( split[1].equalsIgnoreCase("Off") ) {
 

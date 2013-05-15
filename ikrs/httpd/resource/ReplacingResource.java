@@ -74,14 +74,14 @@ public class ReplacingResource
 	Map<byte[],byte[]> replacementMap = new java.util.TreeMap<byte[],byte[]>( new ikrs.util.ByteArrayComparator() );
 	try {
 
-	    replacementMap.put( new String("%{STATUS_CODE}%").getBytes("UTF-8"),
-				new String("500").getBytes("UTF-8") 
+	    replacementMap.put( new String("%{STATUS_CODE}%").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+				new String("500").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) 
 				);
-	    replacementMap.put( new String("%{REASON_PHRASE}%").getBytes("UTF-8"),
-				new String("Iternal Server Error").getBytes("UTF-8") 
+	    replacementMap.put( new String("%{REASON_PHRASE}%").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+				new String("Iternal Server Error").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) 
 				);
-	    replacementMap.put( new String("%{ERROR_MESSAGE}%").getBytes("UTF-8"),
-				new String("I encountered an internal server error.").getBytes("UTF-8") 
+	    replacementMap.put( new String("%{ERROR_MESSAGE}%").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()),
+				new String("I encountered an internal server error.").getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) 
 				);
 	    System.out.println( "Replacement map: " + replacementMap.toString() );
 

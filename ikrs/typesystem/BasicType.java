@@ -107,6 +107,7 @@ public interface BasicType {
 	throws BasicTypeException,
 	       ArrayIndexOutOfBoundsException;
 
+    /*
     public BasicType setArrayElementAt( int index,
 					BasicType item )
 	throws BasicTypeException,
@@ -114,6 +115,7 @@ public interface BasicType {
 
     public void addArrayElement( BasicType item )
 	throws BasicTypeException;
+    */
 
 
     public boolean equals( BasicType t );

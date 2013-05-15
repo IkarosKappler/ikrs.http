@@ -1,4 +1,12 @@
 
+
+[2013-05-15]
+  - The literals "ISO-8859-1" and "UTF-8" were restored in global
+    constants and replaced in all source code files by the
+    java.nio.charset.StandardCharsets.*.name() values.
+    This is why the new version only runs with java 7 (was java 6
+    before).
+
 [2013-05-13]
   - Made the default error document configurable via 
     ERROR_DOCUMENT.DEFAULT in the {USER_HOME}/.yucca/ikrs.httpd.conf

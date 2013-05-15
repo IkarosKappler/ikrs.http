@@ -958,7 +958,7 @@ public class FileSystemResourceAccessor
 	if( requestedURI.getQuery() == null )
 	    return defaultFormat;
 	
-	String encoding = "UTF-8";
+	String encoding = java.nio.charset.StandardCharsets.UTF_8.name(); // "UTF-8";
 	String key      = "format";
 	try {
 

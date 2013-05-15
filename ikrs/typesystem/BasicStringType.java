@@ -89,7 +89,7 @@ public class BasicStringType
 	    this.parsedBooleanType = new BasicBooleanType( true );
 	    return true;
 	    
-	} else if( str.equals("FALSE") || str.equals("No") || str.equals("OFF") || str.equals("LO") || str.equals("LOW") ) {
+	} else if( str.equals("FALSE") || str.equals("NO") || str.equals("OFF") || str.equals("LO") || str.equals("LOW") ) {
 	    
 	    this.parsedBooleanType = new BasicBooleanType( false );
 	    return true;

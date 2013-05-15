@@ -210,7 +210,7 @@ public class XMLExampleHandler
 							    );
 
 	// I want this output to be displayed as plain text.
-	// One other posible way would be
+	// One other possible way would be
 	//   MIMEType mimeType = new MIMEType( "text/plain" );
 	MIMEType mimeType = MIMEType.getByFileExtension( "txt" );
 	resource.getMetaData().setMIMEType( mimeType );

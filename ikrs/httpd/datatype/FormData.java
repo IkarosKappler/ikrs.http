@@ -4,17 +4,15 @@ package ikrs.httpd.datatype;
 import java.util.Set;
 
 /**
- * FormData instances represent lists/maps of named items, each a FormDataItem.
- *
- * Each FormData instance has an (optional) successor; the successor is not null
- * if the form data was sent using 'multipart/form-data' and the current form data
- * is not the last one.
+ * FormData instances represent lists/maps of named items, taken from the
+ * form data part of POST requests.
  *
  *
  * @author Ikaros Kappler
  * @date 2012-10-02
- * @modified 2013-03-20 Ikaros Kappler [Method keySet() added].
- * @version 1.0.1
+ * @modified 2013-03-20 Ikaros Kappler (Method keySet() added).
+ * @modified 2013-05-13 Ikaros Kappler (Successor method removed; was noever in use).
+ * @version 1.0.2
  **/
 
 
@@ -68,18 +66,6 @@ public interface FormData {
      *
      * @return The multipart boundary, if present; null otherwise.
      **/
-    //public String getMultipartBoundary();
+    public String getMultipartBoundary();
 
-    /**
-     * If the whole post data was sent via Content-Type=multipart/form-data
-     * there are several form data items available, all seperated by the
-     * passed multipart boundady.
-     *
-     * If this is the case and the current (this) form data instance is NOT
-     * the last one, this method will return its non-null successor (null
-     * otherwise).
-     *
-     * @return The next form data successor if available.
-     **/
-    //public FormData getSuccessor();
 }

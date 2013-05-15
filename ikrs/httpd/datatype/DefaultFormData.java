@@ -29,7 +29,7 @@ public class DefaultFormData
     private List<FormDataItem> list;
 
     /**
-     * A set holding traack of all used keys and indices.
+     * A set holding track of all used keys and indices.
      **/
     private Map<String,Integer> indexMap;
 
@@ -38,7 +38,15 @@ public class DefaultFormData
      * Constructs a new DefaultFormData instance.
      **/
     public DefaultFormData() {
-	super();
+	this( null );
+    }
+
+    /**
+     * Constructs a new DefaultFormData instance with an initially set
+     * boundary (may be null).
+     **/
+    public DefaultFormData( String boundary ) {
+	super( boundary );
 
 	this.list     = new ArrayList<FormDataItem>();
 	this.indexMap = new TreeMap<String,Integer>( CaseInsensitiveComparator.sharedInstance );

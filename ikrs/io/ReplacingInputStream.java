@@ -212,8 +212,8 @@ public class ReplacingInputStream
 	    Map<byte[],byte[]> replacementMap = new java.util.TreeMap<byte[],byte[]>( new ByteArrayComparator() );
 	    System.out.print( "Replacement map: { " );
 	    for( int i = 0; i < stopMarks.length; i++ ) {
-		replacementMap.put( stopMarks[i].getBytes("UTF-8"), 
-				    replacements[i].getBytes("UTF-8")
+		replacementMap.put( stopMarks[i].getBytes(java.nio.charset.StandardCharsets.UTF_8.name()), 
+				    replacements[i].getBytes(java.nio.charset.StandardCharsets.UTF_8.name())
 				    );
 
 		if( i > 0 )
@@ -224,7 +224,7 @@ public class ReplacingInputStream
 
 	    
 	    ReplacingInputStream in = 
-		new ReplacingInputStream( new java.io.ByteArrayInputStream(data.getBytes("UTF-8")),
+		new ReplacingInputStream( new java.io.ByteArrayInputStream(data.getBytes(java.nio.charset.StandardCharsets.UTF_8.name())),
 					  replacementMap );
 
 	    int b;

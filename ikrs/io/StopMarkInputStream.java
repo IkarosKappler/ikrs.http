@@ -369,7 +369,7 @@ public class StopMarkInputStream
 	    System.out.println( "Reading file until stopMark will be found ... ");
 	    java.io.FileInputStream fin = new java.io.FileInputStream( new java.io.File( "document_root_alpha/example.POST_DATA.txt") );
 	    StopMarkInputStream in = new StopMarkInputStream( fin,
-							      stopMark.getBytes("UTF-8") );
+							      stopMark.getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 
 	    
 	    int b;

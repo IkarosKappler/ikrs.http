@@ -106,7 +106,7 @@ public class ETag {
 
 	
 	String hashBase = this.createHashBase();
-	byte[] md5      = MD5.md5( hashBase.getBytes("UTF-8") );
+	byte[] md5      = MD5.md5( hashBase.getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 	return md5;
 
     }

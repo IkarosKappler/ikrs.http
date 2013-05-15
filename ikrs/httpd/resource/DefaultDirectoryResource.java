@@ -239,7 +239,7 @@ public class DefaultDirectoryResource
 		
 		
 		buildHTMLLine( lineBuffer, files[i] );
-		out.write( lineBuffer.toString().getBytes("UTF-8") );
+		out.write( lineBuffer.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 		lineBuffer.delete( 0, lineBuffer.length() );
 		
 	    }
@@ -276,7 +276,7 @@ public class DefaultDirectoryResource
 			       rowSizes,
 			       4    // columnSpacing
 			       );
-		out.write( lineBuffer.toString().getBytes("UTF-8") );
+		out.write( lineBuffer.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8.name()) );
 		totalWidth = lineBuffer.length() - 1;  // do not include line break
 		lineBuffer.delete( 0, lineBuffer.length() );
 

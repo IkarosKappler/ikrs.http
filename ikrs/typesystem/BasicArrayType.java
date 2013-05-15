@@ -8,6 +8,8 @@ import java.util.ArrayList;
  *
  * All access methods guarantee constant runtime, so the class does not support item removal.
  *
+ * THIS CLASS IS STILL EXPERIMENTAL.
+ *
  * @author Ikaros Kappler
  * @date 2012-09-21
  * @version 1.0.0
@@ -19,7 +21,7 @@ public class BasicArrayType
 	
     private ArrayList<BasicType> items;
    
-    public BasicArrayType( byte b ) {
+    public BasicArrayType() {
 	super( BasicType.TYPE_ARRAY );
 
 	this.items = new ArrayList<BasicType>(1);
@@ -47,7 +49,8 @@ public class BasicArrayType
 	return items.get( index );
     }
 
-    public BasicType setArrayElementAt( int index,
+    
+    protected BasicType setArrayElementAt( int index,
 					BasicType item )
 	throws BasicTypeException,
 	       ArrayIndexOutOfBoundsException {
@@ -55,12 +58,11 @@ public class BasicArrayType
 	return this.items.set( index, item );
     }
 
-    public void addArrayElement( BasicType item )
+    protected void addArrayElement( BasicType item )
 	throws BasicTypeException {
 
 	this.items.add( item );
     }
-
 
     public BasicType[] getObjectArray() {
 	return this.items.toArray( new BasicType[this.items.size()] );

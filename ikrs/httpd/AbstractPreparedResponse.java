@@ -353,22 +353,11 @@ public abstract class AbstractPreparedResponse
 		
 		this.getHTTPHandler().getLogger().log( Level.INFO,
 						       getClass().getName() + ".execute()",
-						       "Sending data ... [also also printing a hex dump of the first 10KB to stdout]" );
+						       "Sending data ... [also printing a hex dump of the first 10KB to stdout]" );
 		
 		byte[] buffer = new byte[ 1024 ];
 		int len = -1;
 		// Print the data on stdout?
-		/*
-		ikrs.util.HexDumpOutputStream hexOut = 
-		    new ikrs.util.HexDumpOutputStream( new java.io.OutputStreamWriter( System.out ),
-						       new int[]{ 8, 8, 
-								  0,     // one separator column
-								  8, 8, 
-								  0, 0,  // two separator columns
-								  8, 8, 
-								  0,     // one separator column
-								  8, 8 });
-		*/
 		ikrs.util.HexDumpOutputStream hexOut = this.getHTTPHandler().createHexDumpOutputStream();
 		long maxHexOutput = 1024*10;  // 10 KB
 		// Read the resource's data chunk by chunk

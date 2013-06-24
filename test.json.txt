@@ -1,0 +1,29 @@
+
+{
+"name":"test",
+"status":111,
+"floating_value_0": .0,
+"floating_value_1": 1.0,
+"floating_value_2": 1.3e+23,
+"negative_number" : -23,
+"negative_float" : -3.14159265359,
+"error":"this might be an error message.",
+"question_expired":true,
+"my_parser_also_ignores_the_case" : TrUe,
+"user_exists":true,
+"answer_is_correct":false,
+"object_0" : { "a" : 1, "b" : 2, "c":3, 'd' :4 },
+
+"age":2630,
+"my_array" : [],
+"my_array_2" : [ 1,2, 3],
+"my_array_3" : [1, false, { "name" : null}, true ],
+'test_x' : false,
+'test_y' : 'testing',
+'test_A' : "A line- \n -break",
+'test_C' : "An unicode \u00C5 character (should be the danish Ao)",
+"nested_array_0" : [ 1, [2, [3,4,5], 6] ],
+"nested_object_0" : { 'a' : 1 , 'b' : { 'c' : 2, 'd' : { 'e': 4, 'f' : 5 } }, 'f':6},
+"mixed_array_and_object" : [ 'A', 'B', { 'X' :[ 'd', 'e']}, 'F' ],
+"empty_object" : {}
+}

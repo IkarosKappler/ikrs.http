@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Example of how to bind a JSON-RPC handler by the use of a file handler</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="/system/styles/directory.list.css" /></head>
+
+<body>
+
+<p>
+<form name="json_rpc_example_form" method="post" enctype="multipart/form-data" action="example.xmlparser" >
+  Which XML file do you want to upload?<br/>
+  A test value: <input type="text" name="test_value" value="My test" /><br/>
+  File: <input name="my_file" type="file" size="50" maxlength="100000" accept="text/*" /> (choose an XML file to test the parser class)<br/>
+  <input type="submit" /><br/>
+</form>
+
+
+</p>
+
+</body>
+</html>

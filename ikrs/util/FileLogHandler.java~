@@ -1,0 +1,19 @@
+package ikrs.util;
+
+/**
+ * The CyleLogHandler organizes a set of log files and cycles
+ *
+ * @author Ikaros Kappler
+ * @date 2013-05-22
+ * @version 1.0.0
+ **/
+
+public class FileLogHandler 
+    implements LogHandler {
+
+
+    
+    
+
+
+}

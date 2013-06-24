@@ -1,0 +1,32 @@
+package ikrs.json.rpc;
+
+/**
+ * This is an abstract RPCMethodInvocationTarget implementation.
+ *
+ *
+ * @author Ikaros Kappler
+ * @date 2013-06-13
+ * @version 1.0.0
+ **/
+
+public abstract class AbstractInvocationTarget
+    implements RPCInvocationTarget {
+
+    /**
+     * This methods determines if the passed method is allowed to
+     * be called by the RPC handler.
+     *
+     * The handler will only pass methods that are definitely
+     * part of this object respective the implementing class.
+     *
+     * If the passed method is not part of this object the returned
+     * value is not defined (may be true or false, as you want).
+     *
+     * @param method The method which shall be checked if invocation
+     *               is allowed.
+     * @return true if the method is allowed to be called, false 
+     *              otherwise.
+     **/
+    public boolean checkMethodInvocation( Method method );
+
+}

@@ -1,0 +1,9 @@
+package ikrs.json.parser;
+
+
+
+public class JSONSyntaxException
+    extends JSONException {
+
+
+}

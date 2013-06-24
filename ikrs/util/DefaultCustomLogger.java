@@ -1,5 +1,10 @@
 package ikrs.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.LogManager;
+
+
 /**
  * The custom logger interface wraps the general Logger method to make logging more
  * customizable.
@@ -8,11 +13,6 @@ package ikrs.util;
  * @date 2012-07-16
  * @version 1.0.0
  **/
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.LogManager;
-
 
 public class DefaultCustomLogger
     implements CustomLogger {
@@ -36,14 +36,6 @@ public class DefaultCustomLogger
     public void log( Level level,
 		     String trace,
 		     String msg ) {
-
-	/*
-	System.out.println( ".......###" + 
-			    LogManager.getLogManager().getLogger( this.loggerName ).getLevel() + 
-			    " [" + level + "]" + 
-			    ": " + 
-			    msg );
-	*/
 
 	LogManager.getLogManager().getLogger( this.loggerName ).log( level, trace + " " + msg );
 

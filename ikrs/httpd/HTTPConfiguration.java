@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-//import java.i
 import java.util.logging.Level;
 
 import ikrs.io.fileio.inifile.IniFile;
@@ -384,7 +383,7 @@ public class HTTPConfiguration {
 
 	this.getLogger().log( Level.INFO,
 			      getClass().getName() + ".applyFileHandlers(...)",
-			      "Loading file handler from file '" + configFilename+ "' ... " );
+			      "Loading file handlers from file '" + configFilename+ "' ... " );
 	// Load config 
 	this.getHandler().initFileHandlers( new File(configFilename) );
 

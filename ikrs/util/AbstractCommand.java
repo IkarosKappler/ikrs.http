@@ -22,19 +22,6 @@ public abstract class AbstractCommand
 
 	this.name = name;
 	this.setParams( params );
-	/*
-	if( params == null || params.length == 0 ) {
-
-	    this.params = new ArrayList<BasicType>( 1 );
-
-	} else {
-	    
-	    this.params = new ArrayList<BasicType>( params.length );
-	    for( int i = 0; i < params.length; i++ )
-		this.params.add( params[i] );
-
-	}
-	*/
     }
 
 
@@ -43,7 +30,7 @@ public abstract class AbstractCommand
     }
 
     protected void setParams( BasicType[] params ) {
-	//this.params = params;
+
 	if( params == null || params.length == 0 ) {
 
 	    this.params = new ArrayList<BasicType>( 1 );

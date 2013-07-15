@@ -16,19 +16,24 @@
    * object) and its essential members displayed in the document.
    **/
   function sendJSONRPCRequest() {
-        var jsonData = document.forms["json_rpc_example_form"].elements["jsondata"].value;
-  
-        var req = new XMLHttpRequest();  
+
+        var jsonData = document.forms["json_rpc_example_form"].elements["jsondata"].value;  
+        var req = new XMLHttpRequest();
+        var startTime = new Date();
 
         req.onreadystatechange = function () {
               if( req.readyState == 4) {
               
+                    var endTime = new Date();
+
                     document.getElementById("json_rpc_response").innerHTML = req.responseText;
   
                     var responseObject                          = JSON.parse( req.responseText );
                     document.getElementById("id").innerHTML     = responseObject.id;
                     document.getElementById("result").innerHTML = responseObject.result;
                     document.getElementById("error").innerHTML  = responseObject.error;
+
+                    document.getElementById("runtime").innerHTML = (endTime - startTime) + "ms";
   
               }
         };
@@ -91,6 +96,11 @@ NA
 <tr>
 <td>Error:</td>
 <td><span id="error">NA</span></td>
+</tr>
+
+<tr>
+<td>Runtime: </td>
+<td><span id="runtime">NA</span></td>
 </tr>
 
 </table>

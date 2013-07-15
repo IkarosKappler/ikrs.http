@@ -7,6 +7,9 @@ ikrs.io
 ikrs.io.fileio
 ikrs.io.fileio.htaccess
 ikrs.io.fileio.inifile
+ikrs.json
+ikrs.json.parser
+ikrs.json.rpc
 ikrs.typesystem
 ikrs.util
 ikrs.util.session

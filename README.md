@@ -12,11 +12,6 @@ Note: I started to write this piece of software in April 2012.
       I'm still working on this project and I'm doing this just for fun 
       but with passion.
       
-      I cannot afford a testing team so there will still be some errors, 
-      bugs and faulty methods. If you find one feel free to contact me 
-      or better write an issue report.
-      I will fix the issue as soon as possible.
-
 
 
 
@@ -24,6 +19,12 @@ Note: I started to write this piece of software in April 2012.
 
 Changes
 =======
+
+[2013-06-24]
+  - Added the JSONRPCExampleHandler that demonstrates how to bind a
+    JSON-RPC (JavaScript Object Notation/Remote Procedure Call) handler
+    into the servers root directory by the use of htaccess (and Java).
+    See /tests_and_examples/jsonrpc/ for the example (at document root).
 
 [2013-05-15]
   - The literals "ISO-8859-1" and "UTF-8" were restored in global
@@ -628,11 +629,11 @@ HTTPD
  bind manager). Currently there is only one sub command, which is not
  fully implemented:
   - STATUS
-    ~~~~~~
+    ------
     Prints the current status of the HTTPd module.
 
   - HEXDUMP FORMAT <format>
-    ~~~~~~~~~~~~~~~~~~~~~~~
+    -----------------------
     Changes the hexdump output column format. The expected value must
     be a comma separated integer list, each integer indicating the 
     respective column list and the number of integers the total number
@@ -640,7 +641,8 @@ HTTPD
     Example: the format '4,4,0,4,4' would generate a hexdump format
     	     like this:
 
-                                                    
+
+    ~~~                                                    
     0x00000000  89504e47 0d0a1a0a  0000000d 49484452  .PNG........IHDR
     0x00000010  00000010 00000010  08060000 001ff3ff  ................
     0x00000020  61000000 01735247  4200aece 1ce90000  a....sRGB.......
@@ -651,6 +653,7 @@ HTTPD
     0x00000070  38cba592 bfab5c65  10869f99 6fbedd73  8.....\e....o..s
     0x00000080  4eb20917 2f04ae08  c1340662 9b267083  N.../....4.b.&p.
     0x00000090  8db5a6cc 9f10b0f0  cf112d04 ab105258  ..........-...RX
+    ~~~
 
 
 LICENSE

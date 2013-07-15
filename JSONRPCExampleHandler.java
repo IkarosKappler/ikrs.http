@@ -178,7 +178,13 @@ public class JSONRPCExampleHandler
     }
     //--- END -------------------------- RPCInvocationTarget -------------------------------------
 
-
+    /**
+     * This private method processes the actual JSON-RPC request.
+     *
+     * The retrieved output will be written into the passed string buffer (will
+     * be a JSON string, or to be more accurate: it will be the JSON-RPC response
+     * value).
+     **/
     private void processJSONRPCRequest( PostDataWrapper postData,
 					StringBuffer buffer ) {
 
@@ -189,7 +195,10 @@ public class JSONRPCExampleHandler
 	    
 	    System.out.println( "Creating JSONRPC ..." );
 	    JSONRPCHandler rpc = new JSONRPCHandler();
-	    rpc.addInvocationTarget( "this", this, true );   // Add 'this' as a default invocation target
+	    rpc.addInvocationTarget( "this", 
+				     this, 
+				     true    // Add 'this' as a default invocation target
+				     );
 
 
 	    System.out.println( "Executing the request ..." );

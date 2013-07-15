@@ -2,6 +2,10 @@
  * An example FileHandler to demonstrate how to process XML
  * documents that were passed using HTTP POST.
  *
+ * The passed POST data must be form-data/multipart (Content-
+ * Disposition/Content-Type) and have at least this element: 
+ *  'my_file'.
+ *  
  *
  * @author Ikaros Kappler
  * @date 2013-03-15
@@ -221,7 +225,7 @@ public class XMLExampleHandler
     //--- END -------------------------- FileHandler implementation ------------------------------
 
 
-       /**
+    /**
      * If the 'my_file' param is found in the passed item the method will
      * print the file data into the xmlBuffer and return the file's name
      * (otherwise it returns null).
@@ -314,6 +318,11 @@ public class XMLExampleHandler
     }
 
 
+    /**
+     * This method does the actual job. It parses the XML document (hopefully valid XML)
+     * by the use of Java's SAX parser and writes the parsed XML structure into the
+     * output buffer.
+     **/
     private void parseXMLData( StringBuffer buffer,
 			       String fileName,
 			       String xmlData ) {
@@ -344,6 +353,10 @@ public class XMLExampleHandler
 
     }
 
+    /**
+     * This is just a helper method that converts the XML structure into a nice
+     * tree-like text view (writes the output into the passed buffer).
+     **/
     private void printNodes( StringBuffer buffer, NodeList nodeList, int indent ) {
 	
 	for( int n = 0; n < nodeList.getLength(); n++ ) {
@@ -364,6 +377,11 @@ public class XMLExampleHandler
 	}
     }
 
+    /**
+     * This method just prints n-times the whitespace character (0x20).
+     *
+     * It is used for indentation when generating the XML tree view.
+     **/
     private void printIndent( StringBuffer buffer, int indent ) {
 	while( indent-- > 0 )
 	    buffer.append( " " );

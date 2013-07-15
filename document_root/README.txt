@@ -2,6 +2,15 @@
 
 
 TO DO:
+[2013-05-22]
+ - The java.util.loggin.FileHandler does not support time stamps inside
+   file names nor was it built to support subclasses that do.
+   Solution: write a simple logfile cycle mechanism.
+
+[2013-05-15]
+ - Check the logging mechanism. It seems that the log files are not 
+   properly written.
+
 [2013-05-13]
  - [DONE 2013-05-15]
    The literals "ISO-8859-1" and "UTF-8" should be stored in global
@@ -708,11 +717,11 @@ HTTPD
  bind manager). Currently there is only one sub command, which is not
  fully implemented:
   - STATUS
-    ~~~~~~
+    ------
     Prints the current status of the HTTPd module.
 
   - HEXDUMP FORMAT <format>
-    ~~~~~~~~~~~~~~~~~~~~~~~
+    -----------------------
     Changes the hexdump output column format. The expected value must
     be a comma separated integer list, each integer indicating the 
     respective column list and the number of integers the total number
@@ -720,7 +729,8 @@ HTTPD
     Example: the format '4,4,0,4,4' would generate a hexdump format
     	     like this:
 
-                                                    
+
+    ~~~                                                    
     0x00000000  89504e47 0d0a1a0a  0000000d 49484452  .PNG........IHDR
     0x00000010  00000010 00000010  08060000 001ff3ff  ................
     0x00000020  61000000 01735247  4200aece 1ce90000  a....sRGB.......
@@ -731,6 +741,7 @@ HTTPD
     0x00000070  38cba592 bfab5c65  10869f99 6fbedd73  8.....\e....o..s
     0x00000080  4eb20917 2f04ae08  c1340662 9b267083  N.../....4.b.&p.
     0x00000090  8db5a6cc 9f10b0f0  cf112d04 ab105258  ..........-...RX
+    ~~~
 
 
 LICENSE

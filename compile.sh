@@ -2,7 +2,8 @@
 #
 # @author Ikaros Kappler
 # @date 2012-05-01
-# @modified 2012-12-19
+# @modified 2012-12-19 Ikaros Kappler
+# @modified 2013-05-15 Ikaros Kappler (changed to Java7; no Xlint messages requesting).
 # @version 1.0.0
 
 
@@ -67,6 +68,14 @@ if [ "$ec" -ne "0" ]; then
     exit 1
 fi
 
+
+echo "Compile JSONRPCExampleHandler ..."
+javac -Xlint:none JSONRPCExampleHandler.java
+ec="$?"
+if [ "$ec" -ne "0" ]; then
+    echo "Sorry, failed to compile JSONRPCExampleHandler. Exit code $ec"
+    exit 1
+fi
 
 echo "Done."
 

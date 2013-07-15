@@ -84,6 +84,18 @@ public class HeaderParams {
 			    this.params );
     }
 
+    /**
+     * This returns the main token, which is at position (0,0,0) in the
+     * nested token structure.
+     *
+     * Example A:
+     *   form-data; name="my_file"; filename="robots.txt"
+     * here the main token at (0,0,0) is 'form-data'.
+     *
+     * Example B:
+     *   ISO-8859-1,utf-8;q=0.7,*;q=0.3
+     * here the main token is 'ISO-8859-1'.
+     **/
     public String getMainToken() {	
 	return this.getToken( 0, 0, 0 );
     }
@@ -114,56 +126,13 @@ public class HeaderParams {
 	return list.get( levelB ).size();
     }
 
-    /*
-    public String getTokenByPrefix( int levelA,
-				    String prefix,
-				    boolean caseSensitive ) {
-	return this.getTokenByPrefix( levelA, 
-				      0,      // levelB
-				      prefix,
-				      caseSensitive 
-				      );
-    }
-
-    public String getTokenByPrefix( int levelA,
-				    int levelB,
-				    String prefix,
-				    boolean caseSensitive ) {
-
-	if( levelA < 0 || levelA >= this.getLevelCount() )
-	    return null;
-	if( levelB < 0 || levelB >= this.getSublevelCount( levelA ) )
-	    return null;
-
-	List<String> list = this.params.get( levelA ).get( levelB );
-
-	System.out.println( " ++++++++++++ LevelA,B=" + list );
-
-	for( int i = 0; i < list.size(); i++ ) {
-
-	    String token = list.get(i);
-
-	    System.out.println( " ++++++++++++ Current token: " + token );
-
-	    if( caseSensitive && token.startsWith(prefix) )
-		return token;
-	    else if( !caseSensitive && token.toLowerCase().startsWith(prefix.toLowerCase()) )
-		return token;
-
-	}
-	
-	return null;
-    }
-    */
-
     public String getToken( int levelA,
 			    int levelB ) {
 	return this.getToken( levelA, 
 			      levelB, 
 			      0        // levelC
 			      );
-    }
-    
+    }   
     
     public String getToken( String tokenA,
 			    boolean caseSensitive,

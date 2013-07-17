@@ -1,0 +1,31 @@
+THIS IS JUST A DUMMY FILE.
+
+In this file's directory there is also an .htaccess file with an 
+AddHandler directive.
+
+The directive adds the 'json-rpc-example-handler' and associates it with the
+.jsonrpc extension of THIS file.
+
+The 'json-rpc-example-handler' is a java-written class implementing the 
+ikrs.httpd.FileHandler interface.
+
+
+See the filehandlers.ini inside your {USER_HOME}/.yuccasrc/ directory
+if you want to know how to specify such a customized FileHandler.
+It's easy and done with only one configuration line!
+
+
+
+Result
+------
+When this file is accessed via HTTP the HTTPHandler calls the specified
+file handler class and passes the whole request. Now it's completely up 
+to the JSONRPCExampleHandler instance to process the request!
+
+
+The same applies to *all* files with the .jsonrpc extension within
+the same directory OR any sub-directories.
+
+
+
+Have fun!

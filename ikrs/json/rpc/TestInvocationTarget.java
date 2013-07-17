@@ -3,14 +3,17 @@ package ikrs.json.rpc;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import ikrs.json.JSONArray;
+import ikrs.json.JSONObject;
 
 /**
- * This is an abstract RPCMethodInvocationTarget implementation.
+ * This is a simple RPCMethodInvocationTarget example implementation.
  *
  *
  * @author Ikaros Kappler
  * @date 2013-06-13
- * @version 1.0.0
+ * @modified 2013-07-16 Ikaros Kappler (added printJSONArray() and printJSONObject() methods).
+ * @version 1.0.1
  **/
 
 public class TestInvocationTarget
@@ -33,7 +36,11 @@ public class TestInvocationTarget
 	if( ! Modifier.isPublic(method.getModifiers()) )
 	    return false;
 
-	return method.getName().equals("doAnything") || method.getName().equals("doSomething");
+	return 
+	    method.getName().equals("doAnything") || 
+	    method.getName().equals("doSomething") ||
+	    method.getName().equals("printJSONArray") ||
+	    method.getName().equals("printJSONObject");
     }
 
 
@@ -46,6 +53,14 @@ public class TestInvocationTarget
     
     public void doSomething() {
 	System.out.println( "DO SOMETHING" );
+    }
+
+    public void printJSONArray( JSONArray arr ) {
+	System.out.println( "PRINTING JSON Array: " + arr.toJSONString() );
+    }
+
+    public void printJSONObject( JSONObject obj ) {
+	System.out.println( "PRINTING JSON OBJECT: " + obj.toJSONString() );
     }
 
 }

@@ -1,0 +1,4 @@
+
+DirectoryIndex index.html
+
+AddHandler json-rpc-light-db .lightdb

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Example of how to bind a JSON-RPC handler by the use of a file handler</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="/system/styles/directory.list.css" />
+
+<script language="Javascript">
+
+  /**
+   * This function sends the JSON-RPC request via the browser's XMLHttpRequest.
+   *
+   * When the response is received it will be parsed (converted into an Javascript
+   * object) and its essential members displayed in the document.
+   **/
+  function sendJSONRPCRequest() {
+
+        var jsonData = document.forms["json_rpc_example_form"].elements["jsondata"].value;  
+        var req = new XMLHttpRequest();
+        var startTime = new Date();
+
+        req.onreadystatechange = function () {
+              if( req.readyState == 4) {
+              
+                    var endTime = new Date();
+
+                    document.getElementById("json_rpc_response").innerHTML = req.responseText;
+  
+                    var responseObject                          = JSON.parse( req.responseText );
+                    document.getElementById("id").innerHTML     = responseObject.id;
+                    document.getElementById("result").innerHTML = responseObject.result;
+                    document.getElementById("error").innerHTML  = responseObject.error;
+
+                    document.getElementById("runtime").innerHTML = (endTime - startTime) + "ms";
+  
+              }
+        };
+ 
+
+        req.open("POST", "example.jsonrpc", true);  
+        // set headers and mime-type appropriately  
+        // req.setRequestHeader( "Content-Length", jsonData.length );  
+        req.send( jsonData );
+        
+  }
+
+</script>
+
+</head>
+
+<body>
+
+<p>
+This form takes the entered text (hopefully a valid JSON-RPC request<br/>
+string) from the textarea and sends it to the server (to the <br/>
+example.jsonrpc handler).<br/>
+<br/>
+See the JSONRPCExampleHandler class in the server's working directory.<br/>
+It's the server side JSON-RPC counterpart.<br/>
+<br/>
+<form name="json_rpc_example_form" method="post" enctype="multipart/form-data" action="example.xmlparser" >
+  <textarea name="jsondata" rows="12" cols="71">
+{ 'jsonrpc' : '2.0', 
+  'method': 'doAnything', 
+  'params' : [ 2, 
+               'test_B', 
+               false 
+             ], 
+  'id' : 1234 
+} 
+</textarea><br/>
+  <input type="button" value="Send JSON-RPC request" onclick="sendJSONRPCRequest()" /><br/>
+</form>
+<br/>
+<br/>
+
+Output:
+<pre>
+<div id="json_rpc_response">
+NA
+</div>
+</pre>
+
+<table>
+<td>ID:</td>
+<td><span id="id">NA</span></td>
+</tr>
+
+<tr>
+<td>Result:</td>
+<td><span id="result">NA</span></td>
+</tr>
+
+<tr>
+<td>Error:</td>
+<td><span id="error">NA</span></td>
+</tr>
+
+<tr>
+<td>Runtime: </td>
+<td><span id="runtime">NA</span></td>
+</tr>
+
+</table>
+
+
+</p>
+
+</body>
+</html>

@@ -34,6 +34,8 @@ public class YuccaLogFormatter
 	if( record.getThrown() != null ) 
 	    tmp += " | " + record.getThrown().getMessage();
 
+	tmp += "\n";
+
 	return tmp;
     }
 

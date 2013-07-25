@@ -1,6 +1,8 @@
 package ikrs.httpd;
 
 /**
+ * .oO( We Are Geth )
+ *
  * @author Ikaros Kappler
  * @date 2012-07-16
  * @version 1.0.0
@@ -12,7 +14,7 @@ public class Constants {
     public static final byte LF                                                  = 0xA; // 10 decimal
     
 
-    public static final String VERSION                                           = "1.0.13.alpha";
+    public static final String VERSION                                           = "1.0.14.beta";
     public static final String HTTP                                              = "HTTP";
     public static final String SUPPORTED_HTTP_VERSION                            = "1.1";
 

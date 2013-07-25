@@ -90,9 +90,9 @@ public class Yucca
 	loggingDirectory.mkdirs();
 	/* This might throw an IOExeption */
 	FileHandler fh = new FileHandler( "%h/.yuccasrv/logs/yucca_%u.%g.log",  // pattern
-					  1024*1024,          // files should not be bigger than 1MB
-					  1,                  // one file per log
-					  false               // do not append
+					  5*1024*1024,          // files should not be bigger than 5MB
+					  20,                   // one file per log
+					  false                 // do not append
 					  );
 	fh.setFormatter( new YuccaLogFormatter() );
 	this.logger.addHandler( fh );

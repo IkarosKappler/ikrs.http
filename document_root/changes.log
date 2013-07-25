@@ -1,5 +1,17 @@
 
 
+[2013-07-25]
+  - Fixed Yucca's logging mechanism. Log files were not properly 
+    written (line breaks were missing).
+  - Changed Yucca's max log file size to 5MB.
+  - Changes Yucca's log file rotation count to 20.
+
+[2013-06-24]
+  - Added the JSONRPCExampleHandler that demonstrates how to bind a
+    JSON-RPC (JavaScript Object Notation/Remote Procedure Call) handler
+    into the servers root directory by the use of htaccess (and Java).
+    See /tests_and_examples/jsonrpc/ for the example (at document root).
+
 [2013-05-15]
   - The literals "ISO-8859-1" and "UTF-8" were restored in global
     constants and replaced in all source code files by the

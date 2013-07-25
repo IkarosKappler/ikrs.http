@@ -8,8 +8,9 @@ TO DO:
    Solution: write a simple logfile cycle mechanism.
 
 [2013-05-15]
- - Check the logging mechanism. It seems that the log files are not 
-   properly written.
+ - [DONE 2013-07-25]
+   Check the logging mechanism. It seems that the log files are not 
+   properly written (line breaks are missing).
 
 [2013-05-13]
  - [DONE 2013-05-15]

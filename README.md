@@ -4,13 +4,13 @@ ikrs.httpd
 A free tiny java written http server.
 
 
-Current Yucca version:      1.0.0.alpha
-Current ikrs.httpd version: 1.0.13.alpha
+Current Yucca version:      1.0.1.beta
+Current ikrs.httpd version: 1.0.14.beta
 
 
 Note: I started to write this piece of software in April 2012.
-      I'm still working on this project and I'm doing this just for fun 
-      but with passion.
+      I'm still working on this project and as I'm doing this just for 
+      fun I do it with passion.
       
 
 
@@ -19,6 +19,14 @@ Note: I started to write this piece of software in April 2012.
 
 Changes
 =======
+
+[2013-07-25]
+  - Fixed Yucca's logging mechanism. Log files were not properly 
+    written (line breaks were missing).
+  - Changed Yucca's max log file size to 5MB.
+  - Changes Yucca's log file rotation count to 20.
+  - Switched Yucca and HTTPD to public beta version (1.0.1 respective
+    1.0.14).
 
 [2013-06-24]
   - Added the JSONRPCExampleHandler that demonstrates how to bind a

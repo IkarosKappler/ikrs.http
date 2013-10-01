@@ -20,6 +20,10 @@ Note: I started to write this piece of software in April 2012.
 Changes
 =======
 
+[2013-10-01]
+  - Typing 'HTTPD HEXDUMP' caused a RuntimeException to be thrown and the
+    console died! This is fixed now.
+
 [2013-07-25]
   - Fixed Yucca's logging mechanism. Log files were not properly 
     written (line breaks were missing).

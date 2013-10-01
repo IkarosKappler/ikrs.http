@@ -2,6 +2,13 @@
 
 
 TO DO:
+[2013-10-01]
+ - [DONE 2013-10-01]
+   Typing 'HTTPD HEXDUMP' causes a RuntimeException to be thrown and the
+   console dies! This must be fixed.
+ - Additionally add a RuntimeException handler to fetch unexpected
+   errors, so the console still continues working.
+
 [2013-05-22]
  - The java.util.loggin.FileHandler does not support time stamps inside
    file names nor was it built to support subclasses that do.

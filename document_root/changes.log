@@ -1,4 +1,6 @@
-
+[2013-10-01]
+  - Typing 'HTTPD HEXDUMP' caused a RuntimeException to be thrown and the
+    console died! This is fixed now.
 
 [2013-07-25]
   - Fixed Yucca's logging mechanism. Log files were not properly 

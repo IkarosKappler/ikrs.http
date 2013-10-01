@@ -59,6 +59,7 @@ public class ModuleCommand
 							    getClass().getName() + ".execute()",
 							    "Too few arguments for command '" + this.getName() + "'. Add 'FORMAT <format>'." 
 							    );
+		return -4;
 	    }
 	    String param_1 = this.getParamAt( this.offset ).getString();
 	    if( param_1.equalsIgnoreCase("FORMAT") ) {

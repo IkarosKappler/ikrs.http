@@ -346,8 +346,8 @@ public abstract class AbstractPreparedResponse
 	    // Resource must already be opened!
 	    if( this.responseDataResource != null && this.responseDataResource.getLength() > 0 ) {
 		
-		
-		//this.responseDataResource.open( true ); // Open in read-only mode
+		// Hard coded switch for debugging output
+		boolean ALSO_PRINT_ON_STDOUT = false;
 
 		InputStream resourceIn = this.responseDataResource.getInputStream();
 		
@@ -365,10 +365,12 @@ public abstract class AbstractPreparedResponse
 		while( (len = resourceIn.read(buffer)) > 0 ) {
 
 		    // Print the data on stdout?
-		    if( totalLength < maxHexOutput ) {
-			for( int i = 0; i < len; i++ )
-			    hexOut.write( buffer[i] );
-			hexOut.flush();
+		    if( ALSO_PRINT_ON_STDOUT ) {
+			if( totalLength < maxHexOutput ) {
+			    for( int i = 0; i < len; i++ )
+				hexOut.write( buffer[i] );
+			    hexOut.flush();
+			}
 		    }
 		    
 		    // And write each chunck into the socket's output stream
